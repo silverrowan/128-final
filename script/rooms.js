@@ -115,24 +115,31 @@ class Room {
     //additional obj functions    
 }
 
+const getHotelInfo = async () => {
+    const hotelLocation = "/public/hotels.json";
+    try {
+        const response = await fetch( hotelLocation );
+        if ( !response.ok ) throw new Error('cannot find file');
 
-
-const getHotelInfo = () => {
-    const hotelLocation = "../public/hotels.json";
-
-    //get all hotel data, insert it into/parse it into object
-    return fetch( hotelLocation )
-        .then ( response => response.json() )
-        .then ( data => data )
-        .catch ( error => console.log( error.message ));
+        const hotelData = await response.json();
+        return hotelData;
+    } catch (e) { console.error('Failed to load hotels') }
 }
 
-const getRoomInfo = () => {
-        const roomLocation = "../public/rooms.json";
+const getRoomInfo = async () => {
+    const roomLocation = "/public/rooms.json";
+    try {
+        const response = await fetch( roomLocation );
+        if ( !response.ok ) throw new Error('cannot find file');
 
-    //get all room data, insert it into/parse it into object
-    return fetch( roomLocation )
-        .then ( response => response.json() )
-        .then ( data => data )
-        .catch ( error => console.log( error.message ));
+        const roomData = await response.json();
+        return roomData;
+    } catch (e) { console.error('Failed to load rooms') }
 }
+
+$( function() {
+    const hotelsRaw = await getHotelInfo();
+    const roomsRaw = await getRoomInfo();
+    console.log( hotelsRaw );
+    console.log( roomsRaw );
+});
