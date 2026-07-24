@@ -96,24 +96,24 @@
 # --------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------
 # TOPICS THAT MUST BE SHOWN
-- [ ] arrays
-- [ ] objects
+- [x] arrays
+- [x] objects
 - [ ] conditionals
-- [ ] loops
+- [x] loops
 - [ ] proper use of variable assignment, let versus const
 - [ ] code commented clearly with a good explanation
 
-- [ ] try, catch, and finally
+- [x] try, catch, and finally
 - [ ] throwing errors where appropriate
 - [ ] meaningful feedback in the interface for errors or valid data
 
 - [ ] form validation using regex
 
 - [ ] use of jQuery DOM manipulation techniques
-- [ ] fetch, or jQuery ajax calls
+- [x] fetch, or jQuery ajax calls
 - [ ] deconstruction of JSON data
 
-- [ ] Leaflet use
+- [x] Leaflet use
 - [ ] Animation - via Javascript or jQuery
 
 # --------------------------------------------------------------------------------------

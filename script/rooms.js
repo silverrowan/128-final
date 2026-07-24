@@ -1,24 +1,25 @@
 "use strict";
-
+// #region Setting up Classes
+// Setting up Hotel Class
 class Hotel {
     #id;
     #name;
     #city;
     #country;
     #lat;
-    #long;
+    #lng;
     #rating;
     #description;
     #image;
 
     //constructors
-    constructor( id, name, city, country, lat, long, rating, description, image ) {
+    constructor( id, name, city, country, lat, lng, rating, description, image ) {
         this.#id=id;
         this.#name=name;
         this.#city=city;
         this.#country=country;
         this.#lat=lat;
-        this.#long=long;
+        this.#lng=lng;
         this.#rating=rating;
         this.#description=description;
         this.#image=image
@@ -40,8 +41,8 @@ class Hotel {
     get lat() { return this.#lat; }
     set lat( n ) { this.#lat = n; }
 
-    get long() { return this.#long; }
-    set long( n ) { this.#long = n; }
+    get lng() { return this.#lng; }
+    set lng( n ) { this.#lng = n; }
 
     get rating() { return this.#rating; }
     set rating(  n) { this.#rating = n; }
@@ -55,6 +56,7 @@ class Hotel {
     //additional obj functions
 }
 
+// Setting up Hotel Room Class
 class Room {
     #id;
     #hotelId;
@@ -114,7 +116,9 @@ class Room {
 
     //additional obj functions    
 }
+// #endregion
 
+// #region getting and parsing JSON functions: get_Info, make_Array, _ = Hotel or Room
 const getHotelInfo = async () => {
     const hotelLocation = "/public/hotels.json";
     try {
@@ -124,6 +128,8 @@ const getHotelInfo = async () => {
         const hotelData = await response.json();
         return hotelData;
     } catch (e) { console.error('Failed to load hotels') }
+    finally { console.log( "this happens when hotels.js fetch happens - regardless of success or failure");
+    }
 }
 
 const getRoomInfo = async () => {
@@ -137,9 +143,58 @@ const getRoomInfo = async () => {
     } catch (e) { console.error('Failed to load rooms') }
 }
 
-$( function() {
+const makeHotelArray = ( hotelsRaw ) => {
+    let hotelArray = [];
+    for ( let i = 0; i < hotelsRaw.length; i++) {
+        let h = hotelsRaw[i];
+
+        hotelArray[i] = new Hotel( h.id, h.name, h.city, h.country, 
+                h.lat, h.lng, h.rating, h.description, h.image );
+    }
+    return hotelArray;
+}
+
+const makeRoomArray = ( roomsRaw ) => {
+    let roomArray = [];
+    for ( let i = 0; i < roomsRaw.length; i++) {
+        let r = roomsRaw[i];
+
+        roomArray[i] = new Room( r.id, r.hotelId, r.name, r.type, r.beds, 
+            r.maxGuests, r.pricePerNight, r.rating, r.available, r.image );
+    }
+    return roomArray;    
+}
+//#endregion
+
+
+//#region Initial Page SetUp: Add Hotel Icons to the map (map created in map.js script)
+$( async function() {
     const hotelsRaw = await getHotelInfo();
     const roomsRaw = await getRoomInfo();
     console.log( hotelsRaw );
     console.log( roomsRaw );
+
+    let hotelsArray = makeHotelArray( hotelsRaw )
+    console.log( hotelsArray );
+    let roomsArray = makeRoomArray( roomsRaw )
+    console.log( roomsArray );
+
+    addHotelsToMap( hotelsArray );
 });
+//#endregion
+
+
+const addHotelsToMap = ( hotelsArray ) => {
+    let markerArray = [];
+    for (let i = 0; i < hotelsArray.length; i++) {
+        markerArray[i] = addHotelIcon( hotelsArray[i] );
+    }
+    return markerArray;
+}
+
+const addHotelIcon = ( hotelObj ) => {  
+    let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
+    return marker;
+}
+
+    
