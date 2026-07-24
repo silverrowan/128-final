@@ -23,4 +23,4 @@ nav, .foot {
 
 /* brand new styling */
 
-#map { height: 180px; } /* leaflet requires map to have a defined height */
+#map { height: 50vh; } /* leaflet requires map to have a defined height */

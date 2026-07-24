@@ -1,0 +1,146 @@
+# Good UI/UX
+    Bootstrap, or another CSS framework, styling
+    Make it look professional. This should feel like a real booking dashboard.
+    Entire process must work in mobile, tablet, and desktop, from beginning to end
+    A functional map using Leaflet displaying all hotel locations in the JSON file described
+
+# JSON FILES
+    HOTEL instructions
+        Every hotel must have a unique id.
+        When the user clicks a hotel on the map, only the rooms with the matching hotelId should appear.
+        
+        The hotel file must contain 12 hotel objects. 
+        Each hotel object represents one hotel location in the chain.
+
+        When the user clicks a hotel on the map, only the rooms with the matching hotelId should appear.
+
+        Be sure to use images for rooms and hotels
+
+        hotels.json stores the hotel locations and hotel details used for the Leaflet map and hotel information section.
+
+        ROOM instructions
+            Every room must have a hotelId that matches the 'owning' hotel id.
+            
+            The rooms file must contain 36 room objects.
+            Each room object must belong to one hotel using the hotelId property
+            With 12 hotels and 36 rooms, each hotel should have about 3 room options connected to it.
+
+            rooms.json stores the room data used for the room catalog and booking cart.
+
+# FUNCTIONAL HOTEL MAP
+**Your map must be functional and clearly connected to the booking process**
+**Your selected hotel must control which rooms appear on the page**
+    User location is found and placed on the map using Geolocation // wont work at school
+
+    All hotel locations are displayed on an interactive LeafletJS map
+            clickable 
+            custom hotel icon
+
+    Clicking a hotel must bring up that hotel location for the user to book from
+
+    The clicked hotel should 
+            become the active hotel 
+            populate the page with that location's room options and ONLY the selected hotel's rooms
+            display Weather data for the selected hotel location
+            have a popup
+            become map focus ("clearly")
+
+# FUNCTIONAL ROOM CATALOG
+**Your room catalog must be populated dynamically from JSON**
+    Rooms are (function) 
+            populated from 'rooms' JSON file via fetch
+            filterable
+                via category chooser, drop down select box, or another filtering method 
+            sortable
+                by price, room type, max guests, rating, or another logical room category
+
+    Rooms are (visual)
+            displayed as cards 
+            in grid, row, or masonry layout
+            include:
+                image, hotel name, room name, room type, number of beds, max guests, nightly cost, and availability status
+                Book Room button (functional)
+    
+    Book Room button adds that room to the cart in the offcanvas menu 
+
+# FUNCTIONAL OFFCANVAS BOOKING CART
+**If the page is refreshed, items should still show in the cart**
+**Your cart must store data in localStorage** 
+    Use an Offcanvas for user to view
+        choose one of: overlay, offcanvas, popover, or panel 
+        shows rooms being booked 
+        when open, rest of the catalog is hidden
+    Cart functions
+        Provide total (cost?) of rooms booked and a subtotal
+        Items can be removed from the cart
+        The cart can be emptied
+
+# FUNCTIONAL BOOKING OR CHECKOUT SYSTEM
+**Validate all form fields and provide meaningful user feedback**
+    Create a checkout process to complete bookings
+    Checkout should 
+        collect:
+            "meaningful information" such as
+            customer name, email, phone, address, city, province or state, postal code, number of guests, and number of nights
+        Show:
+            order summary, includes: hotel selected, room booked, nights stayed, guests, subtotal, taxes, and final total
+        
+        Confirmation section or confirmation message after successful booking
+
+ 
+# WEATHER AND PRICING LOGIC
+    Weather data must affect your dashboard in a meaningful way
+        Example: if it is raining at the selected hotel location, a resort or service fee is added
+        Example: if the user books 3 or more nights, apply a discount
+    Any pricing logic used must make sense and be displayed clearly to the user
+
+# TOPICS THAT MUST BE SHOWN
+- [ ] arrays
+- [ ] objects
+- [ ] conditionals
+- [ ] loops
+- [ ] proper use of variable assignment, let versus const
+- [ ] code commented clearly with a good explanation
+
+- [ ] try, catch, and finally
+- [ ] throwing errors where appropriate
+- [ ] meaningful feedback in the interface for errors or valid data
+
+- [ ] form validation using regex
+
+- [ ] use of jQuery DOM manipulation techniques
+- [ ] fetch, or jQuery ajax calls
+- [ ] deconstruction of JSON data
+
+- [ ] Leaflet use
+- [ ] Animation - via Javascript or jQuery
+
+# --------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
+# SUGGESTED PROCESS
+- [x] Create your boilerplate HTML page
+- [x] Import your CSS framework, for example Bootstrap CSS
+- [x] Link to jQuery
+- [x] Link to Leaflet
+- [x] --Create a scripts/project.js file-- named differently
+- [x] Create a public folder for your JSON files
+- [ ] Create your hotels.json and rooms.json files
+- [ ] Review how the two JSON files connect using hotel id and room hotelId
+- [ ] Make sure each hotel has a unique id and that every room points to a real hotel using hotelId
+- [ ] Determine how you want your layout to look, grid, row, or masonry, and build a dummy layout with a few example room cards
+- [ ] Add your hotel locations to the map with the JSON data from hotels.json
+- [ ] Add a custom icon for each hotel marker
+- [ ] Use geolocation to place the user's current location on the map
+- [ ] When a hotel is clicked, update the active hotel details section
+- [ ] Store the selected hotel id in a variable so you know which hotel is active
+- [ ] Get and display weather data for the selected hotel
+- [ ] Filter the rooms from rooms.json so only rooms whose hotelId matches the selected hotel id are shown
+- [ ] Add filtering and sorting to the room catalog
+- [ ] Create Book Room functionality
+- [ ] Add the ability to view your items in your booking cart
+- [ ] Add the ability to remove items, empty the cart, and keep the cart in localStorage, so if i refresh the page, items are still active in the cart.
+- [ ] Add the ability to checkout
+- [ ] Create the checkout steps and be sure to validate all form fields, provide meaningful feedback if the user enters incorrect or invalid data
+- [ ] Create an order summary that shows relevant booking data
+- [ ] Go through your final checks from the requirements in the Description section
+

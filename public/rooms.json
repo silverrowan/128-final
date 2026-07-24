@@ -1,0 +1,38 @@
+[
+  {
+    "id": 101,
+    "hotelId": 1,
+    "name": "Ocean King Suite",
+    "type": "Suite",
+    "beds": "1 King",
+    "maxGuests": 2,
+    "pricePerNight": 289,
+    "rating": 4.8,
+    "available": true,
+    "image": "images/ocean-king.jpg"
+  },
+  {
+    "id": 102,
+    "hotelId": 1,
+    "name": "Harbour Double Queen",
+    "type": "Deluxe",
+    "beds": "2 Queen",
+    "maxGuests": 4,
+    "pricePerNight": 259,
+    "rating": 4.6,
+    "available": true,
+    "image": "images/harbour-double.jpg"
+  },
+  {
+    "id": 201,
+    "hotelId": 2,
+    "name": "City View King Room",
+    "type": "Standard",
+    "beds": "1 King",
+    "maxGuests": 2,
+    "pricePerNight": 239,
+    "rating": 4.4,
+    "available": true,
+    "image": "images/city-view-king.jpg"
+  }
+]
