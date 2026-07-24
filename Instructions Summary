@@ -86,7 +86,6 @@
             order summary, includes: hotel selected, room booked, nights stayed, guests, subtotal, taxes, and final total
         
         Confirmation section or confirmation message after successful booking
-
  
 # WEATHER AND PRICING LOGIC
     Weather data must affect your dashboard in a meaningful way
@@ -94,6 +93,8 @@
         Example: if the user books 3 or more nights, apply a discount
     Any pricing logic used must make sense and be displayed clearly to the user
 
+# --------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
 # TOPICS THAT MUST BE SHOWN
 - [ ] arrays
 - [ ] objects
