@@ -1,0 +1,26 @@
+/* lab 01 recoloring */
+body, main {
+	background-color: #a3bfb2;
+}
+
+nav, .foot {
+	background-color: #b7f1d6;
+}
+.w100 { width: 100%; }
+
+/* lab 4 styling */
+.img-contain {
+    max-width: 40%;
+}
+
+.imgCoverFit { 
+    object-fit: cover;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+/* brand new styling */
+
+#map { height: 180px; } /* leaflet requires map to have a defined height */
