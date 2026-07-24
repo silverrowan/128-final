@@ -1,3 +1,17 @@
+:root { 
+    /*lightmode color*/
+    --background-color: #a3bfb2;
+    --nav-color: #b7f1d6;
+    --foot-color: var(--nav-color);
+}
+
+:root:has(#dark-theme:checked){
+    /*darkmode color*/
+    --background-color: #a3bfb2;
+    --nav-color: #b7f1d6;
+    --foot-color: var(--nav-color);
+}
+
 /* lab 01 recoloring */
 body, main {
 	background-color: #a3bfb2;
