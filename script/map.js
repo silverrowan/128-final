@@ -10,21 +10,23 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // let marker = L.marker([48.4, -123.4]).addTo(map); //Map marker - default
 //for custom need a png for image, and a png for shadow
+
 var hotelIcon = L.icon({
     iconUrl: '../img/hotelIcon-32.png', //doesnt appear to handle svg
     shadowUrl: '../img/hotelIconShadow-32x11.png',
 
     iconSize:     [32, 32], // size of the icon
     shadowSize:   [32, 11], // size of the shadow
-    iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-    shadowAnchor: [0, -30],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
+    shadowAnchor: [16, 0],  // the same for the shadow
+    popupAnchor:  [0, -24] // point from which the popup should open relative to the iconAnchor
 });
-let marker = L.marker([48.43, -123.36], {icon: hotelIcon}).addTo(map); //Map marker - default
 
-
+//Add demo image marker & simple pop up
+// let marker = L.marker([48.43, -123.36], {icon: hotelIcon}).addTo(map); //Map marker - default
 // marker.bindPopup("<b>Hello world!</b><br>I am a popup."); //simple marker note (add openPopup() to open on load)
 
+//more complex popup
 let popup = L.popup();
 function onMapClick(e) {
     console.log(e);
@@ -43,3 +45,4 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
+
