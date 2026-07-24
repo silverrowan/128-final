@@ -8,7 +8,7 @@
     "lng": -123.3656,
     "rating": 4.7,
     "description": "Oceanfront hotel with spa access and downtown views.",
-    "image": "images/victoria-hotel.jpg"
+    "image": "images/harborVictoria.jpg"
   },
   {
     "id": 2,
@@ -19,6 +19,17 @@
     "lng": -79.3832,
     "rating": 4.5,
     "description": "A downtown hotel close to shopping and entertainment.",
-    "image": "images/toronto-hotel.jpg"
+    "image": "images/skylineToronto.jpg"
+  }
+  {
+    "id": 3,
+    "name": "Cherry Tree Inn",
+    "city": "Victoria",
+    "country": "Canada",
+    "lat": 48.5118,
+    "lng": -123.3819,
+    "rating": 2,
+    "description": "A quaint brick motel located near Butchart Gardens and the Royal British Columbia Museum.",
+    "image": "img/CherryTreeInn.jpg"
   }
 ]

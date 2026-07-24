@@ -9,7 +9,7 @@
     "pricePerNight": 289,
     "rating": 4.8,
     "available": true,
-    "image": "images/ocean-king.jpg"
+    "image": "img/harborVictoria1.jpg"
   },
   {
     "id": 102,
@@ -21,7 +21,7 @@
     "pricePerNight": 259,
     "rating": 4.6,
     "available": true,
-    "image": "images/harbour-double.jpg"
+    "image": "img/harborVictoria2.jpg"
   },
   {
     "id": 201,
@@ -30,9 +30,57 @@
     "type": "Standard",
     "beds": "1 King",
     "maxGuests": 2,
-    "pricePerNight": 239,
+    "pricePerNight": 339,
     "rating": 4.4,
     "available": true,
-    "image": "images/city-view-king.jpg"
+    "image": "img/skylineToronto1.jpg"
+  },
+  {
+    "id": 301,
+    "hotelId": 3,
+    "name": "Single Bed",
+    "type": "Standard",
+    "beds": "1 Queen",
+    "maxGuests": 2,
+    "pricePerNight": 119,
+    "rating": 3.7,
+    "available": true,
+    "image": "img/CherryTreeInn1.jpg"
+  },
+  {
+    "id": 302,
+    "hotelId": 3,
+    "name": "Two Bed",
+    "type": "Standard",
+    "beds": "2 Queen",
+    "maxGuests": 4,
+    "pricePerNight": 159,
+    "rating": 3.8,
+    "available": true,
+    "image": "img/CherryTreeInn2.jpg"
+  },
+  {
+    "id": 303,
+    "hotelId": 3,
+    "name": "Two Bed with Kitchenette",
+    "type": "Kitchenette",
+    "beds": "2 Queen",
+    "maxGuests": 4,
+    "pricePerNight": 169,
+    "rating": 3.9,
+    "available": true,
+    "image": "img/CherryTreeInn3.jpg"
+  },
+  {
+    "id": 304,
+    "hotelId": 3,
+    "name": "Suite with 2 Rooms",
+    "type": "Suite",
+    "beds": "3 Queen",
+    "maxGuests": 4,
+    "pricePerNight": 229,
+    "rating": 3.9,
+    "available": true,
+    "image": "img/CherryTreeInn4.jpg"
   }
 ]
