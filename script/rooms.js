@@ -167,7 +167,8 @@ const makeRoomArray = ( roomsRaw ) => {
 //#endregion
 
 
-//#region Initial Page SetUp: Add Hotel Icons to the map (map created in map.js script)
+//#region Initial on load + addHotelsToMap() & addHotelIcon(): 
+// Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
     const hotelsRaw = await getHotelInfo();
     const roomsRaw = await getRoomInfo();
@@ -181,8 +182,6 @@ $( async function() {
 
     addHotelsToMap( hotelsArray );
 });
-//#endregion
-
 
 const addHotelsToMap = ( hotelsArray ) => {
     let markerArray = [];
@@ -196,5 +195,42 @@ const addHotelIcon = ( hotelObj ) => {
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
     return marker;
 }
+//#endregion
 
+//#region define cards makeHotelCard() and makeRoomCard()
+const makeHotelCard = () => {
+    // hotel variables
+    // #id;
+    // #name;
+    // #city;
+    // #country;
+    // #lat;
+    // #lng;
+    // #rating;
+    // #description;
+    // #image;
+
+    cardHTML = `
+        <div class ="col col-md-6">            
+            <h1>Hotel</h1>
+            <div class="card m-3 d-flex flex-row">
+                <div class="img-contain d-flex align-items-stretch">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${image}">
+                </div>	
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title" id="">${name}</h3>
+                    <h4>${city}, ${country}</h4>
+                    <hr class="w100">
+                    `
+                    someFunctionForStars();<img>stars by rating</img>
+                    `
+                    <p class="card-text" id="">${description}</p>                       
+                    <button id="roomBtn0" btnnum="0" class="btn btn-primary align-self-end">Available Rooms</button>
+                </div>
+            </div>
+        </div>    
+    `
+}
+
+const makeRoomCard = () => {}
     
