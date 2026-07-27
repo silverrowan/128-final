@@ -8,7 +8,7 @@
     "lng": -123.3656,
     "rating": 4.7,
     "description": "Oceanfront hotel with spa access and downtown views.",
-    "image": "images/harborVictoria.jpg"
+    "image": "img/harborVictoria.jpg"
   },
   {
     "id": 2,
@@ -19,7 +19,7 @@
     "lng": -79.3832,
     "rating": 4.5,
     "description": "A downtown hotel close to shopping and entertainment.",
-    "image": "images/skylineToronto.jpg"
+    "image": "img/skylineToronto.jpg"
   },
   {
     "id": 3,
