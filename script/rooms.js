@@ -181,6 +181,8 @@ $( async function() {
     console.log( roomsArray );
 
     addHotelsToMap( hotelsArray );
+
+    
 });
 
 const addHotelsToMap = ( hotelsArray ) => {
@@ -193,43 +195,69 @@ const addHotelsToMap = ( hotelsArray ) => {
 
 const addHotelIcon = ( hotelObj ) => {  
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
+    marker.addEventListener("click", () => makeHotelCard( hotelObj ));
     return marker;
 }
 //#endregion
 
 //#region define cards makeHotelCard() and makeRoomCard()
-const makeHotelCard = () => {
-    // hotel variables
-    // #id;
-    // #name;
-    // #city;
-    // #country;
-    // #lat;
-    // #lng;
-    // #rating;
-    // #description;
-    // #image;
-
-    cardHTML = `
-        <div class ="col col-md-6">            
-            <h1>Hotel</h1>
-            <div class="card m-3 d-flex flex-row">
-                <div class="img-contain d-flex align-items-stretch">
-                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${image}">
+const makeHotelCard = ( hotel ) => {
+    let cardHTML = `       
+            <div class="card m-3 d-flex">
+                <div class="d-flex align-items-stretch">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${hotel.image}" alt="a photo of ${hotel.name}">
                 </div>	
                 <div class="card-body d-flex flex-column">
-                    <h3 class="card-title" id="">${name}</h3>
-                    <h4>${city}, ${country}</h4>
-                    <hr class="w100">
+                    <h3 class="card-title" id="">${hotel.name}</h3>
+                    <div class="flex-row">
                     `
-                    someFunctionForStars();<img>stars by rating</img>
-                    `
-                    <p class="card-text" id="">${description}</p>                       
-                    <button id="roomBtn0" btnnum="0" class="btn btn-primary align-self-end">Available Rooms</button>
+    cardHTML += ratingToStars( hotel.rating );
+    cardHTML += `
+                    </div>
+                    <hr class="w100">                    
+                    <h4>${hotel.city}, ${hotel.country}</h4>
+                    <p class="card-text" id="">${hotel.description}</p>                       
+                    <button id="roomsBtn" class="btn btn-success align-self-end">Available Rooms</button>
                 </div>
             </div>
         </div>    
     `
+    $("#initialCard").html(cardHTML);
+    $("#roomsBtn").click( makeRoomCards );
+}
+
+const makeRoomCards = () => {
+    console.log("makeroomcards");
+    
+}
+
+const ratingToStars = (rating) => {
+    // round to nearest half integer
+    rating = Math.round(rating * 2); 
+    rating = rating / 2 //convert back to original scale (5)
+
+    let starsOut = "";
+    let count = 0;
+    //add whole stars until number of stars = int of rating
+    for (let i = 1 ; i <= rating ; i++){
+        starsOut += `<img class='icon star' src='/img/star.png' />`;
+        count++;
+    }
+    //add a half star if the rating ends in .5
+    let halfStar = rating-count > 0;
+    if ( halfStar ) {
+        starsOut += `<img class='icon star' src='/img/starHalf.png' />`;
+    }
+    //calculate the number of empty stars to bring to 5
+    let emptyStars = 5 - rating;
+    if ( halfStar ) { emptyStars -= 1 };
+    
+    //add empty stars until count matches
+    for (let i = 1 ; i <= emptyStars ; i++){
+        starsOut += `<img class='icon star' src='/img/starEmpty.png' />`;
+    }
+
+    return starsOut;
 }
 
 const makeRoomCard = () => {}
