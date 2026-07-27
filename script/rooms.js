@@ -176,32 +176,30 @@ $( async function() {
     console.log( roomsRaw );
 
     let hotelsArray = makeHotelArray( hotelsRaw )
-    console.log( hotelsArray );
     let roomsArray = makeRoomArray( roomsRaw )
-    console.log( roomsArray );
 
-    addHotelsToMap( hotelsArray );
+    addHotelsToMap( hotelsArray, roomsArray );
 
     
 });
 
-const addHotelsToMap = ( hotelsArray ) => {
+const addHotelsToMap = ( hotelsArray, roomsArray ) => {
     let markerArray = [];
     for (let i = 0; i < hotelsArray.length; i++) {
-        markerArray[i] = addHotelIcon( hotelsArray[i] );
+        markerArray[i] = addHotelIcon( hotelsArray[i], roomsArray );
     }
     return markerArray;
 }
 
-const addHotelIcon = ( hotelObj ) => {  
+const addHotelIcon = ( hotelObj, roomsArray ) => {  
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
-    marker.addEventListener("click", () => makeHotelCard( hotelObj ));
+    marker.addEventListener("click", () => makeHotelCard( hotelObj, roomsArray ));
     return marker;
 }
 //#endregion
 
 //#region define cards makeHotelCard() and makeRoomCard()
-const makeHotelCard = ( hotel ) => {
+const makeHotelCard = ( hotel, roomsArray ) => {
     let cardHTML = `       
             <div class="card m-3 d-flex">
                 <div class="d-flex align-items-stretch">
@@ -223,12 +221,47 @@ const makeHotelCard = ( hotel ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( makeRoomCards );
+    $("#roomsBtn").click( () => makeRoomCards( roomsArray, hotel.id ) );
 }
 
-const makeRoomCards = () => {
+const makeRoomCards = ( roomArray, hotelId ) => {
     console.log("makeroomcards");
-    
+    for ( let i = 0 ; i < roomArray.length ; i++ ){
+        let room = roomArray[i];
+        if ( hotelId == room.hotelId && room.available ){
+            console.log( "id match");
+            $("#roomCards").html( makeRoomCard( room ) );
+            $("#roomsBtn").click( addToCart );
+        }
+    }   
+}
+
+const makeRoomCard = ( room ) => {
+    let cardHTML = `       
+        <div class="col col-sm-6 col-lg-4">            
+            <div class="card m-3 d-flex">
+                <div class="img-contain d-flex align-items-stretch">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${room.image}">
+                </div>	
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${room.name}</h5>
+                    <div>
+                    `
+                    cardHTML += ratingToStars( room.rating );
+                    cardHTML += `
+                    </div>
+                    <hr class="w100">
+                    <p class="card-subtitle">${room.type} room type</p>
+                    <p class="card-text">${room.beds} beds</p>  
+                    <p class="card-text">up to ${room.maxGuests} guests</p>  
+                    <p class="card-text h3">$${room.pricePerNight} per night</p>
+                    
+                    <button id="bookRoom${room.id}" roomNum="${room.id}" class="btn btn-success align-self-end">Book Room</button>
+                </div>
+            </div>
+        </div>
+        `
+    return cardHTML;
 }
 
 const ratingToStars = (rating) => {
@@ -259,6 +292,5 @@ const ratingToStars = (rating) => {
 
     return starsOut;
 }
-
-const makeRoomCard = () => {}
     
+const addToCart = () => {}
