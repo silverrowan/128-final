@@ -200,6 +200,7 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
 
 //#region define cards makeHotelCard() and makeRoomCard()
 const makeHotelCard = ( hotel, roomsArray ) => {
+    $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
                 <div class="d-flex align-items-stretch">
@@ -225,13 +226,14 @@ const makeHotelCard = ( hotel, roomsArray ) => {
 }
 
 const makeRoomCards = ( roomArray, hotelId ) => {
+    $("#roomCards").html( '' );    
     console.log("makeroomcards");
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
         if ( hotelId == room.hotelId && room.available ){
             console.log( "id match");
-            $("#roomCards").html( makeRoomCard( room ) );
-            $("#roomsBtn").click( addToCart );
+            $("#roomCards").append( makeRoomCard( room ) );
+            $("#roomsBtn").click( bookRoom );
         }
     }   
 }
@@ -240,7 +242,7 @@ const makeRoomCard = ( room ) => {
     let cardHTML = `       
         <div class="col col-sm-6 col-lg-4">            
             <div class="card m-3 d-flex">
-                <div class="img-contain d-flex align-items-stretch">
+                <div class=" d-flex align-items-stretch">
                     <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${room.image}">
                 </div>	
                 <div class="card-body d-flex flex-column">
@@ -251,10 +253,10 @@ const makeRoomCard = ( room ) => {
                     cardHTML += `
                     </div>
                     <hr class="w100">
-                    <p class="card-subtitle">${room.type} room type</p>
+                    <p class="card-text">${room.type} room type</p>
                     <p class="card-text">${room.beds} beds</p>  
                     <p class="card-text">up to ${room.maxGuests} guests</p>  
-                    <p class="card-text h3">$${room.pricePerNight} per night</p>
+                    <p class="card-text align-self-end"><span class="h3">$${room.pricePerNight}</span><span class="h6">/ night</span></p>
                     
                     <button id="bookRoom${room.id}" roomNum="${room.id}" class="btn btn-success align-self-end">Book Room</button>
                 </div>
@@ -293,4 +295,5 @@ const ratingToStars = (rating) => {
     return starsOut;
 }
     
-const addToCart = () => {}
+const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
+}
