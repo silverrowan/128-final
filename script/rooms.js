@@ -200,6 +200,7 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
 
 //#region define cards makeHotelCard() and makeRoomCard()
 const makeHotelCard = ( hotel, roomsArray ) => {
+    // $("#roomCards").html( '' );   
     $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
