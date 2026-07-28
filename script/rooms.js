@@ -65,12 +65,11 @@ class Room {
     #beds;
     #maxGuests;
     #pricePerNight;
-    #rating;
     #available;
     #image;
 
     //constructors
-    constructor( id, hotelId, name, type, beds, maxGuests, pricePerNight, rating, available, image ) {
+    constructor( id, hotelId, name, type, beds, maxGuests, pricePerNight, available, image ) {
         this.#id=id;
         this.#hotelId=hotelId;
         this.#name=name;
@@ -78,7 +77,6 @@ class Room {
         this.#beds=beds;
         this.#maxGuests=maxGuests;
         this.#pricePerNight=pricePerNight;
-        this.#rating=rating;
         this.#available=available;
         this.#image=image
     }
@@ -104,9 +102,6 @@ class Room {
 
     get pricePerNight() { return this.#pricePerNight; }
     set pricePerNight( n ) { this.#pricePerNight = n; }
-
-    get rating() { return this.#rating; }
-    set rating(  n) { this.#rating = n; }
 
     get available() { return this.#available; }
     set available( n ) { this.#available = n; }
@@ -198,7 +193,7 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
 }
 //#endregion
 
-//#region define cards makeHotelCard() and makeRoomCard()
+//#region define cards makeHotelCard(), displayRooms(), makeRoomCard(), ratingToStars()
 const makeHotelCard = ( hotel, roomsArray ) => {
     $("#roomCards").html( '' ); 
     let cardHTML = `       
@@ -222,15 +217,17 @@ const makeHotelCard = ( hotel, roomsArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => makeRoomCards( roomsArray, hotel.id ) );
+    $("#roomsBtn").click( () => displayRooms( roomsArray, hotel.id ) );
 }
 
-const makeRoomCards = ( roomArray, hotelId ) => {
+const displayRooms = ( roomArray, hotelId ) => {
+    $("#headerDiv").html('<h2>Rooms</h2>');
+
     $("#roomCards").html( '' );    
-    console.log("makeroomcards");
+    console.log("displayRooms");
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotelId == room.hotelId && room.available ){
+        if ( hotelId == room.hotelId && room.available ){ //CHANGE - show room, but as unavailable
             console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
             $("#roomsBtn").click( bookRoom );
@@ -294,6 +291,8 @@ const ratingToStars = (rating) => {
 
     return starsOut;
 }
-    
+// #endregion
+
+// #region Book Rooms
 const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }

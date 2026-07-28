@@ -7,7 +7,6 @@
     "beds": "1 King",
     "maxGuests": 2,
     "pricePerNight": 289,
-    "rating": 4.8,
     "available": true,
     "image": "img/harborVictoria1.jpg"
   },
@@ -19,7 +18,6 @@
     "beds": "2 Queen",
     "maxGuests": 4,
     "pricePerNight": 259,
-    "rating": 4.6,
     "available": true,
     "image": "img/harborVictoria2.jpg"
   },
@@ -31,7 +29,6 @@
     "beds": "1 King",
     "maxGuests": 2,
     "pricePerNight": 339,
-    "rating": 4.4,
     "available": true,
     "image": "img/skylineToronto1.jpg"
   },
@@ -43,7 +40,6 @@
     "beds": "1 Queen",
     "maxGuests": 2,
     "pricePerNight": 119,
-    "rating": 3.7,
     "available": true,
     "image": "img/CherryTreeInn1.jpg"
   },
@@ -55,7 +51,6 @@
     "beds": "2 Queen",
     "maxGuests": 4,
     "pricePerNight": 159,
-    "rating": 3.8,
     "available": true,
     "image": "img/CherryTreeInn2.jpg"
   },
@@ -67,7 +62,6 @@
     "beds": "2 Queen",
     "maxGuests": 4,
     "pricePerNight": 169,
-    "rating": 3.9,
     "available": true,
     "image": "img/CherryTreeInn3.jpg"
   },
@@ -79,7 +73,6 @@
     "beds": "3 Queen",
     "maxGuests": 4,
     "pricePerNight": 229,
-    "rating": 3.9,
     "available": true,
     "image": "img/CherryTreeInn4.jpg"
   },
@@ -91,7 +84,6 @@
     "beds": "1 Single Bunk-bed",
     "maxGuests": 1,
     "pricePerNight": 62,
-    "rating": 2,
     "available": true,
     "image": "img/Cambie01.png"
   },
@@ -103,7 +95,6 @@
     "beds": "1 Double/Single Bunkbed",
     "maxGuests": 2,
     "pricePerNight": 280,
-    "rating": 2,
     "available": true,
     "image": "img/Cambie02.jpg"
   },
@@ -115,7 +106,6 @@
     "beds": "1 Double/Single Bunkbed",
     "maxGuests": 1,
     "pricePerNight": 85,
-    "rating": 2,
     "available": true,
     "image": "img/Cambie03.jpg"
   },
@@ -127,7 +117,6 @@
     "beds": "2 Single Bunkbeds",
     "maxGuests": 1,
     "pricePerNight": 75,
-    "rating": 2,
     "available": true,
     "image": "img/Cambie04.jpg"
   },
@@ -139,7 +128,6 @@
     "beds": "1 Double/Single Bunkbed",
     "maxGuests": 2,
     "pricePerNight": 215,
-    "rating": 2,
     "available": true,
     "image": "img/Cambie05.jpg"
   },
@@ -151,7 +139,6 @@
     "beds": "1 King",
     "maxGuests": 2,
     "pricePerNight": 188,
-    "rating": 3.2,
     "available": true,
     "image": "img/CherryTreeInn1.jpg"
   },
@@ -163,7 +150,6 @@
     "beds": "2 Double",
     "maxGuests": 4,
     "pricePerNight": 259,
-    "rating": 4,
     "available": true,
     "image": "img/CherryTreeInn4.jpg"
   },
@@ -175,7 +161,6 @@
     "beds": "1 King",
     "maxGuests": 2,
     "pricePerNight": 217,
-    "rating": 4.5,
     "available": true,
     "image": "img/BestWestern3.jpg"
   },
@@ -187,7 +172,6 @@
     "beds": "1 King, Sofabed",
     "maxGuests": 2,
     "pricePerNight": 321,
-    "rating": 3.7,
     "available": true,
     "image": "img/skylineToronto1.jpg"
   }
