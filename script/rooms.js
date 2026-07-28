@@ -221,13 +221,13 @@ const makeHotelCard = ( hotel, roomsArray ) => {
 }
 
 const displayRooms = ( roomArray, hotelId ) => {
-    $("#headerDiv").html('<h2>Rooms</h2>');
+    // $("#headerDiv").html('<h2>Rooms</h2>');
 
     $("#roomCards").html( '' );    
     console.log("displayRooms");
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotelId == room.hotelId && room.available ){ //CHANGE - show room, but as unavailable
+        if ( hotelId == room.hotelId ) {//&& room.available ){ //CHANGE - show room, but as unavailable
             console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
             $("#roomsBtn").click( bookRoom );
@@ -294,5 +294,11 @@ const ratingToStars = (rating) => {
 // #endregion
 
 // #region Book Rooms
-const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
+
+
+const bookRoom = ( room ) => { 
+    console.log(`book room ${room.id}`);
+    //open book room modal or offcanvas
+        //should have Hotel: room price
+        //dates & number to book
 }
