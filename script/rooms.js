@@ -83,7 +83,7 @@ class Room {
 
     //setters & getters
     get id() { return this.#id; }
-    set id(  n) { this.#id = n; }
+    set id( n ) { this.#id = n; }
 
     get hotelId() { return this.#hotelId; }
     set hotelId( n ) { this.#hotelId = n; }
@@ -95,7 +95,7 @@ class Room {
     set type( n ) { this.#type = n; }
 
     get beds() { return this.#beds; }
-    set beds(  n) { this.#beds = n; }
+    set beds( n ) { this.#beds = n; }
 
     get maxGuests() { return this.#maxGuests; }
     set maxGuests( n ) { this.#maxGuests = n; }
@@ -199,7 +199,7 @@ const makeHotelCard = ( hotel, roomsArray ) => {
     let cardHTML = `       
             <div class="card m-3 d-flex">
                 <div class="d-flex align-items-stretch">
-                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${hotel.image}" alt="a photo of ${hotel.name}">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit" src="${hotel.image}" alt="a photo of ${hotel.name}">
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h3 class="card-title" id="">${hotel.name}</h3>
@@ -244,11 +244,6 @@ const makeRoomCard = ( room ) => {
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${room.name}</h5>
-                    <div>
-                    `
-                    cardHTML += ratingToStars( room.rating );
-                    cardHTML += `
-                    </div>
                     <hr class="w100">
                     <p class="card-text">${room.type} room type</p>
                     <p class="card-text">${room.beds} beds</p>  
