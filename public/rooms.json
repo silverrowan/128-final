@@ -82,5 +82,113 @@
     "rating": 3.9,
     "available": true,
     "image": "img/CherryTreeInn4.jpg"
+  },
+    {
+    "id": 401,
+    "hotelId": 4,
+    "name": "8 Bed Mixed Dorm",
+    "type": "Shared",
+    "beds": "1 Single Bunk-bed",
+    "maxGuests": 1,
+    "pricePerNight": 62,
+    "rating": 2,
+    "available": true,
+    "image": "img/Cambie01.png"
+  },
+    {
+    "id": 402,
+    "hotelId": 4,
+    "name": "Private Room with Ensuite",
+    "type": "Private",
+    "beds": "1 Double/Single Bunkbed",
+    "maxGuests": 2,
+    "pricePerNight": 280,
+    "rating": 2,
+    "available": true,
+    "image": "img/Cambie02.jpg"
+  },
+    {
+    "id": 403,
+    "hotelId": 4,
+    "name": "2 Bed Dorm",
+    "type": "Shared",
+    "beds": "1 Double/Single Bunkbed",
+    "maxGuests": 1,
+    "pricePerNight": 85,
+    "rating": 2,
+    "available": true,
+    "image": "img/Cambie03.jpg"
+  },
+    {
+    "id": 404,
+    "hotelId": 4,
+    "name": "4 Bed Dorm",
+    "type": "Shared",
+    "beds": "2 Single Bunkbeds",
+    "maxGuests": 1,
+    "pricePerNight": 75,
+    "rating": 2,
+    "available": true,
+    "image": "img/Cambie04.jpg"
+  },
+      {
+    "id": 405,
+    "hotelId": 4,
+    "name": "2 Bed Private room with Shared Ensuite",
+    "type": "Semi-private",
+    "beds": "1 Double/Single Bunkbed",
+    "maxGuests": 2,
+    "pricePerNight": 215,
+    "rating": 2,
+    "available": true,
+    "image": "img/Cambie05.jpg"
+  },
+  {
+    "id": 501,
+    "hotelId": 5,
+    "name": "Standard Room, 1 King Bed",
+    "type": "Standard",
+    "beds": "1 King",
+    "maxGuests": 2,
+    "pricePerNight": 188,
+    "rating": 3.2,
+    "available": true,
+    "image": "img/CherryTreeInn1.jpg"
+  },
+  {
+    "id": 502,
+    "hotelId": 5,
+    "name": "Standard Room, 2 Double Beds",
+    "type": "Standard",
+    "beds": "2 Double",
+    "maxGuests": 4,
+    "pricePerNight": 259,
+    "rating": 4,
+    "available": true,
+    "image": "img/CherryTreeInn4.jpg"
+  },
+  {
+    "id": 503,
+    "hotelId": 5,
+    "name": "Executive Room, 1 King Bed, Accessible",
+    "type": "Executive, Accessible",
+    "beds": "1 King",
+    "maxGuests": 2,
+    "pricePerNight": 217,
+    "rating": 4.5,
+    "available": true,
+    "image": "img/BestWestern3.jpg.jpg"
+  },
+  {
+    "id": 504,
+    "hotelId": 5,
+    "name": "Suite, 1 King Bed with Sofabed",
+    "type": "Suite",
+    "beds": "1 King, Sofabed",
+    "maxGuests": 2,
+    "pricePerNight": 321,
+    "rating": 3.7,
+    "available": true,
+    "image": "img/skylineToronto1.jpg"
   }
 ]

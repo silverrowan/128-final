@@ -31,5 +31,27 @@
     "rating": 2,
     "description": "A quaint brick motel located near Butchart Gardens and the Royal British Columbia Museum.",
     "image": "img/CherryTreeInn.jpg"
+  },
+    {
+    "id": 4,
+    "name": "The Cambie Hostel",
+    "city": "Gastown Vancouver",
+    "country": "Canada",
+    "lat": 49.2463,
+    "lng": -123.1162,
+    "rating": 3.8,
+    "description": "This casual hostel is a 5-minute walk from Waterfront Station's Metro trains and ferries to Lonsdale Quay",
+    "image": "img/Cambie.jpg"
+  },
+    {
+    "id": 5,
+    "name": "Best Western Plus Vancouver Airport Hotel",
+    "city": "Vancouver",
+    "country": "Canada",
+    "lat": 49.2049,
+    "lng": -123.1307,
+    "rating": 3.5,
+    "description": "Snug, down-to-earth rooms provide Wi-Fi, TVs and minifridges; many have microwaves. Suites add kitchenettes and sofabeds.",
+    "image": "img/BestWestern.jpg"
   }
 ]
