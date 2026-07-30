@@ -65,11 +65,12 @@ class Room {
     #beds;
     #maxGuests;
     #pricePerNight;
+    #rating;
     #available;
     #image;
 
     //constructors
-    constructor( id, hotelId, name, type, beds, maxGuests, pricePerNight, available, image ) {
+    constructor( id, hotelId, name, type, beds, maxGuests, pricePerNight, rating, available, image ) {
         this.#id=id;
         this.#hotelId=hotelId;
         this.#name=name;
@@ -77,13 +78,14 @@ class Room {
         this.#beds=beds;
         this.#maxGuests=maxGuests;
         this.#pricePerNight=pricePerNight;
+        this.#rating=rating;
         this.#available=available;
         this.#image=image
     }
 
     //setters & getters
     get id() { return this.#id; }
-    set id( n ) { this.#id = n; }
+    set id(  n) { this.#id = n; }
 
     get hotelId() { return this.#hotelId; }
     set hotelId( n ) { this.#hotelId = n; }
@@ -95,13 +97,16 @@ class Room {
     set type( n ) { this.#type = n; }
 
     get beds() { return this.#beds; }
-    set beds( n ) { this.#beds = n; }
+    set beds(  n) { this.#beds = n; }
 
     get maxGuests() { return this.#maxGuests; }
     set maxGuests( n ) { this.#maxGuests = n; }
 
     get pricePerNight() { return this.#pricePerNight; }
     set pricePerNight( n ) { this.#pricePerNight = n; }
+
+    get rating() { return this.#rating; }
+    set rating(  n) { this.#rating = n; }
 
     get available() { return this.#available; }
     set available( n ) { this.#available = n; }
@@ -193,15 +198,13 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
 }
 //#endregion
 
-//#region define cards makeHotelCard(), displayRooms(), makeRoomCard(), ratingToStars()
+//#region define cards makeHotelCard() and makeRoomCard()
 const makeHotelCard = ( hotel, roomsArray ) => {
-    // $("#roomCards").html( '' );   
-    // $("#headerDiv").html( '' );
     $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
                 <div class="d-flex align-items-stretch">
-                    <img class="card-img-top card-img-bottom card-img imgCoverFit" src="${hotel.image}" alt="a photo of ${hotel.name}">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${hotel.image}" alt="a photo of ${hotel.name}">
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h3 class="card-title" id="">${hotel.name}</h3>
@@ -219,17 +222,15 @@ const makeHotelCard = ( hotel, roomsArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => displayRooms( roomsArray, hotel.id ) );
+    $("#roomsBtn").click( () => makeRoomCards( roomsArray, hotel.id ) );
 }
 
-const displayRooms = ( roomArray, hotelId ) => {
-    // $("#headerDiv").html('<h2>Rooms</h2>');
-
+const makeRoomCards = ( roomArray, hotelId ) => {
     $("#roomCards").html( '' );    
-    console.log("displayRooms");
+    console.log("makeroomcards");
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotelId == room.hotelId ) {//&& room.available ){ //CHANGE - show room, but as unavailable
+        if ( hotelId == room.hotelId && room.available ){
             console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
             $("#roomsBtn").click( bookRoom );
@@ -246,6 +247,11 @@ const makeRoomCard = ( room ) => {
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${room.name}</h5>
+                    <div>
+                    `
+                    cardHTML += ratingToStars( room.rating );
+                    cardHTML += `
+                    </div>
                     <hr class="w100">
                     <p class="card-text">${room.type} room type</p>
                     <p class="card-text">${room.beds} beds</p>  
@@ -288,14 +294,6 @@ const ratingToStars = (rating) => {
 
     return starsOut;
 }
-// #endregion
-
-// #region Book Rooms
-
-
-const bookRoom = ( room ) => { 
-    console.log(`book room ${room.id}`);
-    //open book room modal or offcanvas
-        //should have Hotel: room price
-        //dates & number to book
+    
+const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
