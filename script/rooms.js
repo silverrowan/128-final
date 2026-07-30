@@ -195,6 +195,7 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
 
 //#region define cards makeHotelCard(), displayRooms(), makeRoomCard(), ratingToStars()
 const makeHotelCard = ( hotel, roomsArray ) => {
+    // $("#roomCards").html( '' );   
     // $("#headerDiv").html( '' );
     $("#roomCards").html( '' ); 
     let cardHTML = `       
