@@ -234,10 +234,22 @@ const makeRoomCards = ( roomArray, hotelId ) => {
             console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
             // $("#roomsBtn").click(  );
-            $(`#bookRoom${room.id}`).click( () => bookRoom( room ) );
+            $(`#bookRoom${room.id}`).click( () => openBookModal( room ) );
         }
     }   
 }
+
+const openBookModal = ( room ) => {
+    //instanciate Bootstrap Modal window
+    //window contents
+    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
+    //return booking obj - add to array and return that?
+}
+
+const closeBookModal = () => {}
+const makeBooking = () => {}
+const addBookingToCart = () => {}
+const openCart = () => {}
 
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
