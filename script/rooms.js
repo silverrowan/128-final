@@ -129,8 +129,8 @@ class Booking {
     #stage;
     #timeAdded;
     #timePaid;
-    #subtotal;
-    #adjustsArray;
+    #roomTotal;
+    #adjustPriceBy;
 
     //constructors
     constructor( id, roomID, costPerNight ){
@@ -144,8 +144,8 @@ class Booking {
         this.#stage = "initial";
         this.#timeAdded = new Date();
         this.#timePaid = null;
-        this.#subtotal= null; 
-        this.#adjustsArray=[];
+        this.#roomTotal= null; 
+        this.#adjustPriceBy = 0;
     }
 
     //setters and getters
@@ -170,17 +170,17 @@ class Booking {
     get stage() { return this.#stage; }
     set stage( n ) { this.#stage = n; }
 
-    get subtotal() { return this.#subtotal; }
-    set subtotal( n ) { this.#subtotal = n; }
+    get roomTotal() { return this.#roomTotal; }
+    set roomTotal( n ) { this.#roomTotal = n; }
     
-    get adjustsArray() { return this.#adjustsArray; }
-    set adjustsArray( n ) { this.#adjustsArray = n; }
+    get adjustPriceBy() { return this.#adjustPriceBy; }
+    set adjustPriceBy( n ) { this.#adjustPriceBy = n; }
 
     //additional obj functions
-    calcSubTotal() {
+    calcroomTotal() {
         if ( this.#endDate == null || this.#startDate == null ) { return null; }
-        this.#subtotal = this.#costPerNight * this.calcNights();
-        return this.#subtotal;
+        this.#roomTotal = this.#costPerNight * this.calcNights();
+        return this.#roomTotal;
     }
 
     calcNights() {
@@ -429,7 +429,7 @@ const openBookModal = ( room ) => {
     bookingArray.push( book );
     book.startDate = $('#checkInDate').val();
     book.endDate = $('#checkOutDate').val();
-    book.calcSubTotal();
+    book.calcroomTotal();
     
     //instanciate Bootstrap Modal window
     buildBookingModal( book, room );
@@ -437,17 +437,16 @@ const openBookModal = ( room ) => {
     bookingModal.show();
     
     //listener updates live as inputs entered
-    $('#checkInDate').on('input', () => updateBookModalSubtotal( book ));
-    $('#checkOutDate').on('input', () => updateBookModalSubtotal( book ));
+    $('#checkInDate').on('input', () => updateBookModalroomTotal( book ));
+    $('#checkOutDate').on('input', () => updateBookModalroomTotal( book ));
     //alternative updates when looses focus if theres issues abv
-    // $('#checkInDate').on('change', () => updateBookModalSubtotal( room ))
+    // $('#checkInDate').on('change', () => updateBookModalroomTotal( room ))
 }
 
 const buildBookingModal = ( book, room ) => {
     //get hotel id from '#makeCartEntry'
     let hotelId = $('#hotelTitle').attr('hotelId');
     let hotel = hotelArray[hotelId];
-
 
     let modalHTML = `
         <div class="modal-dialog modal-dialog-centered">
@@ -457,7 +456,7 @@ const buildBookingModal = ( book, room ) => {
                         <h4 class="modal-title">${room.name}</h4>
                         <h5 class="h6 fst-italic">${hotel.name}</h5>
                     </div>
-                    <button type="button" class="btn-close align-self-start" aria-label="Close"></button>
+                    <button type="button" id="closeBtn" class="btn-close align-self-start" aria-label="Close"></button>
                 </div>  
                 <div class="modal-body">    
                     <form id="cartForm" action="" method="POST">
@@ -471,32 +470,35 @@ const buildBookingModal = ( book, room ) => {
                                 <input type="date" id="checkOutDate" name="roomEnd" />
                             </div>
                         </div>
-                        <div id="modalSubtotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
+                        <div id="modalroomTotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary">Cancel</button>
-                    <button type="button" class="btn btn-primary">Book</button>
+                    <button type="button" id="cancelBtn" class="btn btn-outline-secondary">Cancel</button>
+                    <button type="button" id="bookBtn" class="btn btn-primary">Book</button>
                 </div>
             </div>
         </div>
                 `;
-    updateBookModalSubtotal( book );
+    updateBookModalroomTotal( book );
     $("#bookingModal").html( modalHTML );
+    $("#closeBtn").click( () => $("#bookingModal").modal('hide') );
+    $("#cancelBtn").click( () => $("#bookingModal").modal('hide') );
+    $("#bookBtn").click( () => { makeBooking( book ) } );
 }
 
-const updateBookModalSubtotal = ( book ) => {
+const updateBookModalroomTotal = ( book ) => {
     let bookNum = bookingArray.length;
     let numNights = book.calcNights();
     let costPer = book.pricePerNight;
-    let subtotal = book.subtotal;
+    let roomTotal = book.roomTotal;
 
-    let modalSubtotalDivHTML = `
+    let modalroomTotalDivHTML = `
         <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
-        <h5 id="${bookNum}Subtotal" class="h5" >${subtotal}</h5>
+        <h5 id="${bookNum}roomTotal" class="h5" >${roomTotal}</h5>
         `
-    $("#modalSubtotalDiv").html = modalSubtotalDivHTML;
+    $("#modalroomTotalDiv").html = modalroomTotalDivHTML;
 }
 
     
@@ -523,10 +525,12 @@ const cancelLoginX = document.querySelector("#modalX");
 
 
 
-const makeBooking = ( room ) => {
-    console.log(`make booking for room ${room.id}`);
-    closeBookModal();
-    addBookingToCart( room );
+const makeBooking = ( booking ) => {
+    console.log( booking );
+    
+    console.log(`make booking for room ${booking.roomID}`);
+    $("#bookingModal").modal('hide')
+    addBookingToCart( booking );
     openCart();
 }
 
@@ -539,6 +543,8 @@ const addBookingToCart = ( room ) => {
     console.log(`add booking to cart for room ${room.id}`);
     bookingArray.push( room );
 }
+
+let cartArray = []
 
 const openCart = () => {
     console.log(`open cart`);
@@ -553,18 +559,27 @@ const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 
 
 // #region make cart; makeCart() & makeCartEntry()
-const makeCart = ( cartArray ) => {
+const makeCart = ( cart ) => {
     
     let cartHTML = `
         <div id="cartWrapperDiv" class="card justify-content-start align-items-end flex-column">
         <form id="cartForm" action="" method="POST">
             <div id="cartCardsDiv">
         `
+        let fees = 0;
+        let discounts = 0;
+        let subtotal = 0;
         for ( let i = 0 ; i < cartArray.length ; i++ ){
             let room = cartArray[i];
             cartHTML += makeCartEntry( room, i );
+            subtotal += book.roomTotal;
+            if ( room.adjustPriceBy > 0 ) { fees += room.adjustPriceBy; }
+            else if ( room.adjustPriceBy < 0 ) { discounts += room.adjustPriceBy }
             //ATTACH LISTENERS TO REMOVE BUTTONS
         }
+        
+        let taxes = ( subtotal + fees - discounts ) * ( 0.13 );
+        let total = ( subtotal + fees - discounts + taxes ) 
         cartHTML += `
                 </div>
                 <!-- TOTALS -->
@@ -593,7 +608,7 @@ const makeCartEntry = ( room, index ) => {
     let endDate = room.endDate;
     let numberOfNights = room.numberOfNights;
     let costPerNight = room.pricePerNight;
-    let subtotal = room.subtotal;
+    let roomTotal = room.roomTotal;
 
     let hotelName = "hotel.name"; //WHERE HOTEL ID MATCHES ROOM HOTEL ID
 
@@ -612,7 +627,7 @@ const makeCartEntry = ( room, index ) => {
                     <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
                         <p class="${roomNum}-${index}Dates my-0">${startDate} to ${endDate}</p>
                         <p class="${roomNum}-${index}Math my-0">${numberOfNights} x ${costPerNight}<span class="subscr">/night</span></p>
-                        <h5 class="${roomNum}-${index}Subtotal h5 my-1">${subtotal}</h5>
+                        <h5 class="${roomNum}-${index}roomTotal h5 my-1">${roomTotal}</h5>
                     </div>
                 </div>
             </div>
