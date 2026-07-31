@@ -197,23 +197,19 @@ class Booking {
                 this.#stage = "cart"
                 break;
             case cart:
-            case paying:
                 //when click pay
-                if (  ) { // checkout click < xyz time ago; reserve seat
-                    this.#stage = "paying";
-                    //              related  room.available = false;
-                } else {
-                    this.stage = "stalled";
-                    //related room.available=true at switch time
-                }
-                //when click clear
-                this.stage = "cancelled";
-//              related room.available=true at switch time--if not booked by another
-
+                this.#stage = "paying";
+                // related  room.available = false;
                 break;
-            case stalled:
-            case interrupted:
-                if ( )
+            case paying:
+                this.#stage = "paid";
+                break;
+            case paid:
+                this.#stage = "staying"
+                break;
+            case staying:
+                this.#stage = "complete"
+                break;
 
             //should checkout process consider length of holdning room availability in cart?
             //reserved at add to cart, start
