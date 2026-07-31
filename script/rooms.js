@@ -299,6 +299,67 @@ const ratingToStars = (rating) => {
 const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
 
-const makeCartEntry = ( room ) => {
-    
+const makeCart = ( cartArray ) => {
+
+    let cartHTML = `
+        <div id="cartWrapperDiv" class="card justify-content-start align-items-end flex-column">
+        <form id="cartForm" action="" method="POST">
+            <div id="cartCardsDiv">
+        `
+        for ( let i = 0 ; i < cartArray.length ; i++ ){
+            let room = cartArray[i];
+            cartHTML += makeCartEntry( room, i );
+            //ATTACH LISTENERS TO REMOVE BUTTONS
+        }
+        cartHTML += `
+                </div>
+                <!-- TOTALS -->
+                <div id="cartSumLines" class="d-flex flex-column align-items-end mx-3 mb-3">
+                    <p class="h5 my-0">FEES</p>
+                    <p class="h5 my-0">Discounts</p>
+                    <p class="h5 my-0">TAXES</p>
+                    <hr class="w100 my-2 btn-success-outline">
+                    <p class="h5 mt-1 mb-3">TOTAL</p>
+                    <button id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
+                </div>
+
+            </form>
+        </div>
+        `        
+        $("#cartWrapperDiv").html(cartHTML);
+    }
+
+const makeCartEntry = ( room, index ) => {
+    let roomNum = room.id;
+    let roomName = room.name;
+    let hotelId = room.hotelId;
+    let startDate = room.startDate;
+    let endDate = room.endDate;
+    let numberOfNights = room.numberOfNights;
+    let costPerNight = room.pricePerNight;
+    let subtotal = room.subtotal;
+
+    let hotelName = "hotel.name"; //WHERE HOTEL ID MATCHES ROOM HOTEL ID
+
+    roomBookedHTML = `
+            <div class="card m-3 d-flex">
+                <div class="card-body d-flex flex-column justify-content-between"> 
+                    <div class="d-flex justify-content-between mb-0"> 
+                        <button id="removeCartItem${roomNum}-${index}Btn" roomNum="${roomNum}" class="btn btn-outline-secondary btn-sm 
+                                    align-items-start me-5 py-1 px-2">X</button> 
+                        <div>
+                            <h5 id="${roomNum}-${index}Cart" class="inline mb-0" 
+                                    roomNum="${roomNum}">${hotelName} | ${roomName}</h5>
+                            <hr class="my-0">
+                        </div>
+                    </div>
+                    <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
+                        <p class="${roomNum}-${index}Dates my-0">${startDate} to ${endDate}</p>
+                        <p class="${roomNum}-${index}Math my-0">${numberOfNights} x ${costPerNight}<span class="subscr">/night</span></p>
+                        <h5 class="${roomNum}-${index}Subtotal h5 my-1">${subtotal}</h5>
+                    </div>
+                </div>
+            </div>
+            `;
+    return roomBookedHTML; //FORGOT TO INCL CLEAR CART BUTTON
 }
