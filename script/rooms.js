@@ -435,11 +435,16 @@ const openBookModal = ( room ) => {
     buildBookingModal( book, room );
     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
+
+    console.log("in openmodel ");
+    console.log( book );
     
-    //listener updates live as inputs entered
-    $('#checkInDate').on('input', () => updateBookModalroomTotal( book ));
-    $('#checkOutDate').on('input', () => updateBookModalroomTotal( book ));
+    
+    //attach listener to updates as dates updated
     //alternative updates when looses focus if theres issues abv
+    $('#checkInDate').on('change', () => updateBookModalroomTotal( book ));
+    $('#checkOutDate').on('change', () => updateBookModalroomTotal( book ));
+    // $('#checkOutDate').on('input', () => updateBookModalroomTotal( book ));
     // $('#checkInDate').on('change', () => updateBookModalroomTotal( room ))
 }
 
@@ -482,23 +487,41 @@ const buildBookingModal = ( book, room ) => {
         </div>
                 `;
     updateBookModalroomTotal( book );
+    //listen for updates to dates
+    console.log("in updatebookModalTotal ");
+    console.log( book );
+    $("#bookBtn").click( () => { makeBooking( book ) } );
     $("#bookingModal").html( modalHTML );
+
+    //listen for modal buttons
     $("#closeBtn").click( () => $("#bookingModal").modal('hide') );
     $("#cancelBtn").click( () => $("#bookingModal").modal('hide') );
     $("#bookBtn").click( () => { makeBooking( book ) } );
 }
 
 const updateBookModalroomTotal = ( book ) => {
+    console.log( " update book modal room ");
+    
     let bookNum = bookingArray.length;
     let numNights = book.calcNights();
+    console.log( book.startDate + " " + book.endDate);
+    console.log( numNights );
+    
+    
+    
+    if ( numNights == null ){ return; }
     let costPer = book.pricePerNight;
     let roomTotal = book.roomTotal;
 
     let modalroomTotalDivHTML = `
         <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
         <h5 id="${bookNum}roomTotal" class="h5" >${roomTotal}</h5>
-        `
-    $("#modalroomTotalDiv").html = modalroomTotalDivHTML;
+        `;
+        console.log("built html");
+        console.log( modalroomTotalDivHTML );
+        
+        
+    $("#modalroomTotalDiv").html( modalroomTotalDivHTML );
 }
 
     
