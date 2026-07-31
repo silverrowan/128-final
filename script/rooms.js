@@ -133,18 +133,18 @@ class Booking {
     #adjustsArray;
 
     //constructors
-    constructor( id, roomID, customerID, costPerNight, startDate, endDate, stage){
+    constructor( id, roomID, costPerNight ){
         this.#id=id;
         this.#roomID=roomID;
-        this.#customerID=customerID;
+        // this.#customerID=customerID;
         this.#costPerNight=costPerNight;
-        this.#startDate=startDate;
-        this.#endDate=endDate;
+        this.#startDate = null;
+        this.#endDate = null;
         this.#numNights=this.calcNights();
-        this.#stage=stage;
+        this.#stage = "initial";
         this.#timeAdded = new Date();
         this.#timePaid = null;
-        this.#subtotal=this.calcSubtotal();
+        this.#subtotal= null; 
         this.#adjustsArray=[];
     }
 
@@ -177,13 +177,15 @@ class Booking {
     set adjustsArray( n ) { this.#adjustsArray = n; }
 
     //additional obj functions
-    calcSubtotal() {
+    calcSubTotal() {
+        if ( this.#endDate == null || this.#startDate == null ) { return null; }
         this.#subtotal = this.#costPerNight * this.calcNights();
         return this.#subtotal;
     }
 
     calcNights() {
-        return this.#endDate - this.#startDate;
+        if ( this.#endDate == null || this.#startDate == null ) { return null; }
+        else { return this.#endDate - this.#startDate; }
     }
 
     advanceStage() {
@@ -194,7 +196,12 @@ class Booking {
         //      change state to ( prvState + 'cancel' )
         switch ( this.#stage ) {
             case null:
-                this.#stage = "cart"
+                this.#stage = "initial"
+                break;
+            case initial:
+                //when click pay
+                this.#stage = "cart";
+                // related  room.available = false;
                 break;
             case cart:
                 //when click pay
@@ -210,7 +217,6 @@ class Booking {
             case staying:
                 this.#stage = "complete"
                 break;
-
             //should checkout process consider length of holdning room availability in cart?
             //reserved at add to cart, start
         }
@@ -403,22 +409,52 @@ const ratingToStars = (rating) => {
 
 //#region making bookings
 let bookingArray = [];
+
 const openBookModal = ( room ) => {
     console.log(`open book modal for room ${room.id}`);
+    let bookModelElmt = $( '#bookingModal' )[0];
+    console.log( $( '#bookingModal' ) );
+    console.log( bookModelElmt );
+    
+    //create booking obj and assign variables
+    let book = new Booking( bookingArray.length, room.roomID, room.costPerNight );
+    bookingArray.push( book );
+    book.startDate = $('#checkInDate').val();
+    book.endDate = $('#checkOutDate').val();
+    book.calcSubTotal();
+    
     //instanciate Bootstrap Modal window
-    const bookingModal = bootstrap.Modal.getOrCreateInstance('#bookingModal')
-    room.startDate = $('#checkInDate').val();
-    room.endDate = $('#checkOutDate').val();
-    room.calcSubtotal();
-
-    updateBookModalSubtotal( room );
+    const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
+    buildBookingModal( book, room );
+    bookingModal.show();
+    
+    //listener updates live as inputs entered
+    $('#checkInDate').on('input', () => updateBookModalSubtotal( book ));
+    $('#checkOutDate').on('input', () => updateBookModalSubtotal( book ));
+    //alternative updates when looses focus if theres issues abv
+    // $('#checkInDate').on('change', () => updateBookModalSubtotal( room ))
 }
 
-const updateBookModalSubtotal = ( room ) => {
+const buildBookModalFrame = ( book, room, hotel ) => {
+
+    modalHTML = `
+      <div class="modal-body">    
+        <h4>ROOMNAME</h4>
+        <h5>at HotelName</h5>
+        <form id="cartForm" action="" method="POST">
+            <label for="checkInDate">Check In (4pm)</label>
+            <input type="date" required id="checkInDate">
+            <label for="checkOutDate">Check Out (11am)</label>
+            <input type="date" required id="checkOutDate">
+            <div class="d-flex justify-content-between">    
+    `
+}
+
+const updateBookModalSubtotal = ( book ) => {
     let bookNum = bookingArray.length;
-    let numNights;
-    let costPer = room.pricePerNight;
-    let subtotal = room.subtotal;
+    let numNights = book.calcNights();
+    let costPer = book.pricePerNight;
+    let subtotal = book.subtotal;
 
     let modalSubtotalDivHTML = `
         <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
@@ -431,14 +467,12 @@ const updateBookModalSubtotal = ( room ) => {
     //window contents
     //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
     //return booking obj - add to array and return that?
-    makeBooking( room );
-}
-
+    // makeBooking( room );
 
 // #region setup login modal, trigger modal on load; functions showLoginModal(), closeModal();
 // reference & create modal itself
 // const loginModal = document.querySelector('#loginModal');
-const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
+// const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
 //get login form input boxes & values
 const usernameIn = document.querySelector("#userNameIn");
 const userPassIn = document.querySelector("#userPasswordIn");
