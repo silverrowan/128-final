@@ -298,3 +298,7 @@ const ratingToStars = (rating) => {
     
 const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
+
+const makeCartEntry = ( room ) => {
+    
+}
