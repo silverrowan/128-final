@@ -203,7 +203,7 @@ const addCartBtnListener = () => {
 
 //#endregion
 
-//#region define cards makeHotelCard() and makeRoomCard()
+//#region define cards makeHotelCard() and makeRoomCard/s() ratingToStart()
 const makeHotelCard = ( hotel, roomsArray ) => {
     $("#roomCards").html( '' ); 
     let cardHTML = `       
@@ -242,35 +242,6 @@ const makeRoomCards = ( roomArray, hotelId ) => {
             $(`#bookRoom${room.id}`).click( () => openBookModal( room ) );
         }
     }   
-}
-
-const openBookModal = ( room ) => {
-    console.log(`open book modal for room ${room.id}`);
-    //instanciate Bootstrap Modal window
-    //window contents
-    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
-    //return booking obj - add to array and return that?
-    makeBooking( room );
-}
-
-const makeBooking = ( room ) => {
-    console.log(`make booking for room ${room.id}`);
-    closeBookModal();
-    addBookingToCart( room );
-    openCart();
-}
-const closeBookModal = () => {
-    console.log(`close book modal`);
-}
-
-let bookingArray = [];
-const addBookingToCart = ( room ) => {
-    console.log(`add booking to cart for room ${room.id}`);
-    bookingArray.push( room );
-}
-const openCart = () => {
-    console.log(`open cart`);
-    makeCart( );
 }
 
 const makeRoomCard = ( room ) => {
@@ -329,6 +300,39 @@ const ratingToStars = (rating) => {
 
     return starsOut;
 }
+//#endregion
+
+//#region making bookings
+const openBookModal = ( room ) => {
+    console.log(`open book modal for room ${room.id}`);
+    //instanciate Bootstrap Modal window
+    //window contents
+    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
+    //return booking obj - add to array and return that?
+    makeBooking( room );
+}
+
+const makeBooking = ( room ) => {
+    console.log(`make booking for room ${room.id}`);
+    closeBookModal();
+    addBookingToCart( room );
+    openCart();
+}
+const closeBookModal = () => {
+    console.log(`close book modal`);
+}
+
+let bookingArray = [];
+const addBookingToCart = ( room ) => {
+    console.log(`add booking to cart for room ${room.id}`);
+    bookingArray.push( room );
+}
+const openCart = () => {
+    console.log(`open cart`);
+    makeCart( );
+}
+
+
     
 const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
