@@ -140,7 +140,7 @@ class Booking {
         this.#costPerNight=costPerNight;
         this.#startDate = null;
         this.#endDate = null;
-        this.#numNights=this.calcNights();
+        this.#numNights = null;
         this.#stage = "initial";
         this.#timeAdded = new Date();
         this.#timePaid = null;
@@ -184,8 +184,13 @@ class Booking {
     }
 
     calcNights() {
-        if ( this.#endDate == null || this.#startDate == null ) { return null; }
-        else { return this.#endDate - this.#startDate; }
+        if ( this.#endDate == null || this.#startDate == null ) { 
+            this.#numNights = null;
+            return null; 
+        }
+        else {
+            this.#numNights =  this.#endDate - this.#startDate
+            return this.#numNights; }
     }
 
     advanceStage() {
@@ -427,8 +432,8 @@ const openBookModal = ( room ) => {
     book.calcSubTotal();
     
     //instanciate Bootstrap Modal window
-    const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     buildBookingModal( book, room );
+    const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
     
     //listener updates live as inputs entered
@@ -476,7 +481,8 @@ const buildBookingModal = ( book, room ) => {
                 </div>
             </div>
         </div>
-                `
+                `;
+    updateBookModalSubtotal( book );
     $("#bookingModal").html( modalHTML );
 }
 
