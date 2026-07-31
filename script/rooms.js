@@ -196,6 +196,11 @@ const addHotelIcon = ( hotelObj, roomsArray ) => {
     marker.addEventListener("click", () => makeHotelCard( hotelObj, roomsArray ));
     return marker;
 }
+
+const addCartBtnListener = () => {
+    $("#navCartBtn").click( () => openCart() );
+}
+
 //#endregion
 
 //#region define cards makeHotelCard() and makeRoomCard()
@@ -240,16 +245,33 @@ const makeRoomCards = ( roomArray, hotelId ) => {
 }
 
 const openBookModal = ( room ) => {
+    console.log(`open book modal for room ${room.id}`);
     //instanciate Bootstrap Modal window
     //window contents
     //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
     //return booking obj - add to array and return that?
+    makeBooking( room );
 }
 
-const closeBookModal = () => {}
-const makeBooking = () => {}
-const addBookingToCart = () => {}
-const openCart = () => {}
+const makeBooking = ( room ) => {
+    console.log(`make booking for room ${room.id}`);
+    closeBookModal();
+    addBookingToCart( room );
+    openCart();
+}
+const closeBookModal = () => {
+    console.log(`close book modal`);
+}
+
+let bookingArray = [];
+const addBookingToCart = ( room ) => {
+    console.log(`add booking to cart for room ${room.id}`);
+    bookingArray.push( room );
+}
+const openCart = () => {
+    console.log(`open cart`);
+    makeCart( );
+}
 
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
@@ -312,7 +334,7 @@ const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
 
 const makeCart = ( cartArray ) => {
-
+    
     let cartHTML = `
         <div id="cartWrapperDiv" class="card justify-content-start align-items-end flex-column">
         <form id="cartForm" action="" method="POST">
@@ -326,13 +348,15 @@ const makeCart = ( cartArray ) => {
         cartHTML += `
                 </div>
                 <!-- TOTALS -->
-                <div id="cartSumLines" class="d-flex flex-column align-items-end mx-3 mb-3">
-                    <p class="h5 my-0">FEES</p>
-                    <p class="h5 my-0">Discounts</p>
-                    <p class="h5 my-0">TAXES</p>
+                <div id="cartSumLines" class="d-flex flex-column align-items-end 
+                        mx-3 mb-3">
+                    <p class="h5 my-0">Fees: ${fees}</p>
+                    <p class="h5 my-0">Discounts: ${discounts}</p>
+                    <p class="h5 my-0">Taxes: ${taxes}</p>
                     <hr class="w100 my-2 btn-success-outline">
-                    <p class="h5 mt-1 mb-3">TOTAL</p>
-                    <button id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
+                    <p class="h5 mt-1 mb-3">Total: ${total}</p>
+                    <button id="cartCheckoutBtn" class="btn btn-lg 
+                            btn-success">CHECKOUT</button>
                 </div>
 
             </form>
