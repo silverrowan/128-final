@@ -74,6 +74,8 @@
         Provide total (cost?) of rooms booked and a subtotal
         Items can be removed from the cart
         The cart can be emptied
+    don't worry about dates - if a room is booked, its not available
+    booking is reserved if added to cart - no timeout
 
 # FUNCTIONAL BOOKING OR CHECKOUT SYSTEM
 **Validate all form fields and provide meaningful user feedback**
@@ -89,9 +91,9 @@
  
 # WEATHER AND PRICING LOGIC
     Weather data must affect your dashboard in a meaningful way
-        Example: if it is raining at the selected hotel location, a resort or service fee is added
-        Example: if the user books 3 or more nights, apply a discount
-    Any pricing logic used must make sense and be displayed clearly to the user
+        adding weather icon or text satisfies this requirement
+    Pricing logic is not needed
+        Any pricing logic used must make sense and be displayed clearly to the user
 
 # --------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------
