@@ -1,5 +1,16 @@
 [
   {
+    "id": 0,
+    "name": "Harbour Grand Victoria Duplicate",
+    "city": "Victoria",
+    "country": "Canada",
+    "lat": 48.4284,
+    "lng": -123.3656,
+    "rating": 4.7,
+    "description": "Oceanfront hotel with spa access and downtown views.",
+    "image": "img/harborVictoria.jpg"
+  },
+  {
     "id": 1,
     "name": "Harbour Grand Victoria",
     "city": "Victoria",

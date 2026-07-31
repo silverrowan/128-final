@@ -224,7 +224,10 @@ class Booking {
 }
 // #endregion
 
-// #region getting and parsing JSON functions: get_Info, make_Array, _ = Hotel or Room
+// #region getting and parsing JSON functions: get_Info, make_Array, _ = Hotel or Room, related arrays
+let hotelArray = [];
+let roomArray = [];
+
 const getHotelInfo = async () => {
     const hotelLocation = "/public/hotels.json";
     try {
@@ -257,6 +260,8 @@ const makeHotelArray = ( hotelsRaw ) => {
         hotelArray[i] = new Hotel( h.id, h.name, h.city, h.country, 
                 h.lat, h.lng, h.rating, h.description, h.image );
     }
+    console.log( "inside make hotel array" );
+    console.log( hotelArray );
     return hotelArray;
 }
 
@@ -268,37 +273,36 @@ const makeRoomArray = ( roomsRaw ) => {
         roomArray[i] = new Room( r.id, r.hotelId, r.name, r.type, r.beds, 
             r.maxGuests, r.pricePerNight, r.rating, r.available, r.image );
     }
+    console.log( "inside make room array" );
+    console.log( roomArray );
     return roomArray;    
 }
 //#endregion
 
 //#region Initial on load + addHotelsToMap() & addHotelIcon() + cartListener: 
 // Add Hotel Icons to the map (map created in map.js script)
+
 $( async function() {
     const hotelsRaw = await getHotelInfo();
     const roomsRaw = await getRoomInfo();
-    console.log( hotelsRaw );
-    console.log( roomsRaw );
 
-    let hotelsArray = makeHotelArray( hotelsRaw )
-    let roomsArray = makeRoomArray( roomsRaw )
+    hotelArray = makeHotelArray( hotelsRaw )
+    roomArray = makeRoomArray( roomsRaw )
 
-    addHotelsToMap( hotelsArray, roomsArray );
-
-    
+    addHotelsToMap( hotelArray, roomArray );   
 });
 
-const addHotelsToMap = ( hotelsArray, roomsArray ) => {
+const addHotelsToMap = ( hotelArray, roomArray ) => {
     let markerArray = [];
-    for (let i = 0; i < hotelsArray.length; i++) {
-        markerArray[i] = addHotelIcon( hotelsArray[i], roomsArray );
+    for (let i = 0; i < hotelArray.length; i++) {
+        markerArray[i] = addHotelIcon( hotelArray[i], roomArray );
     }
     return markerArray;
 }
 
-const addHotelIcon = ( hotelObj, roomsArray ) => {  
+const addHotelIcon = ( hotelObj, roomArray ) => {  
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
-    marker.addEventListener("click", () => makeHotelCard( hotelObj, roomsArray ));
+    marker.addEventListener("click", () => makeHotelCard( hotelObj, roomArray ));
     return marker;
 }
 
@@ -309,7 +313,7 @@ const addCartBtnListener = () => {
 //#endregion
 
 //#region define cards makeHotelCard() and makeRoomCard/s() ratingToStart()
-const makeHotelCard = ( hotel, roomsArray ) => {
+const makeHotelCard = ( hotel, roomArray ) => {
     $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
@@ -317,7 +321,7 @@ const makeHotelCard = ( hotel, roomsArray ) => {
                     <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${hotel.image}" alt="a photo of ${hotel.name}">
                 </div>	
                 <div class="card-body d-flex flex-column">
-                    <h3 class="card-title" id="">${hotel.name}</h3>
+                    <h3 class="card-title" id="hotelTitle" hotelId="${hotel.id}">${hotel.name}</h3>
                     <div class="flex-row">
                     `
     cardHTML += ratingToStars( hotel.rating );
@@ -332,7 +336,7 @@ const makeHotelCard = ( hotel, roomsArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => makeRoomCards( roomsArray, hotel.id ) );
+    $("#roomsBtn").click( () => makeRoomCards( roomArray, hotel.id ) );
 }
 
 const makeRoomCards = ( roomArray, hotelId ) => {
@@ -413,7 +417,6 @@ let bookingArray = [];
 const openBookModal = ( room ) => {
     console.log(`open book modal for room ${room.id}`);
     let bookModelElmt = $( '#bookingModal' )[0];
-    console.log( $( '#bookingModal' ) );
     console.log( bookModelElmt );
     
     //create booking obj and assign variables
@@ -435,19 +438,46 @@ const openBookModal = ( room ) => {
     // $('#checkInDate').on('change', () => updateBookModalSubtotal( room ))
 }
 
-const buildBookModalFrame = ( book, room, hotel ) => {
+const buildBookingModal = ( book, room ) => {
+    //get hotel id from '#makeCartEntry'
+    let hotelId = $('#hotelTitle').attr('hotelId');
+    let hotel = hotelArray[hotelId];
 
-    modalHTML = `
-      <div class="modal-body">    
-        <h4>ROOMNAME</h4>
-        <h5>at HotelName</h5>
-        <form id="cartForm" action="" method="POST">
-            <label for="checkInDate">Check In (4pm)</label>
-            <input type="date" required id="checkInDate">
-            <label for="checkOutDate">Check Out (11am)</label>
-            <input type="date" required id="checkOutDate">
-            <div class="d-flex justify-content-between">    
-    `
+
+    let modalHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header flex-row justify-space-between">
+                    <div class="flex-column align-start">
+                        <h4 class="modal-title">${room.name}</h4>
+                        <h5 class="h6 fst-italic">${hotel.name}</h5>
+                    </div>
+                    <button type="button" class="btn-close align-self-start" aria-label="Close"></button>
+                </div>  
+                <div class="modal-body">    
+                    <form id="cartForm" action="" method="POST">
+                        <div class="cartItemDateDiv d-flex justify-content-center mb-2">
+                            <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
+                                <label for="checkInDate">Check In (4pm)</label>
+                                <input type="date" id="checkInDate" name="roomStart" />
+                            </div>
+                            <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
+                                <label for="checkOutDate">Check Out (11am)</label>
+                                <input type="date" id="checkOutDate" name="roomEnd" />
+                            </div>
+                        </div>
+                        <div id="modalSubtotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary">Cancel</button>
+                    <button type="button" class="btn btn-primary">Book</button>
+                </div>
+            </div>
+        </div>
+                `
+    $("#bookingModal").html( modalHTML );
 }
 
 const updateBookModalSubtotal = ( book ) => {
@@ -513,7 +543,10 @@ const openCart = () => {
     
 const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
 }
+// #endregion
 
+
+// #region make cart; makeCart() & makeCartEntry()
 const makeCart = ( cartArray ) => {
     
     let cartHTML = `
@@ -580,3 +613,4 @@ const makeCartEntry = ( room, index ) => {
             `;
     return roomBookedHTML; //FORGOT TO INCL CLEAR CART BUTTON
 }
+// #endregion
