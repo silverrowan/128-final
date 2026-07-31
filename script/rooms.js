@@ -106,7 +106,7 @@ class Room {
     set pricePerNight( n ) { this.#pricePerNight = n; }
 
     get rating() { return this.#rating; }
-    set rating(  n) { this.#rating = n; }
+    set rating(  n) { this.#rating = n; };
 
     get available() { return this.#available; }
     set available( n ) { this.#available = n; }
@@ -115,6 +115,110 @@ class Room {
     set image( n ) { this.#image = n; }
 
     //additional obj functions    
+}
+
+// Setting up Booking Class
+class Booking {
+    #id;
+    #roomID;
+    #customerID;
+    #costPerNight;
+    #startDate;
+    #endDate;
+    #numNights;
+    #stage;
+    #timeAdded;
+    #timePaid;
+    #subtotal;
+    #adjustsArray;
+
+    //constructors
+    constructor( id, roomID, customerID, costPerNight, startDate, endDate, stage){
+        this.#id=id;
+        this.#roomID=roomID;
+        this.#customerID=customerID;
+        this.#costPerNight=costPerNight;
+        this.#startDate=startDate;
+        this.#endDate=endDate;
+        this.#numNights=this.calcNights();
+        this.#stage=stage;
+        this.#timeAdded = new Date();
+        this.#timePaid = null;
+        this.#subtotal=this.calcSubtotal();
+        this.#adjustsArray=[];
+    }
+
+    //setters and getters
+    get id() { return this.#id; }
+    set id( n ) { this.#id = n; }
+    
+    get roomID() { return this.#roomID; }
+    set roomID( n ) { this.#roomID = n; }
+
+    get customerID() { return this.#customerID; }
+    set customerID( n ) { this.#customerID = n; }
+    
+    get costPerNight() { return this.#costPerNight; }
+    set costPerNight( n ) { this.#costPerNight = n; }
+    
+    get startDate() { return this.#startDate; }
+    set startDate( n ) { this.#startDate = n; }
+
+    get endDate() { return this.#endDate; }
+    set endDate( n ) { this.#endDate = n; }
+    
+    get stage() { return this.#stage; }
+    set stage( n ) { this.#stage = n; }
+
+    get subtotal() { return this.#subtotal; }
+    set subtotal( n ) { this.#subtotal = n; }
+    
+    get adjustsArray() { return this.#adjustsArray; }
+    set adjustsArray( n ) { this.#adjustsArray = n; }
+
+    //additional obj functions
+    calcSubtotal() {
+        this.#subtotal = this.#costPerNight * this.calcNights();
+        return this.#subtotal;
+    }
+
+    calcNights() {
+        return this.#endDate - this.#startDate;
+    }
+
+    advanceStage() {
+        // if customer clicked remove/cancel then
+        //      if cart/paying then make room available else leave along
+                // if cancelCheckout change state to interrupted
+                // if cancel remove change state to ( prvState + 'cancel' )
+        //      change state to ( prvState + 'cancel' )
+        switch ( this.#stage ) {
+            case null:
+                this.#stage = "cart"
+                break;
+            case cart:
+            case paying:
+                //when click pay
+                if (  ) { // checkout click < xyz time ago; reserve seat
+                    this.#stage = "paying";
+                    //              related  room.available = false;
+                } else {
+                    this.stage = "stalled";
+                    //related room.available=true at switch time
+                }
+                //when click clear
+                this.stage = "cancelled";
+//              related room.available=true at switch time--if not booked by another
+
+                break;
+            case stalled:
+            case interrupted:
+                if ( )
+
+            //should checkout process consider length of holdning room availability in cart?
+            //reserved at add to cart, start
+        }
+    }
 }
 // #endregion
 
@@ -166,8 +270,7 @@ const makeRoomArray = ( roomsRaw ) => {
 }
 //#endregion
 
-
-//#region Initial on load + addHotelsToMap() & addHotelIcon(): 
+//#region Initial on load + addHotelsToMap() & addHotelIcon() + cartListener: 
 // Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
     const hotelsRaw = await getHotelInfo();
@@ -303,14 +406,56 @@ const ratingToStars = (rating) => {
 //#endregion
 
 //#region making bookings
+let bookingArray = [];
 const openBookModal = ( room ) => {
     console.log(`open book modal for room ${room.id}`);
     //instanciate Bootstrap Modal window
+    const bookingModal = bootstrap.Modal.getOrCreateInstance('#bookingModal')
+    room.startDate = $('#checkInDate').val();
+    room.endDate = $('#checkOutDate').val();
+    room.calcSubtotal();
+
+    updateBookModalSubtotal( room );
+}
+
+const updateBookModalSubtotal = ( room ) => {
+    let bookNum = bookingArray.length;
+    let numNights;
+    let costPer = room.pricePerNight;
+    let subtotal = room.subtotal;
+
+    let modalSubtotalDivHTML = `
+        <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
+        <h5 id="${bookNum}Subtotal" class="h5" >${subtotal}</h5>
+        `
+    $("#modalSubtotalDiv").html = modalSubtotalDivHTML;
+}
+
+    
     //window contents
     //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
     //return booking obj - add to array and return that?
     makeBooking( room );
 }
+
+
+// #region setup login modal, trigger modal on load; functions showLoginModal(), closeModal();
+// reference & create modal itself
+// const loginModal = document.querySelector('#loginModal');
+const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
+//get login form input boxes & values
+const usernameIn = document.querySelector("#userNameIn");
+const userPassIn = document.querySelector("#userPasswordIn");
+const loginErrorMsg = document.querySelector("#incorrect");
+//Get login form buttons & add listenters
+const enterLogin = document.querySelector("#loginModalButton");
+const cancelLogin = document.querySelector("#loginCancelButton");
+const cancelLoginX = document.querySelector("#modalX");
+
+
+
+
+
 
 const makeBooking = ( room ) => {
     console.log(`make booking for room ${room.id}`);
@@ -318,15 +463,17 @@ const makeBooking = ( room ) => {
     addBookingToCart( room );
     openCart();
 }
+
 const closeBookModal = () => {
     console.log(`close book modal`);
 }
 
-let bookingArray = [];
+
 const addBookingToCart = ( room ) => {
     console.log(`add booking to cart for room ${room.id}`);
     bookingArray.push( room );
 }
+
 const openCart = () => {
     console.log(`open cart`);
     makeCart( );
