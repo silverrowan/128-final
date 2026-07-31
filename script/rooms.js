@@ -233,7 +233,8 @@ const makeRoomCards = ( roomArray, hotelId ) => {
         if ( hotelId == room.hotelId && room.available ){
             console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
-            $("#roomsBtn").click( bookRoom );
+            // $("#roomsBtn").click(  );
+            $(`#bookRoom${room.id}`).click( () => bookRoom( room ) );
         }
     }   
 }
