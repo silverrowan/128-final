@@ -1,4 +1,7 @@
 "use strict";
+const isBlank = value => value === null || value === undefined || value === '';
+const isNotNaN = value => !( isNaN(value) || value == null || value == undefined || value == '') ; 
+
 // #region Setting up Classes
 // Setting up Hotel Class
 class Hotel {
@@ -178,19 +181,25 @@ class Booking {
 
     //additional obj functions
     calcroomTotal() {
-        if ( this.#endDate == null || this.#startDate == null ) { return null; }
+        if ( isNotNaN( this.#endDate ) || isNotNaN( this.#startDate ) ) { 
+            return null; 
+        }
         this.#roomTotal = this.#costPerNight * this.calcNights();
         return this.#roomTotal;
     }
 
     calcNights() {
-        if ( this.#endDate == null || this.#startDate == null ) { 
+        if ( !isNotNaN( this.#endDate ) || !isNotNaN( this.#startDate ) ) { 
             this.#numNights = null;
             return null; 
         }
         else {
-            this.#numNights =  this.#endDate - this.#startDate
-            return this.#numNights; }
+            let startMSeconds = this.#startDate.valueOf();
+            let endMSeconds = this.#endDate.valueOf();
+            this.#numNights =  endMSeconds - startMSeconds; //difference in milliseconds
+            this.#numNights = this.#numNights / ( 1000 * 60 * 60 * 24 ); //convert to days
+            return this.#numNights; 
+        }
     }
 
     advanceStage() {
@@ -427,8 +436,7 @@ const openBookModal = ( room ) => {
     //create booking obj and assign variables
     let book = new Booking( bookingArray.length, room.roomID, room.costPerNight );
     bookingArray.push( book );
-    book.startDate = $('#checkInDate').val();
-    book.endDate = $('#checkOutDate').val();
+    
     book.calcroomTotal();
     
     //instanciate Bootstrap Modal window
@@ -501,17 +509,18 @@ const buildBookingModal = ( book, room ) => {
 
 const updateBookModalroomTotal = ( book ) => {
     console.log( " update book modal room ");
+    console.log( book );
     
     let bookNum = bookingArray.length;
-    let numNights = book.calcNights();
-    console.log( book.startDate + " " + book.endDate);
-    console.log( numNights );
-    
-    
-    
+    book.startDate = new Date( $('#checkInDate').val() );
+    book.endDate = new Date( $('#checkOutDate').val() );
+
+    let numNights = book.calcNights();    
     if ( numNights == null ){ return; }
+
     let costPer = book.pricePerNight;
     let roomTotal = book.roomTotal;
+    console.log( `cost per night: ${costPer}, total: ${roomTotal}` );
 
     let modalroomTotalDivHTML = `
         <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
@@ -519,34 +528,9 @@ const updateBookModalroomTotal = ( book ) => {
         `;
         console.log("built html");
         console.log( modalroomTotalDivHTML );
-        
-        
+    
     $("#modalroomTotalDiv").html( modalroomTotalDivHTML );
 }
-
-    
-    //window contents
-    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
-    //return booking obj - add to array and return that?
-    // makeBooking( room );
-
-// #region setup login modal, trigger modal on load; functions showLoginModal(), closeModal();
-// reference & create modal itself
-// const loginModal = document.querySelector('#loginModal');
-// const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
-//get login form input boxes & values
-const usernameIn = document.querySelector("#userNameIn");
-const userPassIn = document.querySelector("#userPasswordIn");
-const loginErrorMsg = document.querySelector("#incorrect");
-//Get login form buttons & add listenters
-const enterLogin = document.querySelector("#loginModalButton");
-const cancelLogin = document.querySelector("#loginCancelButton");
-const cancelLoginX = document.querySelector("#modalX");
-
-
-
-
-
 
 const makeBooking = ( booking ) => {
     console.log( booking );
@@ -561,11 +545,30 @@ const closeBookModal = () => {
     console.log(`close book modal`);
 }
 
-
 const addBookingToCart = ( room ) => {
     console.log(`add booking to cart for room ${room.id}`);
     bookingArray.push( room );
 }
+
+// #endregion
+    
+    //window contents
+    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
+    //return booking obj - add to array and return that?
+    // makeBooking( room );
+
+// #region cart offCanvase & functions | makeCart() & makeCartEntry()
+// reference & create modal itself
+// const loginModal = document.querySelector('#loginModal');
+// const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
+//get login form input boxes & values
+// const usernameIn = document.querySelector("#userNameIn");
+// const userPassIn = document.querySelector("#userPasswordIn");
+// const loginErrorMsg = document.querySelector("#incorrect");
+//Get login form buttons & add listenters
+// const enterLogin = document.querySelector("#loginModalButton");
+// const cancelLogin = document.querySelector("#loginCancelButton");
+// const cancelLoginX = document.querySelector("#modalX");
 
 let cartArray = []
 
@@ -574,16 +577,7 @@ const openCart = () => {
     makeCart( );
 }
 
-
-    
-const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
-}
-// #endregion
-
-
-// #region make cart; makeCart() & makeCartEntry()
 const makeCart = ( cart ) => {
-    
     let cartHTML = `
         <div id="cartWrapperDiv" class="card justify-content-start align-items-end flex-column">
         <form id="cartForm" action="" method="POST">
