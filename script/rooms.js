@@ -274,8 +274,6 @@ const makeHotelArray = ( hotelsRaw ) => {
         hotelArray[i] = new Hotel( h.id, h.name, h.city, h.country, 
                 h.lat, h.lng, h.rating, h.description, h.image );
     }
-    console.log( "inside make hotel array" );
-    console.log( hotelArray );
     return hotelArray;
 }
 
@@ -287,8 +285,6 @@ const makeRoomArray = ( roomsRaw ) => {
         roomArray[i] = new Room( r.id, r.hotelId, r.name, r.type, r.beds, 
             r.maxGuests, r.pricePerNight, r.rating, r.available, r.image );
     }
-    console.log( "inside make room array" );
-    console.log( roomArray );
     return roomArray;    
 }
 //#endregion
@@ -355,11 +351,9 @@ const makeHotelCard = ( hotel, roomArray ) => {
 
 const makeRoomCards = ( roomArray, hotelId ) => {
     $("#roomCards").html( '' );    
-    console.log("makeroomcards");
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
         if ( hotelId == room.hotelId && room.available ){
-            console.log( "id match");
             $("#roomCards").append( makeRoomCard( room ) );
             // $("#roomsBtn").click(  );
             $(`#bookRoom${room.id}`).click( () => openBookModal( room ) );
@@ -431,12 +425,8 @@ let bookingArray = [];
 const openBookModal = ( room ) => {
     console.log(`open book modal for room ${room.id}`);
     let bookModelElmt = $( '#bookingModal' )[0];
-    console.log( bookModelElmt );
-    console.log( room );
     
     //create booking obj and assign variables
-    console.log(`arrayLength: ${bookingArray.length}, roomID: ${room.id}, costPerNight: ${room.pricePerNight}` );
-    
     let book = new Booking( bookingArray.length, room.id, room.pricePerNight );
     bookingArray.push( book );
     
@@ -446,13 +436,8 @@ const openBookModal = ( room ) => {
     buildBookingModal( book, room );
     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
-
-    console.log("in openmodel ");
-    console.log( book );
-    
     
     //attach listener to updates as dates updated
-    //alternative updates when looses focus if theres issues abv
     $('#checkInDate').on('change', () => updateBookModalroomTotal( book ));
     $('#checkOutDate').on('change', () => updateBookModalroomTotal( book ));
 }
@@ -497,8 +482,6 @@ const buildBookingModal = ( book, room ) => {
                 `;
     updateBookModalroomTotal( book );
     //listen for updates to dates
-    console.log("in updatebookModalTotal ");
-    console.log( book );
     $("#bookBtn").click( () => { makeBooking( book ) } );
     $("#bookingModal").html( modalHTML );
 
@@ -508,9 +491,7 @@ const buildBookingModal = ( book, room ) => {
     $("#bookBtn").click( () => { makeBooking( book ) } );
 }
 
-const updateBookModalroomTotal = ( book ) => {
-    console.log( " update book modal room ");
-    
+const updateBookModalroomTotal = ( book ) => {  
     let bookNum = bookingArray.length;
     book.startDate = new Date( $('#checkInDate').val() );
     book.endDate = new Date( $('#checkOutDate').val() );
@@ -525,23 +506,17 @@ const updateBookModalroomTotal = ( book ) => {
         <p id="${bookNum}Math" class="">${numNights} x ${costPer}/night</p>
         <h5 id="${bookNum}roomTotal" class="h5" >${roomTotal}</h5>
         `;
-        console.log("built html");
-        console.log( modalroomTotalDivHTML );
     
     $("#modalroomTotalDiv").html( modalroomTotalDivHTML );
 }
 
 const makeBooking = ( booking ) => {
     console.log( booking );
-    
     console.log(`make booking for room ${booking.roomID}`);
+    
     $("#bookingModal").modal('hide')
     addBookingToCart( booking );
     openCart();
-}
-
-const closeBookModal = () => {
-    console.log(`close book modal`);
 }
 
 const addBookingToCart = ( room ) => {
@@ -573,7 +548,10 @@ let cartArray = []
 
 const openCart = () => {
     console.log(`open cart`);
-    makeCart( );
+    console.log( bootstrap );
+    const offcanvasElmt = document.querySelector('#cartWrapperDiv');
+    const offcanvasBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+    offcanvasBS.show();
 }
 
 const makeCart = ( cart ) => {
