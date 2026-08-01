@@ -180,8 +180,8 @@ class Booking {
     set adjustPriceBy( n ) { this.#adjustPriceBy = n; }
 
     //additional obj functions
-    calcroomTotal() {
-        if ( isNotNaN( this.#endDate ) || isNotNaN( this.#startDate ) ) { 
+    calcRoomTotal() {
+        if ( !isNotNaN( this.#endDate ) || !isNotNaN( this.#startDate ) ) { 
             return null; 
         }
         this.#roomTotal = this.#costPerNight * this.calcNights();
@@ -432,12 +432,15 @@ const openBookModal = ( room ) => {
     console.log(`open book modal for room ${room.id}`);
     let bookModelElmt = $( '#bookingModal' )[0];
     console.log( bookModelElmt );
+    console.log( room );
     
     //create booking obj and assign variables
-    let book = new Booking( bookingArray.length, room.roomID, room.costPerNight );
+    console.log(`arrayLength: ${bookingArray.length}, roomID: ${room.id}, costPerNight: ${room.pricePerNight}` );
+    
+    let book = new Booking( bookingArray.length, room.id, room.pricePerNight );
     bookingArray.push( book );
     
-    book.calcroomTotal();
+    book.calcRoomTotal();
     
     //instanciate Bootstrap Modal window
     buildBookingModal( book, room );
@@ -452,8 +455,6 @@ const openBookModal = ( room ) => {
     //alternative updates when looses focus if theres issues abv
     $('#checkInDate').on('change', () => updateBookModalroomTotal( book ));
     $('#checkOutDate').on('change', () => updateBookModalroomTotal( book ));
-    // $('#checkOutDate').on('input', () => updateBookModalroomTotal( book ));
-    // $('#checkInDate').on('change', () => updateBookModalroomTotal( room ))
 }
 
 const buildBookingModal = ( book, room ) => {
@@ -509,7 +510,6 @@ const buildBookingModal = ( book, room ) => {
 
 const updateBookModalroomTotal = ( book ) => {
     console.log( " update book modal room ");
-    console.log( book );
     
     let bookNum = bookingArray.length;
     book.startDate = new Date( $('#checkInDate').val() );
@@ -518,12 +518,11 @@ const updateBookModalroomTotal = ( book ) => {
     let numNights = book.calcNights();    
     if ( numNights == null ){ return; }
 
-    let costPer = book.pricePerNight;
-    let roomTotal = book.roomTotal;
-    console.log( `cost per night: ${costPer}, total: ${roomTotal}` );
+    let costPer = book.costPerNight;
+    let roomTotal = book.calcRoomTotal();
 
     let modalroomTotalDivHTML = `
-        <p id="${bookNum}Math" class="">${numNights} x ${costPer}}/night</p>
+        <p id="${bookNum}Math" class="">${numNights} x ${costPer}/night</p>
         <h5 id="${bookNum}roomTotal" class="h5" >${roomTotal}</h5>
         `;
         console.log("built html");
