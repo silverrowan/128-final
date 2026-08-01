@@ -124,6 +124,7 @@ class Room {
 class Booking {
     #id;
     #roomID;
+    #hotelID;
     #customerID;
     #costPerNight;
     #startDate;
@@ -137,10 +138,10 @@ class Booking {
 
     //constructors
     constructor( id, roomID, costPerNight ){
-        this.#id=id;
-        this.#roomID=roomID;
-        // this.#customerID=customerID;
-        this.#costPerNight=costPerNight;
+        this.#id = id;
+        this.#roomID = roomID;
+        this.#hotelID = null;
+        this.#costPerNight = costPerNight;
         this.#startDate = null;
         this.#endDate = null;
         this.#numNights = null;
@@ -157,6 +158,9 @@ class Booking {
     
     get roomID() { return this.#roomID; }
     set roomID( n ) { this.#roomID = n; }
+
+    get hotelID() { return this.#hotelID; }
+    set hotelID( n ) { this.#hotelID = n; }
 
     get customerID() { return this.#customerID; }
     set customerID( n ) { this.#customerID = n; }
@@ -428,6 +432,7 @@ const openBookModal = ( room ) => {
     
     //create booking obj and assign variables
     let book = new Booking( bookingArray.length, room.id, room.pricePerNight );
+    book.hotelId = room.hotelId;
     bookingArray.push( book );
     
     book.calcRoomTotal();
@@ -532,7 +537,7 @@ const addBookingToCart = ( room ) => {
     // makeBooking( room );
 
 // #region cart offCanvase & functions | makeCart() & makeCartEntry()
-// reference & create modal itself
+// reference & create modal itselfoffcanvase
 // const loginModal = document.querySelector('#loginModal');
 // const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
 //get login form input boxes & values
@@ -544,11 +549,10 @@ const addBookingToCart = ( room ) => {
 // const cancelLogin = document.querySelector("#loginCancelButton");
 // const cancelLoginX = document.querySelector("#modalX");
 
-let cartArray = []
+let cartArray = [];
 
 const openCart = () => {
     console.log(`open cart`);
-    console.log( bootstrap );
     const offcanvasElmt = document.querySelector('#cartWrapperDiv');
     const offcanvasBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
     offcanvasBS.show();
@@ -556,55 +560,81 @@ const openCart = () => {
 
 const makeCart = ( cart ) => {
     let cartHTML = `
-        <div id="cartWrapperDiv" class="card justify-content-start align-items-end flex-column">
         <form id="cartForm" action="" method="POST">
-            <div id="cartCardsDiv">
+                <div id="cartCardsDiv">
+
         `
-        let fees = 0;
-        let discounts = 0;
-        let subtotal = 0;
-        for ( let i = 0 ; i < cartArray.length ; i++ ){
-            let room = cartArray[i];
-            cartHTML += makeCartEntry( room, i );
-            subtotal += book.roomTotal;
-            if ( room.adjustPriceBy > 0 ) { fees += room.adjustPriceBy; }
-            else if ( room.adjustPriceBy < 0 ) { discounts += room.adjustPriceBy }
-            //ATTACH LISTENERS TO REMOVE BUTTONS
-        }
-        
-        let taxes = ( subtotal + fees - discounts ) * ( 0.13 );
-        let total = ( subtotal + fees - discounts + taxes ) 
+    let fees = 0;
+    let discounts = 0;
+    let subtotal = 0;
+    for ( let i = 0 ; i < cartArray.length ; i++ ){
+        let book = cartArray[i];
+        cartHTML += makeCartEntry( book, i );
+        subtotal += book.roomTotal;
+        if ( book.adjustPriceBy > 0 ) { fees += book.adjustPriceBy; }
+        else if ( book.adjustPriceBy < 0 ) { discounts += book.adjustPriceBy }
+
+    let hotel = hotelArray[book.hotelID];
+        //ATTACH LISTENERS TO REMOVE BUTTONS
         cartHTML += `
+            <!-- EACH ITEM -->
+            <div class="card m-3 d-flex">
+                <div class="card-body d-flex flex-column justify-content-between"> 
+                    <div class="d-flex justify-content-between mb-0"> 
+                        <button id="removeCartItem${i}Btn" cartItem="${i}" class="btn btn-outline-secondary 
+                        btn-sm align-items-start me-5 py-1 px-2">X</button> 
+                        <div>
+                            <h5 class="inline mb-0">${hotel.hotelName} | ${book.name}</h5>
+                            <hr class="my-0">
+                        </div>
+                    </div>
+                    <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
+                        <p class="my-0">${book.startDate} to ${book.endDate}</p>
+                        <p class="my-0">${book.numberOfNights} x $${book.pricePerNight.toFixed(2)}<span class="subscr">/night</span></p>
+                        <h5 class="my-1">${book.roomTotal}</h5>
+                    </div>
                 </div>
-                <!-- TOTALS -->
-                <div id="cartSumLines" class="d-flex flex-column align-items-end 
-                        mx-3 mb-3">
-                    <p class="h5 my-0">Fees: ${fees}</p>
-                    <p class="h5 my-0">Discounts: ${discounts}</p>
-                    <p class="h5 my-0">Taxes: ${taxes}</p>
-                    <hr class="w100 my-2 btn-success-outline">
-                    <p class="h5 mt-1 mb-3">Total: ${total}</p>
-                    <button id="cartCheckoutBtn" class="btn btn-lg 
-                            btn-success">CHECKOUT</button>
-                </div>
-
-            </form>
-        </div>
-        `        
-        $("#cartWrapperDiv").html(cartHTML);
+            </div>
+            `
     }
+        
+    let taxes = ( subtotal + fees - discounts ) * ( 0.13 );
+    let total = ( subtotal + fees - discounts + taxes ) 
+    cartHTML += `
+            </div>
+            <!-- TOTALS -->
+            <div id="cartSumLines" class="d-flex flex-column align-items-end mx-3 mb-3">
+                <p class="h5 my-0">fees: ${fees.toFixed(2)}</p>
+                <p class="h5 my-0">discounts: ${discounts.toFixed(2)}</p>
+                <p class="h5 my-0">taxes: ${taxes.toFixed(2)}</p>
+                <hr class="w100 my-2 btn-success-outline">
+                <p class="h5 mt-1 mb-3">total: ${total.toFixed(2)}</p>
+                <button id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
+            </div>
+        </form>
+    `        
+    $("#cartWrapperDiv").html(cartHTML);
+}
 
-const makeCartEntry = ( room, index ) => {
-    let roomNum = room.id;
-    let roomName = room.name;
-    let hotelId = room.hotelId;
-    let startDate = room.startDate;
-    let endDate = room.endDate;
-    let numberOfNights = room.numberOfNights;
-    let costPerNight = room.pricePerNight;
-    let roomTotal = room.roomTotal;
 
-    let hotelName = "hotel.name"; //WHERE HOTEL ID MATCHES ROOM HOTEL ID
+
+
+
+
+
+
+
+const makeCartEntry = ( book, index ) => {
+    let roomNum = book.id;
+    let roomName = book.name;
+    let hotelId = book.hotelID;
+    let startDate = book.startDate;
+    let endDate = book.endDate;
+    let numberOfNights = book.numberOfNights;
+    let costPerNight = book.pricePerNight;
+    let roomTotal = book.roomTotal;
+
+    let hotelName = hotel.hotelName; //WHERE HOTEL ID MATCHES ROOM HOTEL ID
 
     roomBookedHTML = `
             <div class="card m-3 d-flex">
