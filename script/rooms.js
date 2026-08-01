@@ -553,12 +553,13 @@ let cartArray = [];
 
 const openCart = () => {
     console.log(`open cart`);
+    makeCart()
     const offcanvasElmt = document.querySelector('#cartWrapperDiv');
     const offcanvasBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
     offcanvasBS.show();
 }
 
-const makeCart = ( cart ) => {
+const makeCart = ( ) => {
     let cartHTML = `
         <form id="cartForm" action="" method="POST">
                 <div id="cartCardsDiv">
