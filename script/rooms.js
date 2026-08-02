@@ -8,10 +8,8 @@ $( async function() {
     roomArray = await getRoomArray();
     cartArray = await getCartArray();
 
-    addHotelsToMap( hotelArray, roomArray );   
+    addHotelsToMap( hotelArray );   
 });
-
-
 
 const addCartBtnListener = () => {
     $("#navCartBtn").click( () => openCart() );
@@ -20,7 +18,7 @@ const addCartBtnListener = () => {
 //#endregion
 
 //#region define cards makeHotelCard() and makeRoomCard/s() ratingToStart()
-const makeHotelCard = ( hotel, roomArray ) => {
+const makeHotelCard = ( hotel ) => {
     $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
@@ -43,10 +41,10 @@ const makeHotelCard = ( hotel, roomArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => makeRoomCards( roomArray, hotel ) );
+    $("#roomsBtn").click( () => makeRoomCards( hotel ) );
 }
 
-const makeRoomCards = ( roomArray, hotel ) => {
+const makeRoomCards = ( hotel ) => {
     $("#roomCards").html( '' );    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
@@ -129,18 +127,46 @@ const openBookModal = ( room, hotel ) => {
     
     //create booking obj and assign variables
     let book = new Booking( cartArray.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
-   
+    setRoomAvailability( room.id, false );
+    //rebuild room availability (visible as background)
+    makeRoomCards( hotel );
     //create the modal HTML; includes attaching it to the modal DOM element 
-    buildBookingModal( book );  
+    buildBookingModal( book, hotel );  
     // make & show Bootstrap Modal window
     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
 }
 
-const buildBookingModal = ( book ) => {
+const checkRoomAvailability = ( roomID ) => {
+    for (let room of roomArray) {
+        if (room.id === roomID) {
+            return room.available
+        } else {
+            throw new Error( 'cannot find room' )
+        }
+    }
+}
+
+const setRoomAvailability = ( roomID, isAvailable ) => {
+    let isFound = false;
+    for (let room of roomArray) {
+        if ( room.id == roomID ){
+            room.available = isAvailable;
+            isFound = true;
+            break;
+        }
+    }
+    if (isFound === true ) {
+        saveRoomsChange();
+    } else {
+    throw new Error ('cannot find room')
+    }
+}
+
+const buildBookingModal = ( book, hotel ) => {
     updateModalTitleHTML( book );
     updateModalTotalHTML( book );
-    attachModalListeners( book );
+    attachModalListeners( book, hotel );
 }
 
 const updateModalTitleHTML = ( book ) => {
@@ -166,14 +192,22 @@ const updateModalTotalHTML = ( book ) => {
     $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
 }
 
-const attachModalListeners = ( book ) => {
+const attachModalListeners = ( book, hotel ) => {
     //attach listener to updates as dates updated
     $('#checkInDate').on('change', () => updateModalTotalHTML( book ));
     $('#checkOutDate').on('change', () => updateModalTotalHTML( book ));
     
     //listen for modal buttons
-    $("#closeBtn").click( () => $("#bookingModal").modal('hide') );
-    $("#cancelBtn").click( () => $("#bookingModal").modal('hide') );
+    $("#closeBtn").click( () => {
+        setRoomAvailability( book.roomID, true);
+        makeRoomCards( hotel );
+        $("#bookingModal").modal('hide');
+    });
+    $("#cancelBtn").click( () => {
+        setRoomAvailability( book.roomID, true);
+        makeRoomCards( hotel );
+        $("#bookingModal").modal('hide');
+    });
     $("#bookBtn").click( () => { makeBooking( book ) } );
 }
 

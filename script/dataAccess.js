@@ -48,6 +48,8 @@ const getRoomInfo = async () => {
     } catch (e) { console.error('Failed to load rooms') }
 }
 
+const saveRoomsChange = () => localStorage.setItem("rooms", JSON.stringify( roomArray ));
+
 const getCartArray = async () => {
     if ( savedCart ) {
         cartArray = JSON.parse( savedCart );
@@ -57,6 +59,8 @@ const getCartArray = async () => {
     }
     return cartArray;
 }
+
+const saveCartChange = () => localStorage.setItem("cart", JSON.stringify( cartArray ));
 
 // const makeHotelArray = ( hotelsRaw ) => {
 //     let hotelArray = [];
