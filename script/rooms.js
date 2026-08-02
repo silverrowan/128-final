@@ -551,7 +551,7 @@ const clearCart = () => {
 const makeCartItemHTML = ( book ) => {
     let posn = cartArray.length - 1;
 
-    cartItemHTML = `
+    let cartItemHTML = `
             <div class="card m-3 d-flex">
                 <div class="card-body d-flex flex-column justify-content-between"> 
                     <div class="d-flex justify-content-between mb-0"> 
