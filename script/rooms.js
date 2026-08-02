@@ -363,7 +363,7 @@ const makeRoomCards = ( roomArray, hotel ) => {
     $("#roomCards").html( '' );    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotel.hotelID == room.hotelId && room.available ){
+        if ( hotel.id == room.hotelId && room.available ){
             $("#roomCards").append( makeRoomCard( room ) );
             // $("#roomsBtn").click(  );
             $(`#bookRoom${room.id}`).click( () => {
