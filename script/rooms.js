@@ -469,12 +469,12 @@ const updateModalTotalHTML = ( book ) => {
     book.startDate = new Date( $('#checkInDate').val() );
     book.endDate = new Date( $('#checkOutDate').val() );
 
-    let numNights = book.calcNights();    
-    if ( numNights == null ){ return; }
+    book.numNights = book.calcNights();    
+    if ( book.numNights == null ){ return; }
 
     let modalRoomTotalDivHTML = `
-        <p id="${bookNum}Math" class="">${numNights} x ${ book.costPerNight }/night</p>
-        <h5 id="${bookNum}roomTotal" class="h5" >${ book.calcRoomTotal() }</h5>
+        <p id="${bookNum}Math" class="">${book.numNights} x $${book.costPerNight}/night</p>
+        <h5 id="${bookNum}roomTotal" class="h5" >$${book.calcRoomTotal()}</h5>
         `;
     $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
 }
@@ -569,7 +569,7 @@ const makeCartItemHTML = ( book ) => {
                     <hr class="my-0">
                     <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
                         <p class="${posn}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
-                        <p class="${posn}math my-0">${book.numNights} x $${book.roomCost}<span class="subscr">/night</span></p>
+                        <p class="${posn}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
                         <h5 class="${posn}subtotal h5 my-1">$${book.roomTotal}</h5>
                     </div>
                 </div>
