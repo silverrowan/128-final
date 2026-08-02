@@ -518,6 +518,10 @@ const openCart = () => {
     const offcanvasElmt = document.querySelector('#cartWrapperDiv');
     const offcanvasBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
     offcanvasBS.show();
+
+    //attach listeners
+    $("#cartClearBtn").click( () => clearCart() );
+    $("#cartCheckoutBtn").click( () => checkout() );
 }
 
 const addCartItem = ( book ) => {
@@ -540,6 +544,8 @@ const removeCartItem = ( arrayPosn ) => {
 }
 
 const clearCart = () => {
+    let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
+    if ( !isConfirmed ) { return; }
     cartArray = [];
     $("#cartCardsDiv").html( '' );
     cartTotals.roomsTotal = 0;
@@ -556,7 +562,7 @@ const makeCartItemHTML = ( book ) => {
                 <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
                     <div class="d-flex justify-content-between mb-0"> 
                         <button id="removeCartItem${posn}Btn" cartItem="${posn}" class="btn btn-outline-secondary 
-                        btn-sm align-items-start me-5 py-1 px-2">X</button> 
+                                btn-sm align-items-start me-5 py-1 px-2">X</button> 
                         <h5 class=" h4 mb-1">${book.roomName}</h5>
                     </div>
                     <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
@@ -612,7 +618,7 @@ const updateCartTotalsHTML = ( book ) => {
                         <p class="my-0">$${cartTotals.discounts.toFixed(2)}</p>
                         <p class="my-0">$${subtotal.toFixed(2)}</p>
                         <p class="my-0">$${taxes.toFixed(2)}</p>
-                <hr class="w100 my-2 btn-success-outline">
+                        <hr class="w100 my-2 btn-success-outline">
                         <p class="h5 mt-1 mb-3">$${total.toFixed(2)}</p>
                     </div>
                 </div>
