@@ -230,15 +230,15 @@ class Booking {
             case null:
                 this.#stage = "cart";
                 break;
-            case cart:
+            case 'cart':
                 //when click pay
                 this.#stage = "paid";
                 // related  room.available = false;
                 break;
-            case paid:
+            case 'paid':
                 this.#stage = "staying"
                 break;
-            case staying:
+            case 'staying':
                 this.#stage = "complete"
                 break;
             //should checkout process consider length of holdning room availability in cart?
