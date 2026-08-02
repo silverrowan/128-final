@@ -32,6 +32,37 @@
 <!-- CART MODAL -->
     <!-- Vertically centered modal -->
 <div class="modal" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="BookingModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title"></h4>
+                    <h5 class="h6 fst-italic"></h5>
+                </div>
+                <button type="button" id="closeBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>  
+            <div class="modal-body">    
+                <form id="cartForm" action="" method="POST">
+                    <div class="cartItemDateDiv d-flex justify-content-center mb-2">
+                        <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
+                            <label for="checkInDate">Check In (4pm)</label>
+                            <input type="date" id="checkInDate" name="roomStart" />
+                        </div>
+                        <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
+                            <label for="checkOutDate">Check Out (11am)</label>
+                            <input type="date" id="checkOutDate" name="roomEnd" />
+                        </div>
+                    </div>
+                    <div id="modalroomTotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelBtn" class="btn btn-outline-secondary">Cancel</button>
+                <button type="button" id="bookBtn" class="btn btn-primary">Book</button>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- CART OFFCANVAS -->
 <div id="cartWrapperDiv" class="offcanvas card justify-content-start align-items-end flex-column">

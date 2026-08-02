@@ -2,6 +2,9 @@
 const isBlank = value => value === null || value === undefined || value === '';
 const isNotNaN = value => !( isNaN(value) || value == null || value == undefined || value == '') ; 
 
+//Global Variables
+let cartArray = [];
+
 // #region Setting up Classes
 // Setting up Hotel Class
 class Hotel {
@@ -47,8 +50,8 @@ class Hotel {
     get lng() { return this.#lng; }
     set lng( n ) { this.#lng = n; }
 
-    get rating() { return this.#rating; }
-    set rating(  n) { this.#rating = n; }
+    get ratcartArraying() { return this.#rating; }
+    set ratcartArraying(  n) { this.#rating = n; }
 
     get description() { return this.#description; }
     set description( n ) { this.#description = n; }
@@ -124,7 +127,9 @@ class Room {
 class Booking {
     #id;
     #roomID;
+    #roomName;
     #hotelID;
+    #hotelName;
     #customerID;
     #costPerNight;
     #startDate;
@@ -137,10 +142,12 @@ class Booking {
     #adjustPriceBy;
 
     //constructors
-    constructor( id, roomID, costPerNight ){
+    constructor( id, roomID, roomName, hotelID, hotelName, costPerNight ){
         this.#id = id;
         this.#roomID = roomID;
-        this.#hotelID = null;
+        this.#roomName = roomName;
+        this.#hotelID = hotelID;
+        this.#hotelName = hotelName;
         this.#costPerNight = costPerNight;
         this.#startDate = null;
         this.#endDate = null;
@@ -159,8 +166,14 @@ class Booking {
     get roomID() { return this.#roomID; }
     set roomID( n ) { this.#roomID = n; }
 
+    get roomName() { return this.#roomName; }
+    set roomName( n ) { this.#roomName = n; }
+
     get hotelID() { return this.#hotelID; }
     set hotelID( n ) { this.#hotelID = n; }
+
+    get hotelName() { return this.#hotelName; }
+    set hotelName( n ) { this.#hotelName = n; }
 
     get customerID() { return this.#customerID; }
     set customerID( n ) { this.#customerID = n; }
@@ -214,12 +227,7 @@ class Booking {
         //      change state to ( prvState + 'cancel' )
         switch ( this.#stage ) {
             case null:
-                this.#stage = "initial"
-                break;
-            case initial:
-                //when click pay
                 this.#stage = "cart";
-                // related  room.available = false;
                 break;
             case cart:
                 //when click pay
@@ -294,8 +302,8 @@ const makeRoomArray = ( roomsRaw ) => {
 //#endregion
 
 //#region Initial on load + addHotelsToMap() & addHotelIcon() + cartListener: 
-// Add Hotel Icons to the map (map created in map.js script)
 
+// Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
     const hotelsRaw = await getHotelInfo();
     const roomsRaw = await getRoomInfo();
@@ -350,17 +358,23 @@ const makeHotelCard = ( hotel, roomArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => makeRoomCards( roomArray, hotel.id ) );
+    $("#roomsBtn").click( () => makeRoomCards( roomArray, hotel ) );
 }
 
-const makeRoomCards = ( roomArray, hotelId ) => {
+const makeRoomCards = ( roomArray, hotel ) => {
     $("#roomCards").html( '' );    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotelId == room.hotelId && room.available ){
+        if ( hotel.hotelID == room.hotelId && room.available ){
             $("#roomCards").append( makeRoomCard( room ) );
             // $("#roomsBtn").click(  );
-            $(`#bookRoom${room.id}`).click( () => openBookModal( room ) );
+            $(`#bookRoom${room.id}`).click( () => {
+                // room.available = false;
+                //chg room to unavailable - in array and json
+                //make booking obj, dont add to array yet
+                openBookModal( room, hotel );
+                
+            });
         }
     }   
 }
@@ -423,119 +437,72 @@ const ratingToStars = (rating) => {
 }
 //#endregion
 
-//#region making bookings
-let bookingArray = [];
+//#region making bookings: openBookModal(), buildBookingModal(), updateBookModalroomTotal(), makeBooking(), addBookingToCart()
 
-const openBookModal = ( room ) => {
-    console.log(`open book modal for room ${room.id}`);
-    let bookModelElmt = $( '#bookingModal' )[0];
+const openBookModal = ( room, hotel ) => {
+    let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
     
     //create booking obj and assign variables
-    let book = new Booking( bookingArray.length, room.id, room.pricePerNight );
-    book.hotelId = room.hotelId;
-    bookingArray.push( book );
-    
-    book.calcRoomTotal();
-    
-    //instanciate Bootstrap Modal window
-    buildBookingModal( book, room );
+    let book = new Booking( cartArray.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
+   
+    //create the modal HTML; includes attaching it to the modal DOM element 
+    buildBookingModal( book );  
+    // make & show Bootstrap Modal window
     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
-    
-    //attach listener to updates as dates updated
-    $('#checkInDate').on('change', () => updateBookModalroomTotal( book ));
-    $('#checkOutDate').on('change', () => updateBookModalroomTotal( book ));
 }
 
-const buildBookingModal = ( book, room ) => {
-    //get hotel id from '#makeCartEntry'
-    let hotelId = $('#hotelTitle').attr('hotelId');
-    let hotel = hotelArray[hotelId];
-
-    let modalHTML = `
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header flex-row justify-space-between">
-                    <div class="flex-column align-start">
-                        <h4 class="modal-title">${room.name}</h4>
-                        <h5 class="h6 fst-italic">${hotel.name}</h5>
-                    </div>
-                    <button type="button" id="closeBtn" class="btn-close align-self-start" aria-label="Close"></button>
-                </div>  
-                <div class="modal-body">    
-                    <form id="cartForm" action="" method="POST">
-                        <div class="cartItemDateDiv d-flex justify-content-center mb-2">
-                            <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
-                                <label for="checkInDate">Check In (4pm)</label>
-                                <input type="date" id="checkInDate" name="roomStart" />
-                            </div>
-                            <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
-                                <label for="checkOutDate">Check Out (11am)</label>
-                                <input type="date" id="checkOutDate" name="roomEnd" />
-                            </div>
-                        </div>
-                        <div id="modalroomTotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="cancelBtn" class="btn btn-outline-secondary">Cancel</button>
-                    <button type="button" id="bookBtn" class="btn btn-primary">Book</button>
-                </div>
-            </div>
-        </div>
-                `;
-    updateBookModalroomTotal( book );
-    //listen for updates to dates
-    $("#bookBtn").click( () => { makeBooking( book ) } );
-    $("#bookingModal").html( modalHTML );
-
-    //listen for modal buttons
-    $("#closeBtn").click( () => $("#bookingModal").modal('hide') );
-    $("#cancelBtn").click( () => $("#bookingModal").modal('hide') );
-    $("#bookBtn").click( () => { makeBooking( book ) } );
+const buildBookingModal = ( book ) => {
+    updateModalTitleHTML( book );
+    updateModalTotalHTML( book );
+    attachModalListeners( book );
 }
 
-const updateBookModalroomTotal = ( book ) => {  
-    let bookNum = bookingArray.length;
+const updateModalTitleHTML = ( book ) => {
+    let modalTitleHTML = `
+                        <h4 class="modal-title">${book.roomName}</h4>
+                        <h5 class="h6 fst-italic">${book.hotelName}</h5>
+                        `
+    $("#BookingModalTitle").html( modalTitleHTML )
+}
+
+const updateModalTotalHTML = ( book ) => {  
+    let bookNum = cartArray.length;
     book.startDate = new Date( $('#checkInDate').val() );
     book.endDate = new Date( $('#checkOutDate').val() );
 
     let numNights = book.calcNights();    
     if ( numNights == null ){ return; }
 
-    let costPer = book.costPerNight;
-    let roomTotal = book.calcRoomTotal();
-
-    let modalroomTotalDivHTML = `
-        <p id="${bookNum}Math" class="">${numNights} x ${costPer}/night</p>
-        <h5 id="${bookNum}roomTotal" class="h5" >${roomTotal}</h5>
+    let modalRoomTotalDivHTML = `
+        <p id="${bookNum}Math" class="">${numNights} x ${ book.costPerNight }/night</p>
+        <h5 id="${bookNum}roomTotal" class="h5" >${ book.calcRoomTotal() }</h5>
         `;
-    
-    $("#modalroomTotalDiv").html( modalroomTotalDivHTML );
+    $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
 }
 
-const makeBooking = ( booking ) => {
-    console.log( booking );
-    console.log(`make booking for room ${booking.roomID}`);
+const attachModalListeners = ( book ) => {
+    //attach listener to updates as dates updated
+    $('#checkInDate').on('change', () => updateModalTotalHTML( book ));
+    $('#checkOutDate').on('change', () => updateModalTotalHTML( book ));
+    
+    //listen for modal buttons
+    $("#closeBtn").click( () => $("#bookingModal").modal('hide') );
+    $("#cancelBtn").click( () => $("#bookingModal").modal('hide') );
+    $("#bookBtn").click( () => { makeBooking( book ) } );
+}
+
+const makeBooking = ( book ) => {
+    console.log( book );
+    console.log(`make booking for room ${book.roomID}`);
     
     $("#bookingModal").modal('hide')
-    addBookingToCart( booking );
+    book.advanceStage(); //change booking stage to cart from null
+    cartArray.push( book ); //add booking to cart array
     openCart();
 }
-
-const addBookingToCart = ( room ) => {
-    console.log(`add booking to cart for room ${room.id}`);
-    bookingArray.push( room );
-}
-
 // #endregion
     
-    //window contents
-    //ATTACH LISTENERS TO ALL BUTTONS - close, book, etc
-    //return booking obj - add to array and return that?
-    // makeBooking( room );
-
 // #region cart offCanvase & functions | makeCart() & makeCartEntry()
 // reference & create modal itselfoffcanvase
 // const loginModal = document.querySelector('#loginModal');
@@ -548,8 +515,6 @@ const addBookingToCart = ( room ) => {
 // const enterLogin = document.querySelector("#loginModalButton");
 // const cancelLogin = document.querySelector("#loginCancelButton");
 // const cancelLoginX = document.querySelector("#modalX");
-
-let cartArray = [];
 
 const openCart = () => {
     console.log(`open cart`);
