@@ -599,8 +599,8 @@ const updateCartTotalsHTML = ( book ) => {
     let total = subtotal + taxes;
 
     let cartTotalsHTML = `
-                <p class="h5 my-0">fees: ${fees.toFixed(2)}</p>
-                <p class="h5 my-0">discounts: ${discounts.toFixed(2)}</p>
+                <p class="h5 my-0">fees: ${cartTotals.fees.toFixed(2)}</p>
+                <p class="h5 my-0">discounts: ${cartTotals.discounts.toFixed(2)}</p>
                 <p class="h5 my-0">subtotal: ${subtotal.toFixed(2)}</p>
                 <p class="h5 my-0">taxes: ${taxes.toFixed(2)}</p>
                 <hr class="w100 my-2 btn-success-outline">
