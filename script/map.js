@@ -46,3 +46,20 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
+// Add Hotel Icons to the map (map created in map.js script)
+
+const addHotelsToMap = ( hotelArray, roomArray ) => {
+    console.log( "adding hotels to map");
+    
+    let markerArray = [];
+    for (let i = 0; i < hotelArray.length; i++) {
+        markerArray[i] = addHotelIcon( hotelArray[i], roomArray );
+    }
+    return markerArray;
+}
+
+const addHotelIcon = ( hotelObj, roomArray ) => {  
+    let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
+    marker.addEventListener("click", () => makeHotelCard( hotelObj, roomArray ));
+    return marker;
+}
