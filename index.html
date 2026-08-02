@@ -70,17 +70,15 @@
         </div>
         <!-- TOTALS -->
         <div id="cartTail" class="d-flex flex-column align-items-end mx-3 mb-3">
-            <div id="cartSumLines" class="d-flex flex-column">
-                <p class="h5 my-0">${fees.toFixed(2)}</p>
-                <p class="h5 my-0">${discounts.toFixed(2)}</p>
-                <p class="h5 my-0">${taxes.toFixed(2)}</p>
-                <hr class="w100 my-2 btn-success-outline">
-                <p class="h5 mt-1 mb-3">${total.toFixed(2)}</p>
-            </div>"
+            <div id="cartSumLines" class="d-flex flex-column align-items-end">
+            </div>
+            <div class="d-flex justify-content-between mt-5">
+                <button id="cartClearBtn" class="btn btn-lg btn-outline-danger me-3">CLEAR CART</button>
             <button id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
         </div>
+        </div>
     </form>
-</div>
+            </div>
 
 </div>
 <!--MAIN -->

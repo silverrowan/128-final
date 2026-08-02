@@ -553,17 +553,16 @@ const makeCartItemHTML = ( book ) => {
 
     let cartItemHTML = `
             <div class="card m-3 d-flex">
-                <div class="card-body d-flex flex-column justify-content-between"> 
+                <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
                     <div class="d-flex justify-content-between mb-0"> 
                         <button id="removeCartItem${posn}Btn" cartItem="${posn}" class="btn btn-outline-secondary 
                         btn-sm align-items-start me-5 py-1 px-2">X</button> 
-                        <div>
-                            <h5 class="inline mb-0">${book.hotelName} | ${book.roomName}</h5>
-                            <hr class="my-0">
-                        </div>
+                        <h5 class=" h4 mb-1">${book.roomName}</h5>
                     </div>
+                    <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
+                    <hr class="my-0">
                     <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
-                        <p class="${posn}dates my-0">${book.startDate} to ${book.endDate}</p>
+                        <p class="${posn}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
                         <p class="${posn}math my-0">${book.numNights} x $${book.roomCost}<span class="subscr">/night</span></p>
                         <h5 class="${posn}subtotal h5 my-1">$${book.roomTotal}</h5>
                     </div>
@@ -599,12 +598,25 @@ const updateCartTotalsHTML = ( book ) => {
     let total = subtotal + taxes;
 
     let cartTotalsHTML = `
-                <p class="h5 my-0">fees: ${cartTotals.fees.toFixed(2)}</p>
-                <p class="h5 my-0">discounts: ${cartTotals.discounts.toFixed(2)}</p>
-                <p class="h5 my-0">subtotal: ${subtotal.toFixed(2)}</p>
-                <p class="h5 my-0">taxes: ${taxes.toFixed(2)}</p>
+                <div class="d-flex">
+                    <div class="d-flex flex-column align-items-end">
+                        <p class="my-0 me-3">Fees: </p>
+                        <p class="my-0 me-3">Discounts: </p>
+                        <p class="my-0 me-3">Subtotal: </p>
+                        <p class="my-0 me-3">Taxes: </p>
+                        <hr class="w100 my-2 btn-success-outline">
+                        <p class="h5 mt-1 mb-3 me-3">Total: </p>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                        <p class="my-0">$${cartTotals.fees.toFixed(2)}</p>
+                        <p class="my-0">$${cartTotals.discounts.toFixed(2)}</p>
+                        <p class="my-0">$${subtotal.toFixed(2)}</p>
+                        <p class="my-0">$${taxes.toFixed(2)}</p>
                 <hr class="w100 my-2 btn-success-outline">
-                <p class="h5 mt-1 mb-3">total: ${total.toFixed(2)}</p>
+                        <p class="h5 mt-1 mb-3">$${total.toFixed(2)}</p>
+                    </div>
+                </div>
+            </div>
         `      
     $("#cartSumLines").html(cartTotalsHTML);
 }
