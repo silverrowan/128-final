@@ -5,22 +5,20 @@
 // Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
     hotelArray = await getHotelArray();  
-    roomArray = await getRoomArray();
-    cartArray = await getCartArray();
+    let initialRoomArray = await getRoomsSave();
+    let initialCartArray = await getCartSave();
+
+    console.log("----initial array gets-----");
+    console.log("hotel: " + hotelArray );
+    console.log("room: " + initialRoomArray );
+    console.log("cart: " + initialCartArray );
+    console.log("---------------------------");
+    
 
     addHotelsToMap( hotelArray );
-    buildCart()
-});
-
-const addCartBtnListener = () => {
+    reBuildCart( initialCartArray )
     $("#navCartBtn").click( () => openCart() );
-}
-
-const initialCartBuild = () => {
-    
-}
-
-addCartBtnListener();
+});
 
 //#endregion
 
@@ -51,18 +49,16 @@ const makeHotelCard = ( hotel ) => {
     $("#roomsBtn").click( () => makeRoomCards( hotel ) );
 }
 
-const makeRoomCards = ( hotel ) => {
-    $("#roomCards").html( '' );    
+const makeRoomCards = async ( hotel ) => {
+    $("#roomCards").html( '' );
+    
+    let roomArray = await getRoomsSave();
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
         if ( hotel.id == room.hotelId ) {
             if ( room.available ){
                 $("#roomCards").append( makeRoomCard( room, true ) );
-                // $("#roomsBtn").click(  );
                 $(`#bookRoom${room.id}`).click( () => {
-                    // room.available = false;
-                    //chg room to unavailable - in array and json
-                    //make booking obj, dont add to array yet
                     openBookModal( room, hotel );
                 });
             } else {
@@ -151,22 +147,25 @@ const ratingToStars = (rating) => {
 
 //#region making bookings: openBookModal(), buildBookingModal(), updateBookModalroomTotal(), addBookingToCart()
 
-const openBookModal = ( room, hotel ) => {
+const openBookModal = async ( room, hotel ) => {
+    let cart = await getCartSave();
     let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
     
     //create booking obj and assign variables
-    let book = new Booking( cartArray.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
+    let book = new Booking( cart.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
     setRoomAvailabilityAndSave( room.id, false );
-    //rebuild room availability (visible as background)
-    makeRoomCards( hotel );
+    makeRoomCards( hotel ); // rebuild room availability (visible in background)
+
     //create the modal HTML; includes attaching it to the modal DOM element 
-    buildBookingModal( book, hotel );  
+    buildBookingModal( book, cart, hotel );  
     // make & show Bootstrap Modal window
     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
     bookingModal.show();
 }
 
 const checkRoomAvailability = ( roomID ) => {
+    let roomArray = getRoomsSave();
+
     for (let room of roomArray) {
         if (room.id === roomID) {
             return room.available
@@ -176,8 +175,10 @@ const checkRoomAvailability = ( roomID ) => {
     }
 }
 
-const setRoomAvailabilityAndSave = ( roomID, isAvailable ) => {
+const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
+    let roomArray = await getRoomsSave();
     let isFound = false;
+
     for (let room of roomArray) {
         if ( room.id == roomID ){
             room.available = isAvailable;
@@ -186,15 +187,15 @@ const setRoomAvailabilityAndSave = ( roomID, isAvailable ) => {
         }
     }
     if (isFound === true ) {
-        saveRoomsChange();
+        setRoomsSave();
     } else {
     throw new Error ('cannot find room')
     }
 }
 
-const buildBookingModal = ( book, hotel ) => {
+const buildBookingModal = ( book, cart, hotel ) => {
     updateModalTitleHTML( book );
-    updateModalTotalHTML( book );
+    updateModalTotalHTML( book, cart );
     attachModalListeners( book, hotel );
 }
 
@@ -206,8 +207,8 @@ const updateModalTitleHTML = ( book ) => {
     $("#BookingModalTitle").html( modalTitleHTML )
 }
 
-const updateModalTotalHTML = ( book ) => {  
-    let bookNum = cartArray.length;
+const updateModalTotalHTML = ( book, cart ) => {  
+    let bookNum = cart.length;
     book.startDate = new Date( $('#checkInDate').val() );
     book.endDate = new Date( $('#checkOutDate').val() );
 
@@ -223,8 +224,14 @@ const updateModalTotalHTML = ( book ) => {
 
 const attachModalListeners = ( book, hotel ) => {
     //attach listener to updates as dates updated
-    $('#checkInDate').on('change', () => updateModalTotalHTML( book ));
-    $('#checkOutDate').on('change', () => updateModalTotalHTML( book ));
+    $('#checkInDate').on('change', async () => {
+        let cart = await getCartSave();
+        updateModalTotalHTML( book, cart ) 
+    });
+    $('#checkOutDate').on('change', async () => {
+        let cart = await getCartSave();
+        updateModalTotalHTML( book, cart ) 
+    });
     
     //listen for modal buttons
     $("#closeBtn").click( () => {
@@ -237,22 +244,24 @@ const attachModalListeners = ( book, hotel ) => {
         makeRoomCards( hotel );
         $("#bookingModal").modal('hide');
     });
-    $("#bookBtn").click( () => { 
+    $("#bookBtn").click( async () => {
+        let cart = await getCartSave();
         $("#bookingModal").modal('hide')
-        addCartItem( book ); //
-        openCart();
+        addCartItem( book, cart ); //
+        openCart(); //dont use same cart b/c modified it in addCartItem() abv
      } );
 }
 
 // #endregion
 
-// #region cart offCanvase & functions | openCart(), addToCart(), makeCartEntry(), updateCartTotals()
+// #region cart offCanvase & functions | openCart(), addToCart(), makeCartItemHTML(), updateCartTotals()
 
-const openCart = () => {
+const openCart = async () => {
     console.log(`open cart`);
+    let cart = await getCartSave();
     
     if ( !cartBS ) {
-        buildCart();
+        reBuildCart( cart );
         cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
     }   
     cartBS.show();
@@ -262,65 +271,66 @@ const openCart = () => {
     $("#cartCheckoutBtn").click( () => checkout() );
 }
 
-const addCartItem = ( book ) => { //new booking
-    let posn = cartArray.length - 1;
+const addCartItem = ( book, cart ) => { //new booking
+
+    let posn = cart.length;
     book.advanceStage(); //change booking stage to cart from null
-    cartArray.push( book ); //add booking to cart array
-        console.log( cartArray );
-    saveCartChange();
-    console.log( cartArray );
-    makeCartEntry( book, posn )
 
-    // $("#cartCardsDiv").append( makeCartEntry( book ) );
-    // let arrayPosn = cartArray.length - 1;
-    // $(`#removeCartItem${arrayPosn}Btn`).click( () => removeCartItem( arrayPosn ) );
+    cart.push( book );
+    setCartSave( cart );
 
+    makeCartItemHTML( book )
     addToCartTotals( book );
 };
 
-const removeCartItem = ( arrayPosn ) => {
-        cartArray[arrayPosn] = null; //remove from the array; faster, potentially clogs memory vs splice & rebuild cart.
-        saveCartChange();
-        $(`#removeCartItem${arrayPosn}Btn`).parent().parent().parent().remove(); // remove entire cart item card from the html
-        removeFromCartTotals( cartArray[arrayPosn] );
+const removeCartItem = async ( itemID ) => {
+    let cart = await getCartSave();
+
+    let removedIndex = cart.findIndex( item => item.id == itemID )
+    let removed = cart.splice( removedIndex , 1 ); //save removed obj as removed (array)
+    $(`#${itemID}removeCartItemBtn`).parent().parent().parent().remove(); // remove entire cart item card from the html
+    removeFromCartTotals( removed[0] );
+    setCartSave( cartArray );
 }
 
 const clearCart = () => {
     let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
     if ( !isConfirmed ) { return; }
     cartArray = [];
-    saveCartChange();
+    setCartSave( cartArray );
     cartBS.dispose();
     $("#cartCardsDiv").html( '' );
     resetCartTotalsTo0();
 }
 
-const makeCartEntry = ( book, posn ) => { //booking already exists
-    if ( book == undefined ) { // also checks for null
-        $("#cartCardsDiv").html( '' );
-    } else {
+const clearCartItemHTML = () => $("#cartCardsDiv").html( '' );
+
+
+const makeCartItemHTML = async ( book ) => { //booking already exists
+    if ( book != undefined ) { // also checks for null
+
         let cartItemHTML = `
-        <div class="card m-3 d-flex">
-        <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
-        <div class="d-flex justify-content-between mb-0"> 
-        <button id="removeCartItem${posn}Btn" cartItem="${posn}" class="btn btn-outline-secondary 
-        btn-sm align-items-start me-5 py-1 px-2">X</button> 
-        <h5 class=" h4 mb-1">${book.roomName}</h5>
-        </div>
-        <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
-        <hr class="my-0">
-        <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
-        <p class="${posn}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
-        <p class="${posn}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
-        <h5 class="${posn}subtotal h5 my-1">$${book.roomTotal}</h5>
-        </div>
-        </div>
-        </div> 
+            <div class="card m-3 d-flex">
+                <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
+                    <div class="d-flex justify-content-between mb-0"> 
+                        <button id="${book.id}removeCartItemBtn" cartBookID="${book.id}" class="btn btn-outline-secondary 
+                                btn-sm align-items-start me-5 py-1 px-2">X</button> 
+                        <h5 class=" h4 mb-1">${book.roomName}</h5>
+                    </div>
+                    <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
+                    <hr class="my-0">
+                     <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
+                        <p class="${book.id}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
+                        <p class="${book.id}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
+                        <h5 class="${book.id}subtotal h5 my-1">$${book.roomTotal}</h5>
+                    </div>
+                </div>
+            </div> 
         `
         $("#cartCardsDiv").append( cartItemHTML );
         addToCartTotals( book );
         
-        $(`#removeCartItem${posn}Btn`).click( () => removeCartItem( posn ) );
+        $(`#${book.id}removeCartItemBtn`).click( () => removeCartItem( book.id ) );
     }
 }
 
@@ -386,17 +396,15 @@ const updateCartTotals = () => {
     $("#cartSumLines").html(cartTotalsHTML);
 }
 
-const buildCart = () => {
+const reBuildCart = ( cartArray ) => {
     if ( cartBS ){ cartBS.dispose(); }
-    if ( cartArray.length <= 0 || cartArray == undefined ) {
-        makeCartEntry( null, cartArray.length  );
-        resetCartTotalsTo0();
-    }
+    clearCartItemHTML();
+    resetCartTotalsTo0();
+
     for (let i = 0 ; i < cartArray.length ; i++ ){
             let book = cartArray[i];
         if ( book != 'paid' ) {
-            makeCartEntry(  cartArray[i], i);
-            addToCartTotals();
+            makeCartItemHTML( cartArray[i] );
         }
     }
     cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );

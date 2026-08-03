@@ -4,8 +4,6 @@ const isNotNaN = value => !( isNaN(value) || value == null || value == undefined
 
 //Global Variables
 let hotelArray = [];
-let roomArray = [];
-let cartArray = [];
 let cartTotals = {  roomsTotal: 0, fees: 0, discounts: 0};
 let cartBS = null;
 const offcanvasElmt = document.querySelector('#cartWrapperDiv');
@@ -187,10 +185,10 @@ class Booking {
     set costPerNight( n ) { this._costPerNight = n; }
     
     get startDate() { return this._startDate; }
-    set startDate( n ) { this._startDate = n; }
+    set startDate( n ) { this._startDate = new Date(n); }
 
     get endDate() { return this._endDate; }
-    set endDate( n ) { this._endDate = n; }
+    set endDate( n ) { this._endDate = new Date(n); }
 
     get numNights() { return this._numNights; }
     set numNights( n ) { this._numNights = n; }

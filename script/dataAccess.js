@@ -5,9 +5,6 @@
 
 //not using local storage for hotels for now as that file does not need to be adjusted.
 
-const savedRooms = localStorage.getItem('rooms');
-const savedCart = localStorage.getItem('cart');
-
 // #region fetch functions
 const getHotelArray = async () => {
     hotelArray = await getHotelInfo();
@@ -27,16 +24,6 @@ const getHotelInfo = async () => {
     }
 }
 
-const getRoomArray = async () => {
-    if ( savedRooms ) {
-        roomArray = JSON.parse( savedRooms );
-    } else {    
-        roomArray = await getRoomInfo();
-        localStorage.setItem('rooms', JSON.stringify( roomArray ));
-    }
-    return roomArray;
-}
-
 const getRoomInfo = async () => {
     const roomLocation = "/public/rooms.json";
     try {
@@ -48,38 +35,73 @@ const getRoomInfo = async () => {
     } catch (e) { console.error('Failed to load rooms') }
 }
 
-const saveRoomsChange = () => localStorage.setItem("rooms", JSON.stringify( roomArray ));
+const setRoomsSave = ( roomArray ) => localStorage.setItem("rooms", JSON.stringify( roomArray ));
+const getRoomsSave = async () => {
+    const savedRooms = localStorage.getItem('rooms');
+    let roomArray = [];
 
-const getCartArray = async () => {
+
+    
+    if ( savedRooms == undefined ) {
+        roomArray = JSON.parse( savedRooms );
+    } else {    
+        roomArray = await getRoomInfo();
+        localStorage.setItem('rooms', JSON.stringify( roomArray ));
+    }
+    return roomArray;
+}
+
+const setCartSave = ( cartArray ) => localStorage.setItem("cart", JSON.stringify( cartArray ));
+const getCartSave = async () => {
+    const savedCart = localStorage.getItem('cart');
+    let cartArray = [];
+
     if ( savedCart ) {
-        cartArray = JSON.parse( savedCart );
-    } else {
-        cartArray = [];    
+        let parsedArray = JSON.parse( savedCart );
+        cartArray = parsedArray.map( a => {
+            let book = new Booking(
+            a._id, a._roomID, a._roomName, a._hotelID, a._hotelName, a._costPerNight 
+        );
+
+        book.startDate = a._startDate;
+        book.endDate = a._endDate;
+        book.numNights = a._numNights;
+        book.stage = a._stage;
+        book.roomTotal = a._roomTotal;
+        book.adjustPriceBy = a._adjustPriceBy;
+
+        return book;
+        });
+
+        console.log( cartArray );
+        
+        // Booking.toObjInstance( cartArray );
+    } else { 
         localStorage.setItem('cart', JSON.stringify( cartArray ));
     }
     return cartArray;
+
+
+    // const cartArray = data.map(obj => {
+    // const booking = new Booking(
+    //     obj.id,
+    //     obj.roomID,
+    //     obj.roomName,
+    //     obj.hotelID,
+    //     obj.hotelName,
+    //     obj.costPerNight
+    // );
+
+    // booking.customerID = obj.customerID;
+    // booking.startDate = obj.startDate;
+    // booking.endDate = obj.endDate;
+    // booking.stage = obj.stage;
+    // booking.roomTotal = obj.roomTotal;
+    // booking.adjustPriceBy = obj.adjustPriceBy;
+
+    // return booking;
+// });
+
+
+
 }
-
-const saveCartChange = () => localStorage.setItem("cart", JSON.stringify( cartArray ));
-
-// const makeHotelArray = ( hotelsRaw ) => {
-//     let hotelArray = [];
-//     for ( let i = 0; i < hotelsRaw.length; i++) {
-//         let h = hotelsRaw[i];
-
-//         hotelArray[i] = new Hotel( h.id, h.name, h.city, h.country, 
-//                 h.lat, h.lng, h.rating, h.description, h.image );
-//     }
-//     return hotelArray;
-// }
-
-// const makeRoomArray = ( roomsRaw ) => {
-//     let roomArray = [];
-//     for ( let i = 0; i < roomsRaw.length; i++) {
-//         let r = roomsRaw[i];
-
-//         roomArray[i] = new Room( r.id, r.hotelId, r.name, r.type, r.beds, 
-//             r.maxGuests, r.pricePerNight, r.rating, r.available, r.image );
-//     }
-//     return roomArray;    
-// }
