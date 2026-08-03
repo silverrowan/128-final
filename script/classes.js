@@ -130,97 +130,100 @@ class Room {
 
 // Setting up Booking Class
 class Booking {
-    #id;
-    #roomID;
-    #roomName;
-    #hotelID;
-    #hotelName;
-    #customerID;
-    #costPerNight;
-    #startDate;
-    #endDate;
-    #numNights;
-    #stage;
-    #timeAdded;
-    #timePaid;
-    #roomTotal;
-    #adjustPriceBy;
+    _id;
+    _roomID;
+    _roomName;
+    _hotelID;
+    _hotelName;
+    _customerID;
+    _costPerNight;
+    _startDate;
+    _endDate;
+    _numNights;
+    _stage;
+    _timeAdded;
+    _timePaid;
+    _roomTotal;
+    _adjustPriceBy;
 
     //constructors
     constructor( id, roomID, roomName, hotelID, hotelName, costPerNight ){
-        this.#id = id;
-        this.#roomID = roomID;
-        this.#roomName = roomName;
-        this.#hotelID = hotelID;
-        this.#hotelName = hotelName;
-        this.#costPerNight = costPerNight;
-        this.#startDate = null;
-        this.#endDate = null;
-        this.#numNights = null;
-        this.#stage = "initial";
-        this.#timeAdded = new Date();
-        this.#timePaid = null;
-        this.#roomTotal= null; 
-        this.#adjustPriceBy = [];
+        this._id = id;
+        this._roomID = roomID;
+        this._roomName = roomName;
+        this._hotelID = hotelID;
+        this._hotelName = hotelName;
+        this._costPerNight = costPerNight;
+        this._startDate = null;
+        this._endDate = null;
+        this._numNights = null;
+        this._stage = "initial";
+        this._timeAdded = new Date();
+        this._timePaid = null;
+        this._roomTotal= null; 
+        this._adjustPriceBy = [];
     }
 
     //setters and getters
-    get id() { return this.#id; }
-    set id( n ) { this.#id = n; }
+    get id() { return this._id; }
+    set id( n ) { this._id = n; }
     
-    get roomID() { return this.#roomID; }
-    set roomID( n ) { this.#roomID = n; }
+    get roomID() { return this._roomID; }
+    set roomID( n ) { this._roomID = n; }
 
-    get roomName() { return this.#roomName; }
-    set roomName( n ) { this.#roomName = n; }
+    get roomName() { return this._roomName; }
+    set roomName( n ) { this._roomName = n; }
 
-    get hotelID() { return this.#hotelID; }
-    set hotelID( n ) { this.#hotelID = n; }
+    get hotelID() { return this._hotelID; }
+    set hotelID( n ) { this._hotelID = n; }
 
-    get hotelName() { return this.#hotelName; }
-    set hotelName( n ) { this.#hotelName = n; }
+    get hotelName() { return this._hotelName; }
+    set hotelName( n ) { this._hotelName = n; }
 
-    get customerID() { return this.#customerID; }
-    set customerID( n ) { this.#customerID = n; }
+    get customerID() { return this._customerID; }
+    set customerID( n ) { this._customerID = n; }
     
-    get costPerNight() { return this.#costPerNight; }
-    set costPerNight( n ) { this.#costPerNight = n; }
+    get costPerNight() { return this._costPerNight; }
+    set costPerNight( n ) { this._costPerNight = n; }
     
-    get startDate() { return this.#startDate; }
-    set startDate( n ) { this.#startDate = n; }
+    get startDate() { return this._startDate; }
+    set startDate( n ) { this._startDate = n; }
 
-    get endDate() { return this.#endDate; }
-    set endDate( n ) { this.#endDate = n; }
-    
-    get stage() { return this.#stage; }
-    set stage( n ) { this.#stage = n; }
+    get endDate() { return this._endDate; }
+    set endDate( n ) { this._endDate = n; }
 
-    get roomTotal() { return this.#roomTotal; }
-    set roomTotal( n ) { this.#roomTotal = n; }
+    get numNights() { return this._numNights; }
+    set numNights( n ) { this._numNights = n; }
     
-    get adjustPriceBy() { return this.#adjustPriceBy; }
-    set adjustPriceBy( n ) { this.#adjustPriceBy = n; }
+    get stage() { return this._stage; }
+    set stage( n ) { this._stage = n; }
+
+    get roomTotal() { return this._roomTotal; }
+    set roomTotal( n ) { this._roomTotal = n; }
+    
+    get adjustPriceBy() { return this._adjustPriceBy; }
+    set adjustPriceBy( n ) { this._adjustPriceBy = n; }
 
     //additional obj functions
     calcRoomTotal() {
-        if ( !isNotNaN( this.#endDate ) || !isNotNaN( this.#startDate ) ) { 
+        if ( !isNotNaN( this.endDate ) || !isNotNaN( this.startDate ) ) { 
             return null; 
         }
-        this.#roomTotal = this.#costPerNight * this.calcNights();
-        return this.#roomTotal;
+        this.roomTotal = this.costPerNight * this.calcNights();
+        return this.roomTotal;
     }
 
     calcNights() {
-        if ( !isNotNaN( this.#endDate ) || !isNotNaN( this.#startDate ) ) { 
-            this.#numNights = null;
+        if ( !isNotNaN( this.endDate ) || !isNotNaN( this.startDate ) ) { 
+            this.numNights = null;
             return null; 
         }
         else {
-            let startMSeconds = this.#startDate.valueOf();
-            let endMSeconds = this.#endDate.valueOf();
-            this.#numNights =  endMSeconds - startMSeconds; //difference in milliseconds
-            this.#numNights = this.#numNights / ( 1000 * 60 * 60 * 24 ); //convert to days
-            return this.#numNights; 
+            let startMSeconds = this.startDate.valueOf();
+            let endMSeconds = this.endDate.valueOf();
+            this.numNights =  endMSeconds - startMSeconds; //difference in milliseconds
+            this.numNights = this.numNights / ( 1000 * 60 * 60 * 24 ); //convert to days
+            return this.numNights; 
         }
     }
 
@@ -230,20 +233,20 @@ class Booking {
                 // if cancelCheckout change state to interrupted
                 // if cancel remove change state to ( prvState + 'cancel' )
         //      change state to ( prvState + 'cancel' )
-        switch ( this.#stage ) {
+        switch ( this.stage ) {
             case null:
-                this.#stage = "cart";
+                this.stage = "cart";
                 break;
             case 'cart':
                 //when click pay
-                this.#stage = "paid";
+                this.stage = "paid";
                 // related  room.available = false;
                 break;
             case 'paid':
-                this.#stage = "staying"
+                this.stage = "staying"
                 break;
             case 'staying':
-                this.#stage = "complete"
+                this.stage = "complete"
                 break;
             //should checkout process consider length of holdning room availability in cart?
             //reserved at add to cart, start
