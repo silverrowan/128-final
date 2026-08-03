@@ -51,8 +51,13 @@ const makeHotelCard = ( hotel ) => {
 
 const makeRoomCards = async ( hotel ) => {
     $("#roomCards").html( '' );
+    console.log( "cleared room cards...");
+    
     
     let roomArray = await getRoomsSave();
+    console.log( "making room cards");
+    console.log( roomArray );
+    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
         if ( hotel.id == room.hotelId ) {
@@ -153,8 +158,8 @@ const openBookModal = async ( room, hotel ) => {
     
     //create booking obj and assign variables
     let book = new Booking( cart.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
-    setRoomAvailabilityAndSave( room.id, false );
-    makeRoomCards( hotel ); // rebuild room availability (visible in background)
+    await setRoomAvailabilityAndSave( room.id, false );
+    await makeRoomCards( hotel ); // rebuild room availability (visible in background)
 
     //create the modal HTML; includes attaching it to the modal DOM element 
     buildBookingModal( book, cart, hotel );  
@@ -177,17 +182,23 @@ const checkRoomAvailability = ( roomID ) => {
 
 const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
     let roomArray = await getRoomsSave();
+    console.log( "in set room avail and save: get: ");
+    console.log( roomArray);
+    
     let isFound = false;
 
-    for (let room of roomArray) {
-        if ( room.id == roomID ){
-            room.available = isAvailable;
+    for (let i = 0; i < roomArray.length; i++) {
+        if ( roomArray[i].id === roomID ) {
+            roomArray[i].available = isAvailable;
             isFound = true;
-            break;
+            break
         }
-    }
+    } 
+
     if (isFound === true ) {
-        setRoomsSave();
+        console.log(  "in set room avail and save: found room: " );
+        console.log( roomArray );
+        setRoomsSave( roomArray );
     } else {
     throw new Error ('cannot find room')
     }
@@ -259,11 +270,13 @@ const attachModalListeners = ( book, hotel ) => {
 const openCart = async () => {
     console.log(`open cart`);
     let cart = await getCartSave();
+
+    reBuildCart( cart )
     
-    if ( !cartBS ) {
-        reBuildCart( cart );
-        cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
-    }   
+    // if ( !cartBS ) {
+    //     reBuildCart( cart );
+    //     cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+    // }   
     cartBS.show();
 
     //attach listeners

@@ -29,11 +29,9 @@ var hotelIcon = L.icon({
 //more complex popup
 let popup = L.popup();
 function onMapClick(e) {
-    console.log(e);
         let lat = Number( e.latlng.lat.toFixed(3) );
         let lng = Number( e.latlng.lng.toFixed(3) );
         let coords = [ lat, lng ];
-        console.log( coords );
     map.panTo( coords ); //not centering properly; but variable is correct type...
 
     popup //this structure is good for when need to attach more than a simple note, eg. weather info
