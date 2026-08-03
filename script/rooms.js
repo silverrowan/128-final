@@ -149,14 +149,14 @@ const ratingToStars = (rating) => {
 }
 //#endregion
 
-//#region making bookings: openBookModal(), buildBookingModal(), updateBookModalroomTotal(), makeBooking(), addBookingToCart()
+//#region making bookings: openBookModal(), buildBookingModal(), updateBookModalroomTotal(), addBookingToCart()
 
 const openBookModal = ( room, hotel ) => {
     let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
     
     //create booking obj and assign variables
     let book = new Booking( cartArray.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
-    setRoomAvailability( room.id, false );
+    setRoomAvailabilityAndSave( room.id, false );
     //rebuild room availability (visible as background)
     makeRoomCards( hotel );
     //create the modal HTML; includes attaching it to the modal DOM element 
@@ -176,7 +176,7 @@ const checkRoomAvailability = ( roomID ) => {
     }
 }
 
-const setRoomAvailability = ( roomID, isAvailable ) => {
+const setRoomAvailabilityAndSave = ( roomID, isAvailable ) => {
     let isFound = false;
     for (let room of roomArray) {
         if ( room.id == roomID ){
@@ -228,26 +228,22 @@ const attachModalListeners = ( book, hotel ) => {
     
     //listen for modal buttons
     $("#closeBtn").click( () => {
-        setRoomAvailability( book.roomID, true);
+        setRoomAvailabilityAndSave( book.roomID, true);
         makeRoomCards( hotel );
         $("#bookingModal").modal('hide');
     });
     $("#cancelBtn").click( () => {
-        setRoomAvailability( book.roomID, true);
+        setRoomAvailabilityAndSave( book.roomID, true);
         makeRoomCards( hotel );
         $("#bookingModal").modal('hide');
     });
-    $("#bookBtn").click( () => { makeBooking( book ) } );
+    $("#bookBtn").click( () => { 
+        $("#bookingModal").modal('hide')
+        addCartItem( book ); //
+        openCart();
+     } );
 }
 
-const makeBooking = ( book ) => {
-    console.log( book );
-    console.log(`make booking for room ${book.roomID}`);
-    
-    $("#bookingModal").modal('hide')
-    addCartItem( book ); //
-    openCart();
-}
 // #endregion
 
 // #region cart offCanvase & functions | openCart(), addToCart(), makeCartEntry(), updateCartTotals()
