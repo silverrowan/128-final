@@ -281,30 +281,20 @@ class Booking {
 
 
     static toObjInstance( stringArray ) {
+        console.log( "stringArray" );
         console.log( stringArray );
         
 
-        cartArray = stringArray.map( obj => {
-            const booking = new Booking(
-                obj.id,
-                obj.roomID,
-                obj.roomName,
-                obj.hotelID,
-                obj.hotelName,
-                obj.costPerNight
-            );
-
-            console.log( cartArray );
-            
-
+        return stringArray.map( obj => {
+            const booking = new Booking( obj.id, obj.roomID, obj.
+                    roomName, obj.hotelID, obj.hotelName, obj.costPerNight
+            );            
             booking.customerID = obj.customerID;
             booking.startDate = new Date( obj.startDate );
             booking.endDate = new Date( obj.endDate );
             booking.stage = obj.stage;
             booking.roomTotal = obj.roomTotal;
             booking.adjustPriceBy = obj.adjustPriceBy;
-
-            return booking;
         });
     }
 }
