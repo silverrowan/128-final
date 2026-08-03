@@ -38,15 +38,20 @@ const getRoomInfo = async () => {
 const setRoomsSave = ( roomArray ) => localStorage.setItem("rooms", JSON.stringify( roomArray ));
 const getRoomsSave = async () => {
     const savedRooms = localStorage.getItem('rooms');
+    
     let roomArray = [];
 
-
+    console.log( savedRooms );
     
-    if ( savedRooms == undefined ) {
+    if ( savedRooms != undefined ) {
+        console.log( "in undef path" + savedRooms );
         roomArray = JSON.parse( savedRooms );
+        console.log( roomArray );
     } else {    
         roomArray = await getRoomInfo();
         localStorage.setItem('rooms', JSON.stringify( roomArray ));
+        console.log( "in def path" + savedRooms );
+        console.log( roomArray );
     }
     return roomArray;
 }
