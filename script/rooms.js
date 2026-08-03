@@ -8,6 +8,10 @@ $( async function() {
     roomArray = await getRoomArray();
     cartArray = await getCartArray();
 
+
+    console.log(cartArray);
+    console.log(cartArray[0] instanceof Booking);
+
     addHotelsToMap( hotelArray );
     buildCart()
 });
@@ -227,21 +231,22 @@ const attachModalListeners = ( book, hotel ) => {
     $('#checkOutDate').on('change', () => updateModalTotalHTML( book ));
     
     //listen for modal buttons
-    $("#closeBtn").click( () => {
-        setRoomAvailabilityAndSave( book.roomID, true);
-        makeRoomCards( hotel );
-        $("#bookingModal").modal('hide');
-    });
-    $("#cancelBtn").click( () => {
-        setRoomAvailabilityAndSave( book.roomID, true);
-        makeRoomCards( hotel );
-        $("#bookingModal").modal('hide');
-    });
+    //on close & x:  call cancelBookModal(): set room back to available, refresh cards, and close modal
+    $("#closeBtn").click( () => cancelBookModal( book, hotel ) );
+    $("#cancelBtn").click( () => cancelBookModal( book, hotel ) );
+
+    //on book button click: hide modal, addCartItem() (note includes save to localstorage etc), show cart
     $("#bookBtn").click( () => { 
         $("#bookingModal").modal('hide')
         addCartItem( book ); //
         openCart();
      } );
+}
+
+const cancelBookModal = ( book, hotel ) => {
+        setRoomAvailabilityAndSave( book.roomID, true);
+        makeRoomCards( hotel );
+        $("#bookingModal").modal('hide');
 }
 
 // #endregion
@@ -264,11 +269,12 @@ const openCart = () => {
 
 const addCartItem = ( book ) => { //new booking
     let posn = cartArray.length - 1;
-    book.advanceStage(); //change booking stage to cart from null
-    cartArray.push( book ); //add booking to cart array
+    book.advanceStage(); //change booking stage to cart from null/initial
+        console.log( cartArray );
+    // cartArray.push( book ); //add booking to cart array
         console.log( cartArray );
     saveCartChange();
-    console.log( cartArray );
+        console.log( cartArray );
     makeCartEntry( book, posn )
 
     // $("#cartCardsDiv").append( makeCartEntry( book ) );
@@ -296,6 +302,8 @@ const clearCart = () => {
 }
 
 const makeCartEntry = ( book, posn ) => { //booking already exists
+    console.log( book );
+    
     if ( book == undefined ) { // also checks for null
         $("#cartCardsDiv").html( '' );
     } else {
@@ -318,6 +326,9 @@ const makeCartEntry = ( book, posn ) => { //booking already exists
         </div> 
         `
         $("#cartCardsDiv").append( cartItemHTML );
+
+        console.log( book );
+        
         addToCartTotals( book );
         
         $(`#removeCartItem${posn}Btn`).click( () => removeCartItem( posn ) );
@@ -333,6 +344,9 @@ const resetCartTotalsTo0 = () => {
 }
 
 const addToCartTotals = ( book ) => { //booking already exists
+    console.log( cartTotals );
+    console.log( book );
+    
     cartTotals.roomsTotal += book.roomTotal;
     
     let adjustments = book.adjustPriceBy;
@@ -393,10 +407,10 @@ const buildCart = () => {
         resetCartTotalsTo0();
     }
     for (let i = 0 ; i < cartArray.length ; i++ ){
-            let book = cartArray[i];
-        if ( book != 'paid' ) {
-            makeCartEntry(  cartArray[i], i);
-            addToCartTotals();
+        let book = cartArray[i];
+        if ( book.stage == 'cart' ) {
+            makeCartEntry( book, i);
+            addToCartTotals( book );
         }
     }
     cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );

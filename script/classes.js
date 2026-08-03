@@ -68,6 +68,8 @@ class Hotel {
 }
 
 // Setting up Hotel Room Class
+// don't actually end up using because I dont have any functions that needs it
+// and the JSON parse turns it into regular objects, not instances of the class
 class Room {
     #id;
     #hotelId;
@@ -129,6 +131,8 @@ class Room {
 }
 
 // Setting up Booking Class
+// this one I do have class functions to use, so it needs to be 
+// coverted into Booking instances
 class Booking {
     #id;
     #roomID;
@@ -191,6 +195,9 @@ class Booking {
 
     get endDate() { return this.#endDate; }
     set endDate( n ) { this.#endDate = n; }
+
+    get numNights() { return this.#numNights; }
+    set numNights( n ) { this.#numNights = n; }
     
     get stage() { return this.#stage; }
     set stage( n ) { this.#stage = n; }
@@ -231,6 +238,7 @@ class Booking {
                 // if cancel remove change state to ( prvState + 'cancel' )
         //      change state to ( prvState + 'cancel' )
         switch ( this.#stage ) {
+            case 'initial':
             case null:
                 this.#stage = "cart";
                 break;
@@ -248,6 +256,56 @@ class Booking {
             //should checkout process consider length of holdning room availability in cart?
             //reserved at add to cart, start
         }
+    }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            roomID: this.#roomID,
+            roomName: this.#roomName,
+            hotelID: this.#hotelID,
+            hotelName: this.#hotelName,
+            customerID: this.#customerID,
+            costPerNight: this.#costPerNight,
+            startDate: this.#startDate,
+            endDate: this.#endDate,
+            numNights: this.#numNights,
+            stage: this.#stage,
+            timeAdded: this.#timeAdded,
+            timePaid: this.#timePaid,
+            roomTotal: this.#roomTotal,
+            adjustPriceBy: this.#adjustPriceBy
+        };
+    }
+
+
+
+    static toObjInstance( stringArray ) {
+        console.log( stringArray );
+        
+
+        cartArray = stringArray.map( obj => {
+            const booking = new Booking(
+                obj.id,
+                obj.roomID,
+                obj.roomName,
+                obj.hotelID,
+                obj.hotelName,
+                obj.costPerNight
+            );
+
+            console.log( cartArray );
+            
+
+            booking.customerID = obj.customerID;
+            booking.startDate = new Date( obj.startDate );
+            booking.endDate = new Date( obj.endDate );
+            booking.stage = obj.stage;
+            booking.roomTotal = obj.roomTotal;
+            booking.adjustPriceBy = obj.adjustPriceBy;
+
+            return booking;
+        });
     }
 }
 // #endregion
