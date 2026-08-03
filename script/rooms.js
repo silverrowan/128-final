@@ -8,12 +8,19 @@ $( async function() {
     roomArray = await getRoomArray();
     cartArray = await getCartArray();
 
-    addHotelsToMap( hotelArray );   
+    addHotelsToMap( hotelArray );
+    buildCart()
 });
 
 const addCartBtnListener = () => {
     $("#navCartBtn").click( () => openCart() );
 }
+
+const initialCartBuild = () => {
+    
+}
+
+addCartBtnListener();
 
 //#endregion
 
@@ -243,92 +250,103 @@ const makeBooking = ( book ) => {
 }
 // #endregion
 
-// #region cart offCanvase & functions | openCart(), addToCart(), makeCartItemHTML(), updateCartTotalsHTML()
-// reference & create modal itselfoffcanvase
-// const loginModal = document.querySelector('#loginModal');
-// const loginModalBS = bootstrap.Modal.getOrCreateInstance( document.querySelector('#loginModal') );
-//get login form input boxes & values
-// const usernameIn = document.querySelector("#userNameIn");
-// const userPassIn = document.querySelector("#userPasswordIn");
-// const loginErrorMsg = document.querySelector("#incorrect");
-//Get login form buttons & add listenters
-// const enterLogin = document.querySelector("#loginModalButton");
-// const cancelLogin = document.querySelector("#loginCancelButton");
-// const cancelLoginX = document.querySelector("#modalX");
+// #region cart offCanvase & functions | openCart(), addToCart(), makeCartEntry(), updateCartTotals()
 
 const openCart = () => {
     console.log(`open cart`);
-    const offcanvasElmt = document.querySelector('#cartWrapperDiv');
-    const offcanvasBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
-    offcanvasBS.show();
+    
+    if ( !cartBS ) {
+        buildCart();
+        cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+    }   
+    cartBS.show();
 
     //attach listeners
     $("#cartClearBtn").click( () => clearCart() );
     $("#cartCheckoutBtn").click( () => checkout() );
 }
 
-const addCartItem = ( book ) => {
+const addCartItem = ( book ) => { //new booking
+    let posn = cartArray.length - 1;
     book.advanceStage(); //change booking stage to cart from null
     cartArray.push( book ); //add booking to cart array
+        console.log( cartArray );
+    saveCartChange();
+    console.log( cartArray );
+    makeCartEntry( book, posn )
 
-    $("#cartCardsDiv").append( makeCartItemHTML( book ) );
-    let arrayPosn = cartArray.length - 1;
-    $(`#removeCartItem${arrayPosn}Btn`).click( () => removeCartItem( arrayPosn ) );
+    // $("#cartCardsDiv").append( makeCartEntry( book ) );
+    // let arrayPosn = cartArray.length - 1;
+    // $(`#removeCartItem${arrayPosn}Btn`).click( () => removeCartItem( arrayPosn ) );
 
     addToCartTotals( book );
-    updateCartTotalsHTML( book );
 };
 
 const removeCartItem = ( arrayPosn ) => {
         cartArray[arrayPosn] = null; //remove from the array; faster, potentially clogs memory vs splice & rebuild cart.
+        saveCartChange();
         $(`#removeCartItem${arrayPosn}Btn`).parent().parent().parent().remove(); // remove entire cart item card from the html
         removeFromCartTotals( cartArray[arrayPosn] );
-        updateCartTotalsHTML( book );
 }
 
 const clearCart = () => {
     let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
     if ( !isConfirmed ) { return; }
     cartArray = [];
+    saveCartChange();
+    cartBS.dispose();
     $("#cartCardsDiv").html( '' );
+    resetCartTotalsTo0();
+}
+
+const makeCartEntry = ( book, posn ) => { //booking already exists
+    if ( book == undefined ) { // also checks for null
+        $("#cartCardsDiv").html( '' );
+    } else {
+        let cartItemHTML = `
+        <div class="card m-3 d-flex">
+        <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
+        <div class="d-flex justify-content-between mb-0"> 
+        <button id="removeCartItem${posn}Btn" cartItem="${posn}" class="btn btn-outline-secondary 
+        btn-sm align-items-start me-5 py-1 px-2">X</button> 
+        <h5 class=" h4 mb-1">${book.roomName}</h5>
+        </div>
+        <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
+        <hr class="my-0">
+        <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
+        <p class="${posn}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
+        <p class="${posn}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
+        <h5 class="${posn}subtotal h5 my-1">$${book.roomTotal}</h5>
+        </div>
+        </div>
+        </div> 
+        `
+        $("#cartCardsDiv").append( cartItemHTML );
+        addToCartTotals( book );
+        
+        $(`#removeCartItem${posn}Btn`).click( () => removeCartItem( posn ) );
+    }
+}
+
+const resetCartTotalsTo0 = () => {
     cartTotals.roomsTotal = 0;
     cartTotals.fees = 0;
     cartTotals.discounts = 0;
-    updateCartTotalsHTML();
+    
+    updateCartTotals();
 }
 
-const makeCartItemHTML = ( book ) => {
-    let posn = cartArray.length - 1;
-
-    let cartItemHTML = `
-            <div class="card m-3 d-flex">
-                <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
-                    <div class="d-flex justify-content-between mb-0"> 
-                        <button id="removeCartItem${posn}Btn" cartItem="${posn}" class="btn btn-outline-secondary 
-                                btn-sm align-items-start me-5 py-1 px-2">X</button> 
-                        <h5 class=" h4 mb-1">${book.roomName}</h5>
-                    </div>
-                    <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
-                    <hr class="my-0">
-                    <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
-                        <p class="${posn}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
-                        <p class="${posn}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
-                        <h5 class="${posn}subtotal h5 my-1">$${book.roomTotal}</h5>
-                    </div>
-                </div>
-            </div> 
-    `
-return cartItemHTML;
-}
-
-const addToCartTotals = ( book ) => {
+const addToCartTotals = ( book ) => { //booking already exists
     cartTotals.roomsTotal += book.roomTotal;
-
+    
     let adjustments = book.adjustPriceBy;
     for ( let i = 0 ; i < adjustments.length ; i++ ) {
         if ( adjustments[i] > 0 ) { cartTotals.fees += adjustments[i]; }
         else if ( adjustments[i] < 0 ) { cartTotals.discounts += adjustments[i]; }
     }
+
+    updateCartTotals();
+
 }
 
 const removeFromCartTotals = ( book ) => {
@@ -339,9 +357,11 @@ const removeFromCartTotals = ( book ) => {
         if ( adjustments[i] > 0 ) { cartTotals.fees -= adjustments[i]; }
         else if ( adjustments[i] < 0 ) { cartTotals.discounts -= adjustments[i]; }
     }
+
+    updateCartTotals();
 }
 
-const updateCartTotalsHTML = ( book ) => {
+const updateCartTotals = () => {
     let subtotal = cartTotals.roomsTotal + cartTotals.fees + cartTotals.discounts;
     let taxes = subtotal * 0.13;
     let total = subtotal + taxes;
@@ -368,6 +388,23 @@ const updateCartTotalsHTML = ( book ) => {
             </div>
         `      
     $("#cartSumLines").html(cartTotalsHTML);
+}
+
+const buildCart = () => {
+    if ( cartBS ){ cartBS.dispose(); }
+    if ( cartArray.length <= 0 || cartArray == undefined ) {
+        makeCartEntry( null, cartArray.length  );
+        resetCartTotalsTo0();
+    }
+    for (let i = 0 ; i < cartArray.length ; i++ ){
+            let book = cartArray[i];
+        if ( book != 'paid' ) {
+            makeCartEntry(  cartArray[i], i);
+            addToCartTotals();
+        }
+    }
+    cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+
 }
 
 

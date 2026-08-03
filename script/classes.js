@@ -7,6 +7,8 @@ let hotelArray = [];
 let roomArray = [];
 let cartArray = [];
 let cartTotals = {  roomsTotal: 0, fees: 0, discounts: 0};
+let cartBS = null;
+const offcanvasElmt = document.querySelector('#cartWrapperDiv');
 
 // #region Setting up Classes
 // Setting up Hotel Class
