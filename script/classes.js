@@ -55,8 +55,8 @@ class Hotel {
     get lng() { return this.#lng; }
     set lng( n ) { this.#lng = n; }
 
-    get ratcartArraying() { return this.#rating; }
-    set ratcartArraying(  n) { this.#rating = n; }
+    get rating() { return this.#rating; }
+    set rating( n ) { this.#rating = n; }
 
     get description() { return this.#description; }
     set description( n ) { this.#description = n; }
