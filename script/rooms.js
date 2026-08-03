@@ -48,26 +48,30 @@ const makeRoomCards = ( hotel ) => {
     $("#roomCards").html( '' );    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotel.id == room.hotelId && room.available ){
-            $("#roomCards").append( makeRoomCard( room ) );
-            // $("#roomsBtn").click(  );
-            $(`#bookRoom${room.id}`).click( () => {
-                // room.available = false;
-                //chg room to unavailable - in array and json
-                //make booking obj, dont add to array yet
-                openBookModal( room, hotel );
+        if ( hotel.id == room.hotelId ) {
+            if ( room.available ){
+                $("#roomCards").append( makeRoomCard( room, true ) );
+                // $("#roomsBtn").click(  );
+                $(`#bookRoom${room.id}`).click( () => {
+                    // room.available = false;
+                    //chg room to unavailable - in array and json
+                    //make booking obj, dont add to array yet
+                    openBookModal( room, hotel );
+                });
+            } else {
+                $("#roomCards").append( makeRoomCard( room, false ) );
+            }
                 
-            });
         }
-    }   
-}
+    }
+};
 
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
         <div class="col col-sm-6 col-lg-4">            
-            <div class="card m-3 d-flex">
+            <div class="card m-3 d-flex ${availToActiveClass( room )}">
                 <div class=" d-flex align-items-stretch">
-                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${room.image}">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit ${ availToActiveClass( room ) }" src="${room.image}">
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${room.name}</h5>
@@ -82,12 +86,30 @@ const makeRoomCard = ( room ) => {
                     <p class="card-text">up to ${room.maxGuests} guests</p>  
                     <p class="card-text align-self-end"><span class="h3">$${room.pricePerNight}</span><span class="h6">/ night</span></p>
                     
-                    <button id="bookRoom${room.id}" roomNum="${room.id}" class="btn btn-success align-self-end">Book Room</button>
+                    ${makeRoomBookBtn( room )}
                 </div>
             </div>
         </div>
         `
     return cardHTML;
+}
+
+const availToActiveClass = ( room ) => {
+    let activeClass;
+    if ( room.available == false ) { activeClass = 'inactive'; }
+    else { activeClass = 'active' }
+    return activeClass;
+}
+
+const makeRoomBookBtn = ( room ) => {
+    let btnClass;
+    if ( room.available == false ) { btnClass = 'btn-secondary inactive" disabled>Unavailable'; }
+    else { btnClass = 'btn-success">Book' }    
+    let btnHTML = `
+        <button id="bookRoom${room.id}" roomNum="${room.id}" 
+                class="btn align-self-end ${btnClass}</button>
+                `
+    return btnHTML;    
 }
 
 const ratingToStars = (rating) => {

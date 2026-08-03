@@ -42,3 +42,7 @@ nav, .foot {
 .star {
     height: 1.5rem;
 }
+
+.inactive {
+    opacity: 70%;
+}
