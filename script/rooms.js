@@ -17,7 +17,17 @@ $( async function() {
 
     addHotelsToMap( hotelArray );
     reBuildCart( initialCartArray )
+
+
+    //attach listeners to permanent buttons - inclues invisible ones
     $("#navCartBtn").click( () => openCart() );
+    //like those on the offcanvas cart, that do not get built in the JS
+    $("#cartClearBtn").click( () => clearCart() );
+    $("#cartCheckoutBtn").click( () => checkout() );
+    // the modal listeners need information on current state, so are attached 
+    // later with that information, using .off(...).on(...) to avoid build-up
+    // of multiple listeners.
+
 });
 
 //#endregion
@@ -272,16 +282,7 @@ const openCart = async () => {
     let cart = await getCartSave();
 
     reBuildCart( cart )
-    
-    // if ( !cartBS ) {
-    //     reBuildCart( cart );
-    //     cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
-    // }   
     cartBS.show();
-
-    //attach listeners
-    $("#cartClearBtn").click( () => clearCart() );
-    $("#cartCheckoutBtn").click( () => checkout() );
 }
 
 const addCartItem = ( book, cart ) => { //new booking
