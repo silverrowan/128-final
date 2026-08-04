@@ -275,7 +275,31 @@ const attachModalListeners = ( book, hotel ) => {
 
 // #endregion
 
-// #region cart offCanvase & functions | openCart(), addToCart(), makeCartItemHTML(), updateCartTotals()
+// #region cart offCanvase & functions | openCart(), addToCart(), makeCartItemHTML(), updateCartTotalsHTML()        
+
+const clearCartItemHTML = () => $("#cartCardsDiv").html( '' );
+
+const resetCartTotalsTo0 = () => {
+    cartTotals.roomsTotal = 0;
+    cartTotals.fees = 0;
+    cartTotals.discounts = 0;
+    
+    updateCartTotalsHTML();
+}
+
+const reBuildCart = ( cartArray ) => {
+    if ( cartBS ){ cartBS.dispose(); }
+    clearCartItemHTML();
+    resetCartTotalsTo0();
+
+    for (let i = 0 ; i < cartArray.length ; i++ ){
+            let book = cartArray[i];
+        if ( book != 'paid' ) {
+            makeCartItemHTML( cartArray[i] );
+        }
+    }
+    cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+}
 
 const openCart = async () => {
     console.log(`open cart`);
@@ -315,9 +339,6 @@ const clearCart = () => {
     resetCartTotalsTo0();
 }
 
-const clearCartItemHTML = () => $("#cartCardsDiv").html( '' );
-
-
 const makeCartItemHTML = async ( book ) => { //booking already exists
     if ( book != undefined ) { // also checks for null
 
@@ -346,16 +367,8 @@ const makeCartItemHTML = async ( book ) => { //booking already exists
     }
 }
 
-const resetCartTotalsTo0 = () => {
-    cartTotals.roomsTotal = 0;
-    cartTotals.fees = 0;
-    cartTotals.discounts = 0;
-    
-    updateCartTotals();
-}
-
-const addToCartTotals = ( book ) => { //booking already exists
-    cartTotals.roomsTotal += book.roomTotal;
+// const addToCartTotals = ( book ) => { //booking already exists
+//     cartTotals.roomsTotal += book.roomTotal;
     
     let adjustments = book.adjustPriceBy;
     for ( let i = 0 ; i < adjustments.length ; i++ ) {
@@ -408,20 +421,7 @@ const updateCartTotals = () => {
     $("#cartSumLines").html(cartTotalsHTML);
 }
 
-const reBuildCart = ( cartArray ) => {
-    if ( cartBS ){ cartBS.dispose(); }
-    clearCartItemHTML();
-    resetCartTotalsTo0();
 
-    for (let i = 0 ; i < cartArray.length ; i++ ){
-            let book = cartArray[i];
-        if ( book != 'paid' ) {
-            makeCartItemHTML( cartArray[i] );
-        }
-    }
-    cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
-
-}
 
 
 
