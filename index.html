@@ -67,6 +67,28 @@
         </div>
     </div>
 </div>
+<!-- Confirm Clear Modal -->
+<div class="modal" id="confClearModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="BookingModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title"></h4>
+                </div>
+                <button type="button" id="clearCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>  
+            <div class="modal-body">    
+                <p>Are you sure you want to remove everything?</p>
+                <p>You will lose your holds on all rooms in the cart."</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelClearBtn" class="btn btn-outline-success">Cancel</button>
+                <button type="button" id="confirmClearBtn" class="btn btn-danger">Empty Cart</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- CART OFFCANVAS -->
 <div id="cartWrapperDiv" class="offcanvas card justify-content-start align-items-end flex-column">
     <form id="cartForm" action="" method="POST">
