@@ -4,15 +4,10 @@
 
 // Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
+    console.log("--------------------------page initial loading-------------------------")
     hotelArray = await getHotelArray();  
     let initialRoomArray = await getRoomsSave();
     let initialCartArray = await getCartSave();
-
-    console.log("----initial array gets-----");
-    console.log("hotel: " + hotelArray );
-    console.log("room: " + initialRoomArray );
-    console.log("cart: " + initialCartArray );
-    console.log("---------------------------");
     
 
     addHotelsToMap( hotelArray );
@@ -61,12 +56,8 @@ const makeHotelCard = ( hotel ) => {
 
 const makeRoomCards = async ( hotel ) => {
     $("#roomCards").html( '' );
-    console.log( "cleared room cards...");
-    
     
     let roomArray = await getRoomsSave();
-    console.log( "making room cards");
-    console.log( roomArray );
     
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
@@ -192,8 +183,6 @@ const checkRoomAvailability = ( roomID ) => {
 
 const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
     let roomArray = await getRoomsSave();
-    console.log( "in set room avail and save: get: ");
-    console.log( roomArray);
     
     let isFound = false;
 
@@ -206,8 +195,6 @@ const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
     } 
 
     if (isFound === true ) {
-        console.log(  "in set room avail and save: found room: " );
-        console.log( roomArray );
         setRoomsSave( roomArray );
     } else {
     throw new Error ('cannot find room')

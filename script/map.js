@@ -47,7 +47,6 @@ map.on('click', onMapClick);
 // Add Hotel Icons to the map (map created in map.js script)
 
 const addHotelsToMap = ( hotelArray, roomArray ) => {
-    console.log( "adding hotels to map");
     
     let markerArray = [];
     for (let i = 0; i < hotelArray.length; i++) {

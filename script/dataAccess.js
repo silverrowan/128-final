@@ -36,33 +36,23 @@ const getRoomInfo = async () => {
 }
 
 const setRoomsSave = ( roomArray ) => {
-    console.log( "saving to rooms: ");
-    console.log( roomArray);
     localStorage.setItem("rooms", JSON.stringify( roomArray ));
 }
 const getRoomsSave = async () => {
     const savedRooms = localStorage.getItem('rooms');
     
     let roomArray = [];
-
-    console.log("savedRooms: ", savedRooms, " typeof: ", typeof savedRooms);
-    
+ 
     if ( savedRooms != undefined && savedRooms !== 'undefined' ) {
-        // console.log( "in def path " + savedRooms );
         roomArray = JSON.parse( savedRooms );
-        // console.log( roomArray );
     } else {    
-        // console.log( "in undef path" + savedRooms );
         roomArray = await getRoomInfo();
         localStorage.setItem('rooms', JSON.stringify( roomArray ));
-        // console.log( roomArray );
     }
     return roomArray;
 }
 
 const setCartSave = ( cartArray ) => {
-    console.log( "saving to cart: ");
-    console.log( cartArray);
     localStorage.setItem("cart", JSON.stringify( cartArray ));
 }
 const getCartSave = async () => {
@@ -85,8 +75,6 @@ const getCartSave = async () => {
 
         return book;
         });
-
-        console.log( "cart: " + cartArray );
         
         // Booking.toObjInstance( cartArray );
     } else { 
