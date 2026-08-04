@@ -175,6 +175,47 @@
         </div>
     </div>
 </div>
+<!-- CONFIRM PURCHASE Modal -->
+ <div class="modal" id="coutDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="coutModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title">Confirm Purchase Details</h4>
+                </div>
+                <button type="button" id="coutDetailCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>       
+            <div class="modal-body" id="confCheckoutDetailsContent">
+                <!-- 
+                ...customer name
+                ...sustomer contact info (email, phone)
+                ...customer address
+                <hr>
+                booking:
+                for each cart item:
+                    hotel - room 
+                    maximum guests: #    
+                    dates (num days)
+                    per day / subtotal
+                for summary
+                    subtotal
+                    fees/discounts
+                    taxes
+                    total
+                Buttons -> on yes, pop up 'please contact xyz to pay within 24 hrs' 
+                advance all cart bookings to paid
+                make purchase object with the customer and booking and totals info.
+                clear cart
+                save cleared cart to local
+                -->
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" id="coutDetailCancelBtn" class="btn btn-outline-secondary">Cancel</button>
+                <button type="button" id="coutDetailContinueBtn" class="btn btn-success">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--MAIN -->
 <main class="container-fluid">
     <div class="row">
