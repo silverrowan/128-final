@@ -17,11 +17,25 @@ $( async function() {
     //attach listeners to permanent buttons - inclues invisible ones
     $("#navCartBtn").click( () => openCart() );
     //like those on the offcanvas cart, that do not get built in the JS
-    $("#cartClearBtn").click( () => clearCart() );
-    $("#cartCheckoutBtn").click( () => checkout() );
-    // the modal listeners need information on current state, so are attached 
-    // later with that information, using .off(...).on(...) to avoid build-up
-    // of multiple listeners.
+    $("#cartClearBtn").click( () => openConfirmClear() );
+    $("#cartCheckoutBtn").click( () => openCheckout() );
+    //
+    // the booking modal listeners need information on current state, so are 
+    // attached later with that information, using .off(...).on(...) to avoid 
+    // build-up of multiple listeners. -- undid the on/off broke something.
+    // may be some listener build-up on viewings with many add to carts, but 
+    // currently there is no duplication, so worst case seems like it may start
+    // slowing down the page.
+
+    //confirm cart clear modal
+    $("#clearCloseBtn").click( () => clearConfModal.hide() );
+    $("#cancelClearBtn").click( () => clearConfModal.hide() );
+    $("#confirmClearBtn").click( () => clearCart() );
+
+    //checkout modal buttons
+    $("#coutCloseBtn").click( () => coutModal.hide() );
+    $("#coutCancelBtn").click( () => coutModal.hide() );
+    $("#coutContinueBtn").click( () => openConfirmCheckout() );
 
 });
 

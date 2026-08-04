@@ -59,10 +59,16 @@ const removeCartItem = async ( itemID ) => {
     openCart();
 }
 
-const clearCart = async () => {
-    let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
-    if ( !isConfirmed ) { return; }
+const openConfirmClear = () => {
+    console.log("openConfirmClear fired");
+    let confClear = $("#confClearModal")[0];
+    console.log(confClear);
+    const clearConfModal = bootstrap.Modal.getOrCreateInstance( confClear );
+    clearConfModal.show();
+    console.log("show called");
+}
 
+const clearCart = async () => {
     let cart = await getCartSave();
     for ( let i = 0; i < cart.length ; i++ ){
         await setRoomAvailabilityAndSave( cart[i].roomID, true);

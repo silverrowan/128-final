@@ -100,16 +100,81 @@
             </div>
             <div class="d-flex justify-content-between mt-5">
                 <button id="cartClearBtn" class="btn btn-lg btn-outline-danger me-3">CLEAR CART</button>
-                <button id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
+                <button type="button" id="cartCheckoutBtn" class="btn btn-lg btn-success">CHECKOUT</button>
             </div>
         </div>
     </form>
 </div>
 <!-- CHECKOUT Modal --><!-- Vertically centered Modal -->
-
-
-
-
+<div class="modal" id="coutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="coutModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title">Checkout</h4>
+                </div>
+                <button type="button" id="coutCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>       
+            <div class="modal-body">    
+                <form id="coutForm" action="" method="POST">
+                    <div class="container flex-column">
+                        <div class="row g-3 mb-3">
+                            <div class="form-floating col-6 g-3" >
+                                <input type="text" class="form-control" id="firstNameTxt" name="firstName" placeholder=" " required/>
+                                <label class="form-label" for="firstNameTxt">Given Name</label>
+                            </div>
+                            <div class="form-floating col-6 g-3" >
+                                <input type="text" class="form-control" id="lastNameTxt" name="lastName" placeholder=" " required/>
+                                <label class="form-label" for="lastNameTxt">Family Name</label>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="form-floating col-4 g-3" >
+                                <input type="tel" class="form-control" id="phoneIn" name="phone" placeholder=" " required/>
+                                <label class="form-label" for="phoneIn">Phone Number</label>
+                            </div>
+                            <div class="form-floating col-8 g-3" >
+                                <input type="email" class="form-control" id="emailIn" name="email" placeholder=" " required/>
+                                <label class="form-label" for="emailIn">Email</label>
+                            </div>
+                        </div>
+                        <div class="row g-3 my-3"><hr></div>
+                        <div class="row g-3 mb-3">
+                            <div class="form-floating col g-3" >
+                                <input type="text" class="form-control" id="stAddressTxt" name="stAddress" placeholder=" " required/>
+                                <label class="form-label" for="stAddressTxt">Address</label>
+                            </div>                        
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="form-floating col-7 g-3" >
+                                <input type="text" class="form-control" id="cityTxt" name="city" placeholder=" " required/>
+                                <label class="form-label" for="cityTxt">City</label>
+                            </div>
+                            <div class="form-floating  col-5 g-3" >                                
+                                <input type="text" class="form-control" id="zipTxt" name="zip" placeholder=" " required/>
+                                <label class="form-label" for="zipTxt">Postal Code / ZIP</label>
+                            </div>                        
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="form-floating  col-5 g-3" >
+                                <input type="text" class="form-control" id="stateTxt" name="state" placeholder=" " required/>
+                                <label class="form-label" for="stateTxt">Provence / State</label>
+                            </div>
+                            <div class="form-floating  col-7 g-3" >
+                                <input type="text" class="form-control" id="countryTxt" name="country" placeholder=" " required/>
+                                <label class="form-label" for="countryTxt">Country</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" id="coutCancelBtn" class="btn btn-outline-secondary">Cancel</button>
+                <button type="button" id="coutContinueBtn" class="btn btn-success">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--MAIN -->
 <main class="container-fluid">
     <div class="row">
