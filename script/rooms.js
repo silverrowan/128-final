@@ -380,17 +380,17 @@ const makeCartItemHTML = async ( book ) => { //booking already exists
 
 // }
 
-const removeFromCartTotals = ( book ) => {
-    cartTotals.roomsTotal -= book.roomTotal;
+// const removeFromCartTotals = ( book ) => {
+//     cartTotals.roomsTotal -= book.roomTotal;
 
-    let adjustments = book.adjustPriceBy;
-    for ( let i = 0 ; i < adjustments.length ; i++ ) {
-        if ( adjustments[i] > 0 ) { cartTotals.fees -= adjustments[i]; }
-        else if ( adjustments[i] < 0 ) { cartTotals.discounts -= adjustments[i]; }
-    }
+//     let adjustments = book.adjustPriceBy;
+//     for ( let i = 0 ; i < adjustments.length ; i++ ) {
+//         if ( adjustments[i] > 0 ) { cartTotals.fees -= adjustments[i]; }
+//         else if ( adjustments[i] < 0 ) { cartTotals.discounts -= adjustments[i]; }
+//     }
 
-    updateCartTotals();
-}
+//     updateCartTotalsHTML();
+// }
 
 const updateCartTotals = () => {
     let subtotal = cartTotals.roomsTotal + cartTotals.fees + cartTotals.discounts;
