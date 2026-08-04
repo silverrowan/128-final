@@ -288,7 +288,7 @@ const resetCartTotalsTo0 = () => {
 }
 
 const reBuildCart = ( cartArray ) => {
-    if ( cartBS ){ cartBS.dispose(); }
+    // if ( cartBS ){ cartBS.dispose(); }
     clearCartItemHTML();
     resetCartTotalsTo0();
 
