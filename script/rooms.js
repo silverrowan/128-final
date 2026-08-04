@@ -18,7 +18,7 @@ $( async function() {
     $("#navCartBtn").click( () => openCart() );
     //like those on the offcanvas cart, that do not get built in the JS
     $("#cartClearBtn").click( () => clearCart() );
-    $("#cartCheckoutBtn").click( () => checkout() );
+    $("#cartCheckoutBtn").click( () => openCheckout() );
     // the modal listeners need information on current state, so are attached 
     // later with that information, using .off(...).on(...) to avoid build-up
     // of multiple listeners.
