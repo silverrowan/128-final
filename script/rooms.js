@@ -324,9 +324,9 @@ const removeCartItem = async ( itemID ) => {
 
     let removedIndex = cart.findIndex( item => item.id == itemID )
     let removed = cart.splice( removedIndex , 1 ); //save removed obj as removed (array)
-    $(`#${itemID}removeCartItemBtn`).parent().parent().parent().remove(); // remove entire cart item card from the html
-    removeFromCartTotals( removed[0] );
-    setCartSave( cartArray );
+    // $(`#${itemID}removeCartItemBtn`).parent().parent().parent().remove(); // remove entire cart item card from the html
+    // removeFromCartTotals( removed[0] );
+    setCartSave( cart );
 }
 
 const clearCart = () => {
