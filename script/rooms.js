@@ -286,15 +286,13 @@ const openCart = async () => {
 }
 
 const addCartItem = ( book, cart ) => { //new booking
-
-    let posn = cart.length;
+    // let posn = cart.length;
     book.advanceStage(); //change booking stage to cart from null
-
     cart.push( book );
     setCartSave( cart );
 
-    makeCartItemHTML( book )
-    addToCartTotals( book );
+    // makeCartItemHTML( book )
+    // addToCartTotals( book );
 };
 
 const removeCartItem = async ( itemID ) => {
