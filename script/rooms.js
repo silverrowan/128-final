@@ -217,7 +217,7 @@ const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
 const buildBookingModal = ( book, cart, hotel ) => {
     updateModalTitleHTML( book );
     updateModalTotalHTML( book, cart );
-    attachModalListeners( book, hotel );
+    updateModalListeners( book, hotel );
 }
 
 const updateModalTitleHTML = ( book ) => {
@@ -243,7 +243,7 @@ const updateModalTotalHTML = ( book, cart ) => {
     $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
 }
 
-const attachModalListeners = ( book, hotel ) => {
+const updateModalListeners = ( book, hotel ) => {
     //attach listener to updates as dates updated
     $('#checkInDate').on('change', async () => {
         let cart = await getCartSave();
@@ -392,7 +392,7 @@ const makeCartItemHTML = async ( book ) => { //booking already exists
 //     updateCartTotalsHTML();
 // }
 
-const updateCartTotals = () => {
+const updateCartTotalsHTML = () => {
     let subtotal = cartTotals.roomsTotal + cartTotals.fees + cartTotals.discounts;
     let taxes = subtotal * 0.13;
     let total = subtotal + taxes;
