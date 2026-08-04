@@ -22,6 +22,8 @@
 	<script defer src="script\dataAccess.js"></script>
 	<script defer src="script\map.js"></script>
 	<script defer src="script\rooms.js"></script>
+	<script defer src="script\cart.js"></script>
+	<script defer src="script\checkout.js"></script>
 </head>
 <body>
 <!--NAVBAR-->
@@ -31,18 +33,18 @@
         <button id="navCartBtn" class="btn btn-success" type="button">Cart</button>
     </div>
 </nav>
-<!-- CART MODAL --><!-- Vertically centered modal -->
-<div class="modal" id="bookingModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header flex-row justify-space-between">
+<!-- CART BookModal --><!-- Vertically centered BookModal -->
+<div class="BookModal" id="bookingModal" tabindex="-1">
+    <div class="BookModal-dialog BookModal-dialog-centered">
+        <div class="BookModal-content">
+            <div class="BookModal-header flex-row justify-space-between">
                 <div id="BookingModalTitle" class="flex-column align-start">
-                    <h4 class="modal-title"></h4>
+                    <h4 class="BookModal-title"></h4>
                     <h5 class="h6 fst-italic"></h5>
                 </div>
                 <button type="button" id="closeBtn" class="btn-close align-self-start" aria-label="Close"></button>
             </div>  
-            <div class="modal-body">    
+            <div class="BookModal-body">    
                 <form id="cartForm" action="" method="POST">
                     <div class="cartItemDateDiv d-flex justify-content-center mb-2">
                         <div class="d-flex justify-content-evenly align-items-center flex-column mx-3">
@@ -54,11 +56,11 @@
                             <input type="date" id="checkOutDate" name="roomEnd" />
                         </div>
                     </div>
-                    <div id="modalroomTotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
+                    <div id="BookModalroomTotalDiv" class="cartItemCount d-flex flex-column align-items-end justify-content-end">
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
+            <div class="BookModal-footer">
                 <button type="button" id="cancelBtn" class="btn btn-outline-secondary">Cancel</button>
                 <button type="button" id="bookBtn" class="btn btn-primary">Book</button>
             </div>
@@ -67,6 +69,7 @@
 </div>
 <!-- CART OFFCANVAS -->
 <div id="cartWrapperDiv" class="offcanvas card justify-content-start align-items-end flex-column">
+
     <form id="cartForm" action="" method="POST">
         <div id="cartCardsDiv">
         </div>
