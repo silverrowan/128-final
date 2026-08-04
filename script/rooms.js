@@ -1,205 +1,39 @@
 "use strict";
-// #region Setting up Classes
-// Setting up Hotel Class
-class Hotel {
-    #id;
-    #name;
-    #city;
-    #country;
-    #lat;
-    #lng;
-    #rating;
-    #description;
-    #image;
 
-    //constructors
-    constructor( id, name, city, country, lat, lng, rating, description, image ) {
-        this.#id=id;
-        this.#name=name;
-        this.#city=city;
-        this.#country=country;
-        this.#lat=lat;
-        this.#lng=lng;
-        this.#rating=rating;
-        this.#description=description;
-        this.#image=image
-    }
+//#region Initial on load + addHotelsToMap() & addHotelIcon() + cartListener: 
 
-    //setters & getters
-    get id() { return this.#id; }
-    set id(  n) { this.#id = n; }
-
-    get name() { return this.#name; }
-    set name( n ) { this.#name = n; }
-
-    get city() { return this.#city; }
-    set city( n ) { this.#city = n; }
-
-    get country() { return this.#country; }
-    set country(  n) { this.#country = n; }
-
-    get lat() { return this.#lat; }
-    set lat( n ) { this.#lat = n; }
-
-    get lng() { return this.#lng; }
-    set lng( n ) { this.#lng = n; }
-
-    get rating() { return this.#rating; }
-    set rating(  n) { this.#rating = n; }
-
-    get description() { return this.#description; }
-    set description( n ) { this.#description = n; }
-
-    get image() { return this.#image; }
-    set image( n ) { this.#image = n; }
-
-    //additional obj functions
-}
-
-// Setting up Hotel Room Class
-class Room {
-    #id;
-    #hotelId;
-    #name;
-    #type;
-    #beds;
-    #maxGuests;
-    #pricePerNight;
-    #rating;
-    #available;
-    #image;
-
-    //constructors
-    constructor( id, hotelId, name, type, beds, maxGuests, pricePerNight, rating, available, image ) {
-        this.#id=id;
-        this.#hotelId=hotelId;
-        this.#name=name;
-        this.#type=type;
-        this.#beds=beds;
-        this.#maxGuests=maxGuests;
-        this.#pricePerNight=pricePerNight;
-        this.#rating=rating;
-        this.#available=available;
-        this.#image=image
-    }
-
-    //setters & getters
-    get id() { return this.#id; }
-    set id(  n) { this.#id = n; }
-
-    get hotelId() { return this.#hotelId; }
-    set hotelId( n ) { this.#hotelId = n; }
-
-    get name() { return this.#name; }
-    set name( n ) { this.#name = n; }
-
-    get type() { return this.#type; }
-    set type( n ) { this.#type = n; }
-
-    get beds() { return this.#beds; }
-    set beds(  n) { this.#beds = n; }
-
-    get maxGuests() { return this.#maxGuests; }
-    set maxGuests( n ) { this.#maxGuests = n; }
-
-    get pricePerNight() { return this.#pricePerNight; }
-    set pricePerNight( n ) { this.#pricePerNight = n; }
-
-    get rating() { return this.#rating; }
-    set rating(  n) { this.#rating = n; }
-
-    get available() { return this.#available; }
-    set available( n ) { this.#available = n; }
-
-    get image() { return this.#image; }
-    set image( n ) { this.#image = n; }
-
-    //additional obj functions    
-}
-// #endregion
-
-// #region getting and parsing JSON functions: get_Info, make_Array, _ = Hotel or Room
-const getHotelInfo = async () => {
-    const hotelLocation = "/public/hotels.json";
-    try {
-        const response = await fetch( hotelLocation );
-        if ( !response.ok ) throw new Error('cannot find file');
-
-        const hotelData = await response.json();
-        return hotelData;
-    } catch (e) { console.error('Failed to load hotels') }
-    finally { console.log( "this happens when hotels.js fetch happens - regardless of success or failure");
-    }
-}
-
-const getRoomInfo = async () => {
-    const roomLocation = "/public/rooms.json";
-    try {
-        const response = await fetch( roomLocation );
-        if ( !response.ok ) throw new Error('cannot find file');
-
-        const roomData = await response.json();
-        return roomData;
-    } catch (e) { console.error('Failed to load rooms') }
-}
-
-const makeHotelArray = ( hotelsRaw ) => {
-    let hotelArray = [];
-    for ( let i = 0; i < hotelsRaw.length; i++) {
-        let h = hotelsRaw[i];
-
-        hotelArray[i] = new Hotel( h.id, h.name, h.city, h.country, 
-                h.lat, h.lng, h.rating, h.description, h.image );
-    }
-    return hotelArray;
-}
-
-const makeRoomArray = ( roomsRaw ) => {
-    let roomArray = [];
-    for ( let i = 0; i < roomsRaw.length; i++) {
-        let r = roomsRaw[i];
-
-        roomArray[i] = new Room( r.id, r.hotelId, r.name, r.type, r.beds, 
-            r.maxGuests, r.pricePerNight, r.rating, r.available, r.image );
-    }
-    return roomArray;    
-}
-//#endregion
-
-
-//#region Initial on load + addHotelsToMap() & addHotelIcon(): 
 // Add Hotel Icons to the map (map created in map.js script)
 $( async function() {
-    const hotelsRaw = await getHotelInfo();
-    const roomsRaw = await getRoomInfo();
-    console.log( hotelsRaw );
-    console.log( roomsRaw );
+    hotelArray = await getHotelArray();  
+    let initialRoomArray = await getRoomsSave();
+    let initialCartArray = await getCartSave();
 
-    let hotelsArray = makeHotelArray( hotelsRaw )
-    let roomsArray = makeRoomArray( roomsRaw )
-
-    addHotelsToMap( hotelsArray, roomsArray );
-
+    console.log("----initial array gets-----");
+    console.log("hotel: " + hotelArray );
+    console.log("room: " + initialRoomArray );
+    console.log("cart: " + initialCartArray );
+    console.log("---------------------------");
     
+
+    addHotelsToMap( hotelArray );
+    reBuildCart( initialCartArray )
+
+
+    //attach listeners to permanent buttons - inclues invisible ones
+    $("#navCartBtn").click( () => openCart() );
+    //like those on the offcanvas cart, that do not get built in the JS
+    $("#cartClearBtn").click( () => clearCart() );
+    $("#cartCheckoutBtn").click( () => checkout() );
+    // the modal listeners need information on current state, so are attached 
+    // later with that information, using .off(...).on(...) to avoid build-up
+    // of multiple listeners.
+
 });
 
-const addHotelsToMap = ( hotelsArray, roomsArray ) => {
-    let markerArray = [];
-    for (let i = 0; i < hotelsArray.length; i++) {
-        markerArray[i] = addHotelIcon( hotelsArray[i], roomsArray );
-    }
-    return markerArray;
-}
-
-const addHotelIcon = ( hotelObj, roomsArray ) => {  
-    let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
-    marker.addEventListener("click", () => makeHotelCard( hotelObj, roomsArray ));
-    return marker;
-}
 //#endregion
 
-//#region define cards makeHotelCard() and makeRoomCard()
-const makeHotelCard = ( hotel, roomsArray ) => {
+//#region define cards makeHotelCard() and makeRoomCard/s() ratingToStart()
+const makeHotelCard = ( hotel ) => {
     $("#roomCards").html( '' ); 
     let cardHTML = `       
             <div class="card m-3 d-flex">
@@ -207,7 +41,7 @@ const makeHotelCard = ( hotel, roomsArray ) => {
                     <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${hotel.image}" alt="a photo of ${hotel.name}">
                 </div>	
                 <div class="card-body d-flex flex-column">
-                    <h3 class="card-title" id="">${hotel.name}</h3>
+                    <h3 class="card-title" id="hotelTitle" hotelId="${hotel.id}">${hotel.name}</h3>
                     <div class="flex-row">
                     `
     cardHTML += ratingToStars( hotel.rating );
@@ -222,28 +56,40 @@ const makeHotelCard = ( hotel, roomsArray ) => {
         </div>    
     `
     $("#initialCard").html(cardHTML);
-    $("#roomsBtn").click( () => makeRoomCards( roomsArray, hotel.id ) );
+    $("#roomsBtn").click( () => makeRoomCards( hotel ) );
 }
 
-const makeRoomCards = ( roomArray, hotelId ) => {
-    $("#roomCards").html( '' );    
-    console.log("makeroomcards");
+const makeRoomCards = async ( hotel ) => {
+    $("#roomCards").html( '' );
+    console.log( "cleared room cards...");
+    
+    
+    let roomArray = await getRoomsSave();
+    console.log( "making room cards");
+    console.log( roomArray );
+    
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
-        if ( hotelId == room.hotelId && room.available ){
-            console.log( "id match");
-            $("#roomCards").append( makeRoomCard( room ) );
-            $("#roomsBtn").click( bookRoom );
+        if ( hotel.id == room.hotelId ) {
+            if ( room.available ){
+                $("#roomCards").append( makeRoomCard( room, true ) );
+                $(`#bookRoom${room.id}`).click( () => {
+                    openBookModal( room, hotel );
+                });
+            } else {
+                $("#roomCards").append( makeRoomCard( room, false ) );
+            }
+                
         }
-    }   
-}
+    }
+};
 
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
         <div class="col col-sm-6 col-lg-4">            
-            <div class="card m-3 d-flex">
+            <div class="card m-3 d-flex ${availToActiveClass( room )}">
                 <div class=" d-flex align-items-stretch">
-                    <img class="card-img-top card-img-bottom card-img imgCoverFit " src="${room.image}">
+                    <img class="card-img-top card-img-bottom card-img imgCoverFit ${ availToActiveClass( room ) }" src="${room.image}">
                 </div>	
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${room.name}</h5>
@@ -258,12 +104,30 @@ const makeRoomCard = ( room ) => {
                     <p class="card-text">up to ${room.maxGuests} guests</p>  
                     <p class="card-text align-self-end"><span class="h3">$${room.pricePerNight}</span><span class="h6">/ night</span></p>
                     
-                    <button id="bookRoom${room.id}" roomNum="${room.id}" class="btn btn-success align-self-end">Book Room</button>
+                    ${makeRoomBookBtn( room )}
                 </div>
             </div>
         </div>
         `
     return cardHTML;
+}
+
+const availToActiveClass = ( room ) => {
+    let activeClass;
+    if ( room.available == false ) { activeClass = 'inactive'; }
+    else { activeClass = 'active' }
+    return activeClass;
+}
+
+const makeRoomBookBtn = ( room ) => {
+    let btnClass;
+    if ( room.available == false ) { btnClass = 'btn-secondary inactive" disabled>Unavailable'; }
+    else { btnClass = 'btn-success">Book' }    
+    let btnHTML = `
+        <button id="bookRoom${room.id}" roomNum="${room.id}" 
+                class="btn align-self-end ${btnClass}</button>
+                `
+    return btnHTML;    
 }
 
 const ratingToStars = (rating) => {
@@ -294,6 +158,269 @@ const ratingToStars = (rating) => {
 
     return starsOut;
 }
+//#endregion
+
+//#region making bookings: openBookModal(), buildBookingModal(), updateBookModalroomTotal(), addBookingToCart()
+
+const openBookModal = async ( room, hotel ) => {
+    let cart = await getCartSave();
+    let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
     
-const bookRoom = ( room ) => { console.log(`book room ${room.id}`);
+    //create booking obj and assign variables
+    let book = new Booking( cart.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
+    await setRoomAvailabilityAndSave( room.id, false );
+    await makeRoomCards( hotel ); // rebuild room availability (visible in background)
+
+    //create the modal HTML; includes attaching it to the modal DOM element 
+    buildBookingModal( book, cart, hotel );  
+    // make & show Bootstrap Modal window
+    const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
+    bookingModal.show();
 }
+
+const checkRoomAvailability = ( roomID ) => {
+    let roomArray = getRoomsSave();
+
+    for (let room of roomArray) {
+        if (room.id === roomID) {
+            return room.available
+        } else {
+            throw new Error( 'cannot find room' )
+        }
+    }
+}
+
+const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
+    let roomArray = await getRoomsSave();
+    console.log( "in set room avail and save: get: ");
+    console.log( roomArray);
+    
+    let isFound = false;
+
+    for (let i = 0; i < roomArray.length; i++) {
+        if ( roomArray[i].id === roomID ) {
+            roomArray[i].available = isAvailable;
+            isFound = true;
+            break
+        }
+    } 
+
+    if (isFound === true ) {
+        console.log(  "in set room avail and save: found room: " );
+        console.log( roomArray );
+        setRoomsSave( roomArray );
+    } else {
+    throw new Error ('cannot find room')
+    }
+}
+
+const buildBookingModal = ( book, cart, hotel ) => {
+    updateModalTitleHTML( book );
+    updateModalTotalHTML( book, cart );
+    updateModalListeners( book, hotel );
+}
+
+const updateModalTitleHTML = ( book ) => {
+    let modalTitleHTML = `
+                        <h4 class="modal-title">${book.roomName}</h4>
+                        <h5 class="h6 fst-italic">${book.hotelName}</h5>
+                        `
+    $("#BookingModalTitle").html( modalTitleHTML )
+}
+
+const updateModalTotalHTML = ( book, cart ) => {  
+    let bookNum = cart.length;
+    book.startDate = new Date( $('#checkInDate').val() );
+    book.endDate = new Date( $('#checkOutDate').val() );
+
+    book.numNights = book.calcNights();    
+    if ( book.numNights == null ){ return; }
+
+    let modalRoomTotalDivHTML = `
+        <p id="${bookNum}Math" class="">${book.numNights} x $${book.costPerNight}/night</p>
+        <h5 id="${bookNum}roomTotal" class="h5" >$${book.calcRoomTotal()}</h5>
+        `;
+    $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
+}
+
+const updateModalListeners = ( book, hotel ) => {
+    //attach listener to updates as dates updated
+    $('#checkInDate').on('change', async () => {
+        let cart = await getCartSave();
+        updateModalTotalHTML( book, cart ) 
+    });
+    $('#checkOutDate').on('change', async () => {
+        let cart = await getCartSave();
+        updateModalTotalHTML( book, cart ) 
+    });
+    
+    //listen for modal buttons
+    $("#closeBtn").click( () => {
+        setRoomAvailabilityAndSave( book.roomID, true);
+        makeRoomCards( hotel );
+        $("#bookingModal").modal('hide');
+    });
+    $("#cancelBtn").click( () => {
+        setRoomAvailabilityAndSave( book.roomID, true);
+        makeRoomCards( hotel );
+        $("#bookingModal").modal('hide');
+    });
+    $("#bookBtn").click( async () => {
+        let cart = await getCartSave();
+        $("#bookingModal").modal('hide')
+        addCartItem( book, cart ); //
+        openCart(); //dont use same cart b/c modified it in addCartItem() abv
+     } );
+}
+
+// #endregion
+
+// #region cart offCanvase & functions | openCart(), addToCart(), makeCartItemHTML(), updateCartTotalsHTML()        
+
+const clearCartItemHTML = () => $("#cartCardsDiv").html( '' );
+
+const resetCartTotalsTo0 = () => {
+    cartTotals.roomsTotal = 0;
+    cartTotals.fees = 0;
+    cartTotals.discounts = 0;
+    
+    updateCartTotalsHTML();
+}
+
+const reBuildCart = ( cartArray ) => {
+    // if ( cartBS ){ cartBS.dispose(); }
+    clearCartItemHTML();
+    resetCartTotalsTo0();
+
+    for (let i = 0 ; i < cartArray.length ; i++ ){
+        let book = cartArray[i];
+        if ( book != 'paid' ) {
+            makeCartItemHTML( cartArray[i] );
+            addToCartTotals( cartArray[i] );
+        }
+    }
+    updateCartTotalsHTML();
+    cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
+}
+
+const openCart = async () => {
+    console.log(`open cart`);
+    let cart = await getCartSave();
+
+    reBuildCart( cart )
+    cartBS.show();
+}
+
+const addCartItem = ( book, cart ) => { //new booking
+    // let posn = cart.length;
+    book.advanceStage(); //change booking stage to cart from null
+    cart.push( book );
+    setCartSave( cart );
+};
+
+const removeCartItem = async ( itemID ) => {
+    console.log( "in remove cart item" );
+    console.log( itemID );
+    
+    let cart = await getCartSave();
+
+    let removedIndex = cart.findIndex( item => item.id == itemID )
+    let removed = cart.splice( removedIndex , 1 ); //save removed obj as removed (array)
+
+    await setRoomAvailabilityAndSave( removed[0].roomID, true);
+    await makeRoomCards( removed[0].hotelID );
+    await setCartSave( cart );
+
+    openCart();
+}
+
+const clearCart = async () => {
+    let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
+    if ( !isConfirmed ) { return; }
+
+    let cart = await getCartSave();
+    for ( let i = 0; i < cart.length ; i++ ){
+        await setRoomAvailabilityAndSave( cart[i].roomID, true);
+        cart[i]='';
+    }
+
+    cart = [];
+    await setCartSave( cart );
+    cartBS.hide();
+    openCart();
+}
+
+const makeCartItemHTML = async ( book ) => { //booking already exists
+    if ( book != undefined ) { // also checks for null
+
+        let cartItemHTML = `
+            <div class="card m-3 d-flex">
+                <div class="card-body d-flex flex-column justify-content-between align-items-stretch"> 
+                    <div class="d-flex justify-content-between mb-0"> 
+                        <button id="${book.id}removeCartItemBtn" cartBookID="${book.id}" class="btn btn-outline-secondary 
+                                btn-sm align-items-start me-5 py-1 px-2">X</button> 
+                        <h5 class=" h4 mb-1">${book.roomName}</h5>
+                    </div>
+                    <h5 class="mb-0 align-self-end">${book.hotelName}</h5>
+                    <hr class="my-0">
+                     <div class="cartItemCount d-flex flex-column align-items-end justify-content-end my-0">
+                        <p class="${book.id}dates my-0">${book.startDate.toDateString()} to ${book.endDate.toDateString()}</p>
+                        <p class="${book.id}math my-0">${book.numNights} x $${book.costPerNight}<span class="subscr">/night</span></p>
+                        <h5 class="${book.id}subtotal h5 my-1">$${book.roomTotal}</h5>
+                    </div>
+                </div>
+            </div> 
+        `
+        $("#cartCardsDiv").append( cartItemHTML );       
+
+        $(`#${book.id}removeCartItemBtn`).click( () => removeCartItem( book.id ) );
+    }
+}
+
+const addToCartTotals = ( book ) => { //booking already exists
+    cartTotals.roomsTotal += book.roomTotal;
+    
+    let adjustments = book.adjustPriceBy;
+    for ( let i = 0 ; i < adjustments.length ; i++ ) {
+        if ( adjustments[i] > 0 ) { cartTotals.fees += adjustments[i]; }
+        else if ( adjustments[i] < 0 ) { cartTotals.discounts += adjustments[i]; }
+    }
+
+    updateCartTotalsHTML();
+}
+
+const updateCartTotalsHTML = () => {
+    let subtotal = cartTotals.roomsTotal + cartTotals.fees + cartTotals.discounts;
+    let taxes = subtotal * 0.13;
+    let total = subtotal + taxes;
+
+    let cartTotalsHTML = `
+                <div class="d-flex">
+                    <div class="d-flex flex-column align-items-end">
+                        <p class="my-0 me-3">Fees: </p>
+                        <p class="my-0 me-3">Discounts: </p>
+                        <p class="my-0 me-3">Subtotal: </p>
+                        <p class="my-0 me-3">Taxes: </p>
+                        <hr class="w100 my-2 btn-success-outline">
+                        <p class="h5 mt-1 mb-3 me-3">Total: </p>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                        <p class="my-0">$${cartTotals.fees.toFixed(2)}</p>
+                        <p class="my-0">$${cartTotals.discounts.toFixed(2)}</p>
+                        <p class="my-0">$${subtotal.toFixed(2)}</p>
+                        <p class="my-0">$${taxes.toFixed(2)}</p>
+                        <hr class="w100 my-2 btn-success-outline">
+                        <p class="h5 mt-1 mb-3">$${total.toFixed(2)}</p>
+                    </div>
+                </div>
+            </div>
+        `      
+    $("#cartSumLines").html(cartTotalsHTML);
+}
+
+
+
+
+
+
+// #endregion

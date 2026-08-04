@@ -35,7 +35,7 @@
   {
     "id": 301,
     "hotelId": 3,
-    "name": "Single Bed",
+    "name": "Standard, Single Bed",
     "type": "Standard",
     "beds": "1 Queen",
     "maxGuests": 2,
@@ -46,7 +46,7 @@
   {
     "id": 302,
     "hotelId": 3,
-    "name": "Two Bed",
+    "name": "Standard, Two Beds",
     "type": "Standard",
     "beds": "2 Queen",
     "maxGuests": 4,
@@ -57,7 +57,7 @@
   {
     "id": 303,
     "hotelId": 3,
-    "name": "Two Bed with Kitchenette",
+    "name": "Two Beds with Kitchenette",
     "type": "Kitchenette",
     "beds": "2 Queen",
     "maxGuests": 4,
@@ -68,7 +68,7 @@
   {
     "id": 304,
     "hotelId": 3,
-    "name": "Suite with 2 Rooms",
+    "name": "Suite with 2 Rooms, 3 Beds",
     "type": "Suite",
     "beds": "3 Queen",
     "maxGuests": 4,
