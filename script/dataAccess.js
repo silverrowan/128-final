@@ -61,7 +61,8 @@ const getRoomsSave = async () => {
 }
 
 const setCartSave = ( cartArray ) => {
-    console.log( "saving to cart: " + cartArray);
+    console.log( "saving to cart: ");
+    console.log( cartArray);
     localStorage.setItem("cart", JSON.stringify( cartArray ));
 }
 const getCartSave = async () => {

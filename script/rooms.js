@@ -293,11 +293,13 @@ const reBuildCart = ( cartArray ) => {
     resetCartTotalsTo0();
 
     for (let i = 0 ; i < cartArray.length ; i++ ){
-            let book = cartArray[i];
+        let book = cartArray[i];
         if ( book != 'paid' ) {
             makeCartItemHTML( cartArray[i] );
+            addToCartTotals( cartArray[i] );
         }
     }
+    updateCartTotalsHTML();
     cartBS = bootstrap.Offcanvas.getOrCreateInstance( offcanvasElmt );
 }
 
@@ -314,29 +316,38 @@ const addCartItem = ( book, cart ) => { //new booking
     book.advanceStage(); //change booking stage to cart from null
     cart.push( book );
     setCartSave( cart );
-
-    // makeCartItemHTML( book )
-    // addToCartTotals( book );
 };
 
 const removeCartItem = async ( itemID ) => {
+    console.log( "in remove cart item" );
+    console.log( itemID );
+    
     let cart = await getCartSave();
 
     let removedIndex = cart.findIndex( item => item.id == itemID )
     let removed = cart.splice( removedIndex , 1 ); //save removed obj as removed (array)
-    // $(`#${itemID}removeCartItemBtn`).parent().parent().parent().remove(); // remove entire cart item card from the html
-    // removeFromCartTotals( removed[0] );
-    setCartSave( cart );
+
+    await setRoomAvailabilityAndSave( removed[0].roomID, true);
+    await makeRoomCards( removed[0].hotelID );
+    await setCartSave( cart );
+
+    openCart();
 }
 
-const clearCart = () => {
+const clearCart = async () => {
     let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
     if ( !isConfirmed ) { return; }
-    cartArray = [];
-    setCartSave( cartArray );
-    cartBS.dispose();
-    $("#cartCardsDiv").html( '' );
-    resetCartTotalsTo0();
+
+    let cart = await getCartSave();
+    for ( let i = 0; i < cart.length ; i++ ){
+        await setRoomAvailabilityAndSave( cart[i].roomID, true);
+        cart[i]='';
+    }
+
+    cart = [];
+    await setCartSave( cart );
+    cartBS.hide();
+    openCart();
 }
 
 const makeCartItemHTML = async ( book ) => { //booking already exists
@@ -360,37 +371,23 @@ const makeCartItemHTML = async ( book ) => { //booking already exists
                 </div>
             </div> 
         `
-        $("#cartCardsDiv").append( cartItemHTML );
-        addToCartTotals( book );
-        
+        $("#cartCardsDiv").append( cartItemHTML );       
+
         $(`#${book.id}removeCartItemBtn`).click( () => removeCartItem( book.id ) );
     }
 }
 
-// const addToCartTotals = ( book ) => { //booking already exists
-//     cartTotals.roomsTotal += book.roomTotal;
+const addToCartTotals = ( book ) => { //booking already exists
+    cartTotals.roomsTotal += book.roomTotal;
     
-//     let adjustments = book.adjustPriceBy;
-//     for ( let i = 0 ; i < adjustments.length ; i++ ) {
-//         if ( adjustments[i] > 0 ) { cartTotals.fees += adjustments[i]; }
-//         else if ( adjustments[i] < 0 ) { cartTotals.discounts += adjustments[i]; }
-//     }
+    let adjustments = book.adjustPriceBy;
+    for ( let i = 0 ; i < adjustments.length ; i++ ) {
+        if ( adjustments[i] > 0 ) { cartTotals.fees += adjustments[i]; }
+        else if ( adjustments[i] < 0 ) { cartTotals.discounts += adjustments[i]; }
+    }
 
-//     updateCartTotalsHTML();
-
-// }
-
-// const removeFromCartTotals = ( book ) => {
-//     cartTotals.roomsTotal -= book.roomTotal;
-
-//     let adjustments = book.adjustPriceBy;
-//     for ( let i = 0 ; i < adjustments.length ; i++ ) {
-//         if ( adjustments[i] > 0 ) { cartTotals.fees -= adjustments[i]; }
-//         else if ( adjustments[i] < 0 ) { cartTotals.discounts -= adjustments[i]; }
-//     }
-
-//     updateCartTotalsHTML();
-// }
+    updateCartTotalsHTML();
+}
 
 const updateCartTotalsHTML = () => {
     let subtotal = cartTotals.roomsTotal + cartTotals.fees + cartTotals.discounts;
