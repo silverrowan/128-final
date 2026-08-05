@@ -15,13 +15,29 @@ $( async function() {
 
 
     //attach listeners to permanent buttons - inclues invisible ones
-    $("#navCartBtn").click( () => openCart() );
     //like those on the offcanvas cart, that do not get built in the JS
+    $("#navCartBtn").click( () => openCart() );
     $("#cartClearBtn").click( () => clearCart() );
     $("#cartCheckoutBtn").click( () => openCheckout() );
+    //checkoutBtns
+    $("#coutCloseBtn").click( () => $("#coutModal").modal('hide') );
+    $("#coutCancelBtn").click( () => $("#coutModal").modal('hide') );
+    $("#coutContinueBtn").click( () => {
+        if ( validatePersonalFields() && validateAddressFields( "p" ) ){
+            showConfirmOrder();
+        }
+
+    } );
+
     // the modal listeners need information on current state, so are attached 
     // later with that information, using .off(...).on(...) to avoid build-up
     // of multiple listeners.
+    //attach listener to updates as dates updated
+    $('#pmtMethods').on('change', () => { 
+        validatePersonalFields();
+        updatePmtFields( );
+    });
+   
 
 });
 

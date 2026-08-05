@@ -55,12 +55,17 @@ nav, .foot {
     font-size: small;
     font-style: italic;
     font-weight: 700;
-    color: #910f0f;
-    background-color: #ececb7;
+    color: #6d0909;
+    /* background-color: #ececb7; */
     border-radius: .2em;
 }
 
 input.error {
     border: 2px solid #910f0f;
-    box-shadow: 0,0,5px,0 #910f0f;
+    box-shadow: 0 0 5px 0 #cf0b0b80;
+}
+
+label.error {
+    font-style: 800;
+    color: #6d0909;    
 }

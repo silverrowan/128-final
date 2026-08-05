@@ -157,115 +157,66 @@
                 <form id="coutForm" action="" method="POST">
                     <div class="container flex-column">
                         <div class="row g-3 mb-3">
-                            <div class="form-floating col-6 g-3" >
+                            <div class="form col-6 g-3" >
+                                <label class="form-label" for="firstNameTxt" id="firstNameTxtLbl">Given Name*</label>
                                 <input type="text" class="form-control" id="firstNameTxt" name="firstName" placeholder=" " required/>
-                                <label class="form-label" for="firstNameTxt">Given Name*</label>
-                                <label class="form-label hidden" for="firstNameTxt">Please enter a valid name. (Letters, spaces, and symgols -.' are acceted)</label>
+                                <label class="form-label hidden formTip" for="firstNameTxt" id="firstNameTxtTip">
+                                    A given name is required. Please enter a valid name. (Letters and spaces are accepted)</label>
                             </div>
-                            <div class="form-floating col-6 g-3" >
+                            <div class="form col-6 g-3" >
+                                <label class="form-label" for="lastNameTxt" id="lastNameTxtLbl">Family Name*</label>
                                 <input type="text" class="form-control" id="lastNameTxt" name="lastName" placeholder=" " required/>
-                                <label class="form-label" for="lastNameTxt">Family Name*</label>
-                                <label class="form-label hidden" for="lastNameTxt">Please enter a valid name. (Letters, spaces, and symgols -.' are acceted)</label>
+                                <label class="form-label hidden formTip" for="lastNameTxt" id="lastNameTxtTip">
+                                    A family name is required. Please enter a valid name. (Letters and spaces are accepted)</label>
                             </div>
                         </div>
                         <div class="row g-3 mb-3">
-                            <div class="form-floating col-4 g-3" >
+                            <div class="form col-4 g-3" >
+                                <label class="form-label" for="phoneIn" id="phoneInLbl">Phone Number</label>
                                 <input type="tel" class="form-control" id="phoneIn" name="phone" placeholder=" " />
-                                <label class="form-label" for="phoneIn">Phone Number</label>
-                                <label class="form-label hidden" for="phoneIn">Please enter a valid Phone number. (Format ###-###-####)</label>
+                                <label class="form-label hidden formTip" for="phoneIn" id="phoneInTip">
+                                    Please enter a valid Phone number. (###-###-####)</label>
                             </div>
-                            <div class="form-floating col-8 g-3" >
+                            <div class="form col-8 g-3" >
+                                <label class="form-label" for="emailIn" id="emailInLbl">Email*</label>
                                 <input type="email" class="form-control" id="emailIn" name="email" placeholder=" " required/>
-                                <label class="form-label" for="emailIn">Email*</label>
-                                <label class="form-label hidden" for="emailIn">Please enter a valid email.</label>
+                                <label class="form-label hidden formTip" for="emailIn" id="emailInTip">
+                                    An email is required. Please enter a valid email.</label>
+                                </div>
+                            </div>
+                        <div class="row g-3 my-3"><hr></div>
+                        <div class="row g-3 my-3"><h5>Mailing Address</h5></div>
+                        <div class="row g-3 mb-3">
+                            <div class="form col g-3" >
+                                <label class="form-label" for="pstAddressTxt" id="pstAddressTxtLbl">Address</label>
+                                <input type="text" class="form-control" id="pstAddressTxt" name="stAddress" placeholder=" "/>
+                                <label class="form-label hidden formTip" for="pstAddressTxt" id="pstAddressTxtTip">Please enter a valid address.</label>
+                            </div>                        
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="form col-7 g-3" >
+                                <label class="form-label" for="pcityTxt" id="pcityTxt" id="pcityTxtLbl">City</label>
+                                <input type="text" class="form-control" id="pcityTxt" name="city" placeholder=" "/>
+                                <label class="form-label hidden formTip" for="pcityTxt" id="pcityTxtTip">Please enter a valid city name.</label>
+                            </div>
+                            <div class="form  col-5 g-3" >                                
+                                <label class="form-label" for="pzipTxt" id="pzipTxtLbl">Postal Code / ZIP</label>
+                                <input type="text" class="form-control" id="pzipTxt" name="zip" placeholder=" "/>
+                                <label class="form-label hidden formTip" for="pzipTxt" id="pzipTxtTip">Please enter a valid postal or zip code.</label>
+                            </div>                        
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="form  col-5 g-3" >
+                                <label class="form-label" for="pstateTxt" id="pstateTxtLbl">Provence / State</label>
+                                <input type="text" class="form-control" id="pstateTxt" name="state" placeholder=" "/>
+                                <label class="form-label hidden formTip" for="pstateTxt" id="pstateTxtTip">Please enter a valid region name.</label>
+                            </div>
+                            <div class="form  col-7 g-3" >
+                                <label class="form-label" for="pcountryTxt" id="pcountryTxtLbl">Country</label>
+                                <input type="text" class="form-control" id="pcountryTxt" name="country" placeholder=" "/>
+                                <label class="form-label hidden formTip" for="pcountryTxt" id="pcountryTxtTip">Please enter a valid region name.</label>
                             </div>
                         </div>
-                        <div class="row g-3 my-3"><hr></div>
-                        <div class="row g-3 my-3"><h5>Payment</h5></div>
-                        <select name="paymentMethods" id="pmtMethods">
-                            <option value="" selected disabled hidden>Choose one</option>
-                            <option value="Credit">Credit Card</option>
-                            <option value="Debit">Debit</option>
-                            <option value="Cash">Cash</option>
-                            <option value="Paypal">PayPal</option>
-                        </select>
-                        <label class="form-label hidden" for="pmtMethods">Please choose a payment method.</label>
-                        <div class="row g-3 my-3"><hr></div>
-                        <div id="paymentMethodSpecific">
-                            <div class="row g-3 my-3"><h5>Billing Address</h5></div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col g-3" >
-                                    <input type="text" class="form-control" id="stAddressTxt" name="stAddress" placeholder=" " required/>
-                                    <label class="form-label" for="stAddressTxt">Address</label>
-                                    <label class="form-label hidden formTip" for="stAddressTxt">Please enter a valid address.</label>
-                                </div>                        
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col-7 g-3" >
-                                    <input type="text" class="form-control" id="cityTxt" name="city" placeholder=" " required/>
-                                    <label class="form-label" for="cityTxt">City</label>
-                                    <label class="form-label hidden formTip" for="cityTxt">Please enter a valid city name.</label>
-                                </div>
-                                <div class="form-floating  col-5 g-3" >                                
-                                    <input type="text" class="form-control" id="zipTxt" name="zip" placeholder=" " required/>
-                                    <label class="form-label" for="zipTxt">Postal Code / ZIP</label>
-                                    <label class="form-label hidden formTip" for="zipTxt">Please enter a valid postal or zip code.</label>
-                                </div>                        
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating  col-5 g-3" >
-                                    <input type="text" class="form-control" id="stateTxt" name="state" placeholder=" " required/>
-                                    <label class="form-label" for="stateTxt">Provence / State</label>
-                                    <label class="form-label hidden formTip" for="citystateTxtTxt">Please enter a valid region name.</label>
-                                </div>
-                                <div class="form-floating  col-7 g-3" >
-                                    <input type="text" class="form-control" id="countryTxt" name="country" placeholder=" " required/>
-                                    <label class="form-label" for="countryTxt">Country</label>
-                                    <label class="form-label hidden formTip" for="countryTxt">Please enter a valid region name.</label>
-                                </div>
-                            </div>
-                            <div class="row g-3 my-3"><hr></div>
-                            <div class="row g-3 my-3"><h5>Credit Cart</h5></div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col g-3" >
-                                    <input type="text" class="form-control" id="ccNumber" name="ccNum" placeholder=" " required/>
-                                    <label class="form-label" for="ccNumber">Credit Card Number</label>
-                                    <label class="form-label hidden formTip" for="ccNumber">Please enter a Credit Card Number.</label>
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col g-3" >
-                                    <input type="text" class="form-control" id="ccNumber" name="ccNum" placeholder=" " required/>
-                                    <label class="form-label" for="ccNumber">Credit Card Number</label>
-                                    <label class="form-label hidden formTip" for="ccNumber">Please enter a Credit Card Number.</label>
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col g-3" >
-                                    <label class="form-label" for="ccMonth">Expiration</label>
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="form-floating col-4 g-3" >
-                                    <input type="number" class="form-control" id="ccMonth" name="ccMonth" placeholder=" " required/>
-                                    <label class="form-label" for="ccMonth">Month</label>
-                                    <label class="form-label hidden formTip" for="ccNumber">Please select a month.</label>
-                                </div>
-                                <div class="form-floating col-4 g-3" >
-                                    <input type="number" class="form-control" id="ccYear" name="ccYear" placeholder=" " required/>
-                                    <label class="form-label" for="ccYear">Year</label>
-                                    <label class="form-label hidden formTip" for="ccNumber">Please enter a valid Year.</label>
-                                </div>
-                                <div class="form-floating col-4 g-3" >
-                                    <input type="number" class="form-control" id="ccCVC" name="ccCVC" placeholder=" " required/>
-                                    <label class="form-label" for="ccCVC">CVC</label>
-                                    <label class="form-label hidden formTip" for="ccNumber">Please enter a valid CVC.</label>
-                                </div>
-                                </div>
-                            </div>
-
-                        </div>
-
                     </div>
                 </form>
             </div>
