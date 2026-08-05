@@ -11,6 +11,16 @@ const validateCheckoutForm = () => {};
 
 const confirmOrder = () => {};
 
+const validateName = (fieldID, fieldRegEx, tipLabelID) => {
+    // if name like /[\w\s\.'-]+/
+    is ok { 
+        // remove class error from input field
+        // add class hidden to formTip
+    } else {
+        // add class error to input field
+        // remove class hidden from formTip
+    }
+}
 
 
 // const openBookModal = async ( room, hotel ) => {
