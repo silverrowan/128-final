@@ -11,6 +11,12 @@ const validateCheckoutForm = () => {};
 
 const confirmOrder = () => {};
 
+const nameRegEx = /[a-zA-Z\s\.\-']+/;
+const addressRegEx = /[\w\s\.\-'\/]+/;
+const postCodeRegEx = /[a-zA-Z]\d[a-zA-Z] ?\d[a-zA-Z]\d/;
+const zipCodeRegEx = /\d{5}/;
+const emailRegEx = /[\w\.\-]+@[\w\.\-]+\.[\w\.\-]+/;
+
 const validateName = (fieldID, fieldRegEx, tipLabelID) => {
     // if name like /[\w\s\.'-]+/
     is ok { 
