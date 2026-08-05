@@ -22,7 +22,7 @@ const openCheckout = async () => {
     coutModal.show();
 }
 
-const validateField = (fieldID, fieldRegEx) => {
+const makeFormInputObj = ( fieldID ) => {
     let input = {
         //Named the Title Label and the tiptext IDs as a modification of the
         //field ID, so could be selected with just th eone input
@@ -33,6 +33,10 @@ const validateField = (fieldID, fieldRegEx) => {
     //get the value of the input box and trim off any start/end whitespace
     input.value = input.field.val().trim()
     input.required = input.field.attr('required');
+    return input;
+}
+const validateField = (fieldID, fieldRegEx) => {
+    let input = makeFormInputObj( fieldID )
 
     //if the input is not required and its value is empty/null/undef/etc then its valid
     if (!input.required && (input.value == "" || !input.value) ) { return true; }
@@ -73,6 +77,9 @@ const validateMonthNum = ( fieldID ) => {
 }
 
 const validateClassToggle = ( isValid, input ) => {
+    if ( typeof( input ) == 'string') {
+        input = makeFormInputObj( input );
+    }
     if ( isValid ) {
         input.tip.addClass("hidden") 
         input.field.removeClass( "error" ); 
