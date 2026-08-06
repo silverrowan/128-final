@@ -1,48 +1,5 @@
 "use strict";
 
-//#region Initial on load + addHotelsToMap() & addHotelIcon() + cartListener: 
-
-// Add Hotel Icons to the map (map created in map.js script)
-$( async function() {
-    console.log("--------------------------page initial loading-------------------------")
-    hotelArray = await getHotelArray();  
-    let initialRoomArray = await getRoomsSave();
-    let initialCartArray = await getCartSave();
-    
-
-    addHotelsToMap( hotelArray );
-    reBuildCart( initialCartArray )
-
-
-    //attach listeners to permanent buttons - inclues invisible ones
-    //like those on the offcanvas cart, that do not get built in the JS
-    $("#navCartBtn").click( () => openCart() );
-    $("#cartClearBtn").click( () => clearCart() );
-    $("#cartCheckoutBtn").click( () => openCheckout() );
-    //checkoutBtns
-    $("#coutCloseBtn").click( () => $("#coutModal").modal('hide') );
-    $("#coutCancelBtn").click( () => $("#coutModal").modal('hide') );
-    $("#coutContinueBtn").click( () => {
-        if ( validatePersonalFields() && validateAddressFields( "p" ) ){
-            showConfirmOrder();
-        }
-
-    } );
-
-    // the modal listeners need information on current state, so are attached 
-    // later with that information, using .off(...).on(...) to avoid build-up
-    // of multiple listeners.
-    //attach listener to updates as dates updated
-    $('#pmtMethods').on('change', () => { 
-        validatePersonalFields();
-        updatePmtFields( );
-    });
-   
-
-});
-
-//#endregion
-
 //#region define cards makeHotelCard() and makeRoomCard/s() ratingToStart()
 const makeHotelCard = ( hotel ) => {
     $("#roomCards").html( '' ); 
