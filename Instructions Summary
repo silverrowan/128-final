@@ -132,16 +132,16 @@
 - [ ] Make sure each hotel has a unique id and that every room points to a real hotel using hotelId
 - [x] Determine how you want your layout to look, grid, row, or masonry, and build a dummy layout with a few example room cards
 - [x] Add your hotel locations to the map with the JSON data from hotels.json
-- [ ] Add a custom icon for each hotel marker
+- [x] Add a custom icon for each hotel marker
 - [ ] Use geolocation to place the user's current location on the map
 - [x] When a hotel is clicked, update the active hotel details section
-- [ ] Store the selected hotel id in a variable so you know which hotel is active
+- [x] Store the selected hotel id in a variable so you know which hotel is active
 - [ ] Get and display weather data for the selected hotel
 - [x] Filter the rooms from rooms.json so only rooms whose hotelId matches the selected hotel id are shown
 - [ ] Add filtering and sorting to the room catalog
-- [ ] Create Book Room functionality
-- [ ] Add the ability to view your items in your booking cart
-- [ ] Add the ability to remove items, empty the cart, and keep the cart in localStorage, so if i refresh the page, items are still active in the cart.
+- [x] Create Book Room functionality
+- [x] Add the ability to view your items in your booking cart
+- [x] Add the ability to remove items, empty the cart, and keep the cart in localStorage, so if i refresh the page, items are still active in the cart.
 - [ ] Add the ability to checkout
 - [ ] Create the checkout steps and be sure to validate all form fields, provide meaningful feedback if the user enters incorrect or invalid data
 - [ ] Create an order summary that shows relevant booking data
