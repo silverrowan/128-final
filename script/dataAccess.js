@@ -81,28 +81,27 @@ const getCartSave = async () => {
         localStorage.setItem('cart', JSON.stringify( cartArray ));
     }
     return cartArray;
+}
 
+const setOrderSave = ( order ) => {
+    try {
+        localStorage.setItem("order", JSON.stringify( order ));
+    } catch (e) { console.error('Failed to save order');}
+}
+const getOrderSave = ( ) => {
+    try {
+        const savedOrder = localStorage.getItem('order');
+    } catch (e) { console.error('Failed to load order from localStorage'); }
+    let order = {};
 
-    // const cartArray = data.map(obj => {
-    // const booking = new Booking(
-    //     obj.id,
-    //     obj.roomID,
-    //     obj.roomName,
-    //     obj.hotelID,
-    //     obj.hotelName,
-    //     obj.costPerNight
-    // );
-
-    // booking.customerID = obj.customerID;
-    // booking.startDate = obj.startDate;
-    // booking.endDate = obj.endDate;
-    // booking.stage = obj.stage;
-    // booking.roomTotal = obj.roomTotal;
-    // booking.adjustPriceBy = obj.adjustPriceBy;
-
-    // return booking;
-// });
-
-
-
+    //if it exists, but paid is not true (false, unset, etc)
+    if ( savedOrder != undefined && savedOrder.paid !== true ){
+        order = JSON.parse( savedOrder );
+    } else {
+        order = await ;
+        try{
+            localStorage.setItem('order', JSON.stringify( order ));
+        } catch (e) { console.error('Failed to save order to localStorage'); }
+    }
+    return order;
 }
