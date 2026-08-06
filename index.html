@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="style\style.css">
 	<script defer src="script\classes.js"></script>
 	<script defer src="script\dataAccess.js"></script>
+	<script defer src="script\initialLoad.js"></script>
 	<script defer src="script\map.js"></script>
 	<script defer src="script\rooms.js"></script>
 	<script defer src="script\cart.js"></script>
@@ -173,13 +174,13 @@
                         <div class="row g-3 mb-3">
                             <div class="form col-4 g-3" >
                                 <label class="form-label" for="phoneIn" id="phoneInLbl">Phone Number</label>
-                                <input type="tel" class="form-control" id="phoneIn" name="phone" placeholder=" " />
+                                <input type="tel" class="form-control" id="phoneIn" name="phone" placeholder=" " autocomplete="on"/>
                                 <label class="form-label hidden formTip" for="phoneIn" id="phoneInTip">
                                     Please enter a valid Phone number. (###-###-####)</label>
                             </div>
                             <div class="form col-8 g-3" >
                                 <label class="form-label" for="emailIn" id="emailInLbl">Email*</label>
-                                <input type="email" class="form-control" id="emailIn" name="email" placeholder=" " required/>
+                                <input type="email" class="form-control" id="emailIn" name="email" placeholder=" " required autocomplete="on"/>
                                 <label class="form-label hidden formTip" for="emailIn" id="emailInTip">
                                     An email is required. Please enter a valid email.</label>
                                 </div>
@@ -195,7 +196,7 @@
                         </div>
                         <div class="row g-3 mb-3">
                             <div class="form col-7 g-3" >
-                                <label class="form-label" for="pcityTxt" id="pcityTxt" id="pcityTxtLbl">City</label>
+                                <label class="form-label" for="pcityTxt" id="pcityTxtLbl">City</label>
                                 <input type="text" class="form-control" id="pcityTxt" name="city" placeholder=" "/>
                                 <label class="form-label hidden formTip" for="pcityTxt" id="pcityTxtTip">Please enter a valid city name.</label>
                             </div>
@@ -213,8 +214,8 @@
                             </div>
                             <div class="form  col-7 g-3" >
                                 <label class="form-label" for="pcountryTxt" id="pcountryTxtLbl">Country</label>
-                                <input type="text" class="form-control" id="pcountryTxt" name="country" placeholder=" "/>
-                                <label class="form-label hidden formTip" for="pcountryTxt" id="pcountryTxtTip">Please enter a valid region name.</label>
+                                <input type="text" class="form-control" id="pcountryTxt" name="country" placeholder=" " autocomplete="on"/>
+                                <label class="form-label hidden formTip" for="pcountryTxt" id="pcountryTxtTip">Please enter a valid country name.</label>
                             </div>
                         </div>
                     </div>
@@ -228,15 +229,17 @@
     </div>
 </div>
 <!-- CONFIRM PURCHASE Modal -->
- <div class="modal" id="coutDetailModal" tabindex="-1">
+ <div class="modal" id="coutConfModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
+
             <div class="modal-header flex-row justify-space-between">
                 <div id="coutModalTitle" class="flex-column align-start">
                     <h4 class="modal-title">Confirm Purchase Details</h4>
                 </div>
-                <button type="button" id="coutDetailCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
-            </div>       
+                <button type="button" id="coutConfCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>   
+
             <div class="modal-body" id="confCheckoutDetailsContent">
                 <!-- 
                 ...customer name
@@ -261,10 +264,12 @@
                 save cleared cart to local
                 -->
             </div>
+
             <div class="modal-footer d-flex justify-content-between">
-                <button type="button" id="coutDetailCancelBtn" class="btn btn-outline-secondary">Cancel</button>
-                <button type="button" id="coutDetailContinueBtn" class="btn btn-success">Continue</button>
+                <button type="button" id="coutConfPrevBtn" class="btn btn-secondary">Previous</button>
+                <button type="button" id="coutConfContinueBtn" class="btn btn-success">Continue</button>
             </div>
+
         </div>
     </div>
 </div>
