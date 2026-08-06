@@ -117,7 +117,6 @@ const getOrderSave = ( ) => {
         if ( savedOrder != undefined && savedOrder.paid !== true ){
             order = JSON.parse( savedOrder );
         } else {
-            order = await ;
             try{
                 localStorage.setItem('order', JSON.stringify( order ));
             } catch (e) { console.error('Failed to save order to localStorage'); }

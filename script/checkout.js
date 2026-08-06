@@ -248,10 +248,10 @@ const openCheckout = async ( cart ) => {
 
 const attachCustomerListeners = () => {
     //Customer information listeners
-    listenFieldAndUpdate( firstNameTxt, nameRegEx, customerFName );
-    listenFieldAndUpdate( lastNameTxt, nameRegEx, customerLName );
-    listenFieldAndUpdate( phoneIn, phoneRegEx, customerPhone );
-    listenFieldAndUpdate( emailIn, emailRegEx, customerEmail );
+    listenFieldAndUpdate( $('#firstNameTxt'), nameRegEx, 'customerFName' );
+    listenFieldAndUpdate( $('#lastNameTxt'), nameRegEx, 'customerLName' );
+    listenFieldAndUpdate( $('#phoneIn'), phoneRegEx, 'customerPhone' );
+    listenFieldAndUpdate( $('#emailIn'), emailRegEx, 'customerEmail' );
 }
 
 const attachAddressListeners = ( addressPrefix, addressOrderName ) => {
@@ -278,7 +278,7 @@ const listenFieldAndUpdate = ( fieldID, fieldRegEx, orderProperty ) => {
     //each triggers on change of related input field, checks if its a valid value 
     // (and when doing that triggers the class toggle or not), then if it is valid, 
     // gets the current state of the order, and updates the field and saves it
-    fieldID.on('change', async () => {
+   fieldID.on('change', async () => {
         if ( validateField( fieldID, fieldRegEx ) ) {
             updateValidatedOrderField( fieldID, orderProperty )
         }});       
