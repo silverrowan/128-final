@@ -11,17 +11,6 @@ const ccNumRegEx = /^\d{4}[\- ]?\d{4}[\- ]?\d{4}[\- ]?\d{4}$/ ;
 const yearRegEx = /^((20)|())\d{2}$/;
 const cvcRegEx = /^\d{3}$/;
 
-const openCheckout = async () => {
-    cartBS.hide();
-
-    let coutModalDiv = $("#coutModal")[0];
-
-    resetValidationCOut();
-    
-    const coutModal = bootstrap.Modal.getOrCreateInstance( coutModalDiv );
-    coutModal.show();
-}
-
 const makeFormInputObj = ( fieldID ) => {
     let input = {
         //Named the Title Label and the tiptext IDs as a modification of the
@@ -218,6 +207,7 @@ const addPmtFields = () => {
                         </div>    
     `
 }
+
 const validatePmtFields = () => {
     let pmtChoice = validateSelect( pmtMethods );
     switch ( pmtChoice ) {
@@ -237,16 +227,29 @@ const validatePmtFields = () => {
     }
 }
 
+const openCheckout = async () => {
+    cartBS.hide();
 
+    let order = await getOrderSave();
 
-const confirmOrder = () => {};
+    let coutModalDiv = $("#coutModal")[0];
+
+    resetValidationCOut();
+    
+    const coutModal = bootstrap.Modal.getOrCreateInstance( coutModalDiv );
+    coutModal.show();
+}
+
+const showConfirmOrder = () => {
+
+};
 
 // const openBookModal = async ( room, hotel ) => {
-//     let cart = await getCartSave();
+//     let order = await getCartSave();
 //     let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
     
 //     //create booking obj and assign variables
-//     let book = new Booking( cart.length, room.id, room.name, room.hotelId, hotel.name, room.pricePerNight );
+//     let order = new Order(  );
 //     await setRoomAvailabilityAndSave( room.id, false );
 //     await makeRoomCards( hotel ); // rebuild room availability (visible in background)
 
