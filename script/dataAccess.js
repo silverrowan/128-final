@@ -7,8 +7,10 @@
 
 // #region fetch functions
 const getHotelArray = async () => {
-    hotelArray = await getHotelInfo();
-    return hotelArray;
+    try { 
+        hotelArray = await getHotelInfo();
+        return hotelArray;
+    } catch (e) { console.error('Failed to load hotels'); }
 }
 
 const getHotelInfo = async () => {
@@ -19,7 +21,7 @@ const getHotelInfo = async () => {
 
         const hotelData = await response.json();
         return hotelData;
-    } catch (e) { console.error('Failed to load hotels') }
+    } catch (e) { console.error('Failed to load hotels'); }
     finally { console.log( "this happens when hotels.js fetch happens - regardless of success or failure");
     }
 }
@@ -32,31 +34,44 @@ const getRoomInfo = async () => {
 
         const roomData = await response.json();
         return roomData;
-    } catch (e) { console.error('Failed to load rooms') }
+    } catch (e) { console.error('Failed to load rooms'); }
 }
 
 const setRoomsSave = ( roomArray ) => {
-    localStorage.setItem("rooms", JSON.stringify( roomArray ));
+    try {
+        localStorage.setItem("rooms", JSON.stringify( roomArray ));
+    } catch (e) { console.error('Failed to save rooms')  }
 }
+
 const getRoomsSave = async () => {
-    const savedRooms = localStorage.getItem('rooms');
-    
+    try {
+        const savedRooms = localStorage.getItem('rooms');
+    } catch (e) { console.error('Failed to load rooms from localStorage'); }
+
     let roomArray = [];
  
+    //checking for undefined & null state, and the *string* 'undefined'
     if ( savedRooms != undefined && savedRooms !== 'undefined' ) {
         roomArray = JSON.parse( savedRooms );
     } else {    
         roomArray = await getRoomInfo();
-        localStorage.setItem('rooms', JSON.stringify( roomArray ));
+        try {
+            localStorage.setItem('rooms', JSON.stringify( roomArray ));
+        } catch (e) { console.error('Failed to save rooms to localStorage'); }
     }
     return roomArray;
 }
 
 const setCartSave = ( cartArray ) => {
-    localStorage.setItem("cart", JSON.stringify( cartArray ));
+    try {
+        localStorage.setItem("cart", JSON.stringify( cartArray ));
+    } catch (e) { console.error('Failed to save cart'); }
 }
+
 const getCartSave = async () => {
-    const savedCart = localStorage.getItem('cart');
+    try {
+        const savedCart = localStorage.getItem('cart');
+    } catch (e) { console.error('Failed to load cart from localStorage'); }
     let cartArray = [];
 
     if ( savedCart ) {
@@ -77,8 +92,10 @@ const getCartSave = async () => {
         });
         
         // Booking.toObjInstance( cartArray );
-    } else { 
-        localStorage.setItem('cart', JSON.stringify( cartArray ));
+    } else {
+        try{
+            localStorage.setItem('cart', JSON.stringify( cartArray ));
+        } catch (e) { console.error('Failed to save cart to localStorage'); }
     }
     return cartArray;
 }
