@@ -227,21 +227,71 @@ const validatePmtFields = () => {
     }
 }
 
-const openCheckout = async () => {
+const openCheckout = async ( cart ) => {
     cartBS.hide();
-
     let order = await getOrderSave();
-
     let coutModalDiv = $("#coutModal")[0];
 
-    resetValidationCOut();
-    
+    resetValidationCOut(); //clear previous validation errors
+
+    //create order obj & address obj and assign variables
+    // let mailingAddress = new Address();
+    // let order = new Order( cart );
+
+    attachCustomerListeners();
+    attachAddressListeners( 'p' );
+
+    //make & show bootstrap Modal window
     const coutModal = bootstrap.Modal.getOrCreateInstance( coutModalDiv );
     coutModal.show();
 }
 
-const showConfirmOrder = () => {
+const attachCustomerListeners = () => {
+    //Customer information listeners
+    listenFieldAndUpdate( firstNameTxt, nameRegEx, customerFName );
+    listenFieldAndUpdate( lastNameTxt, nameRegEx, customerLName );
+    listenFieldAndUpdate( phoneIn, phoneRegEx, customerPhone );
+    listenFieldAndUpdate( emailIn, emailRegEx, customerEmail );
+}
 
+const attachAddressListeners = ( addressPrefix, addressOrderName ) => {
+    let stAddress = $(`#${addressPrefix}stAddressTxt`);
+    let city = $(`#${addressPrefix}cityTxt`);
+    let zip = $(`#${addressPrefix}zipTxt`);
+    let state = $(`#${addressPrefix}stateTxt`);
+    let country = $(`#${addressPrefix}countryTxt`);
+    
+    listenFieldAndUpdate( stAddress, addressRegEx, `${addressOrderName}.stAddress` );
+    listenFieldAndUpdate( city, addressRegEx, `${addressOrderName}.city` );
+    listenFieldAndUpdate( state, addressRegEx, `${addressOrderName}.state` );
+    listenFieldAndUpdate( country, addressRegEx, `${addressOrderName}.country` );
+    
+    //zip is slightly different, as there are two acceptable patterns
+    zip.on('change', async () => {
+        if ( validateField(zip, postCodeRegEx)  ||  validateField(zip, zipCodeRegEx) ) {
+            updateValidatedOrderField( zip, addressOrderName.orderProperty )
+        }});
+}
+
+const listenFieldAndUpdate = ( fieldID, fieldRegEx, orderProperty ) => {
+    //Customer information listeners
+    //each triggers on change of related input field, checks if its a valid value 
+    // (and when doing that triggers the class toggle or not), then if it is valid, 
+    // gets the current state of the order, and updates the field and saves it
+    fieldID.on('change', async () => {
+        if ( validateField( fieldID, fieldRegEx ) ) {
+            updateValidatedOrderField( fieldID, orderProperty )
+        }});       
+}
+
+const updateValidatedOrderField = async ( fieldID, orderProperty ) => {
+    let order = await getOrderSave();
+    order[orderProperty] = fieldID.val();
+    await setOrderSave( order );
+}
+
+const showConfirmOrder = () => {
+    console.log( " show confirmation page ");
 };
 
 // const openBookModal = async ( room, hotel ) => {
