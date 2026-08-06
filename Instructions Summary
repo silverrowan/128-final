@@ -100,7 +100,7 @@
 # TOPICS THAT MUST BE SHOWN
 - [x] arrays
 - [x] objects
-- [ ] conditionals
+- [x] conditionals
 - [x] loops
 - [ ] proper use of variable assignment, let versus const
 - [ ] code commented clearly with a good explanation
@@ -109,7 +109,7 @@
 - [ ] throwing errors where appropriate
 - [ ] meaningful feedback in the interface for errors or valid data
 
-- [ ] form validation using regex
+- [x] form validation using regex
 
 - [x] use of jQuery DOM manipulation techniques
 - [x] fetch, or jQuery ajax calls
