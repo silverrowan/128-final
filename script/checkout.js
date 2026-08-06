@@ -116,7 +116,7 @@ const validateAddressFields = ( addressPrefix ) => {
             validateField( `${addressPrefix}cityTxt`, addressRegEx ) && 
             ( validateField( `${addressPrefix}zipTxt`, postCodeRegEx ) || 
                         validateField( `${addressPrefix}zipTxt`, zipCodeRegEx ) ) &&
-            validateField( `${addressPrefix}pstateTxt`, addressRegEx ) &&
+            validateField( `${addressPrefix}stateTxt`, addressRegEx ) &&
             validateField( `${addressPrefix}countryTxt`, addressRegEx ) ){
         return true;
     } else { return false; }
