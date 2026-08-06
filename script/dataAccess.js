@@ -46,20 +46,21 @@ const setRoomsSave = ( roomArray ) => {
 const getRoomsSave = async () => {
     try {
         const savedRooms = localStorage.getItem('rooms');
+        let roomArray = [];
+    
+        //checking for undefined & null state, and the *string* 'undefined'
+        if ( savedRooms != undefined && savedRooms !== 'undefined' ) {
+            roomArray = JSON.parse( savedRooms );
+        } else {    
+            roomArray = await getRoomInfo();
+            try {
+                localStorage.setItem('rooms', JSON.stringify( roomArray ));
+            } catch (e) { console.error('Failed to save rooms to localStorage'); }
+        }
+        return roomArray;        
     } catch (e) { console.error('Failed to load rooms from localStorage'); }
 
-    let roomArray = [];
- 
-    //checking for undefined & null state, and the *string* 'undefined'
-    if ( savedRooms != undefined && savedRooms !== 'undefined' ) {
-        roomArray = JSON.parse( savedRooms );
-    } else {    
-        roomArray = await getRoomInfo();
-        try {
-            localStorage.setItem('rooms', JSON.stringify( roomArray ));
-        } catch (e) { console.error('Failed to save rooms to localStorage'); }
-    }
-    return roomArray;
+
 }
 
 const setCartSave = ( cartArray ) => {
@@ -71,33 +72,33 @@ const setCartSave = ( cartArray ) => {
 const getCartSave = async () => {
     try {
         const savedCart = localStorage.getItem('cart');
+
+        let cartArray = [];
+        if ( savedCart ) {
+            let parsedArray = JSON.parse( savedCart );
+            cartArray = parsedArray.map( a => {
+                let book = new Booking(
+                a._id, a._roomID, a._roomName, a._hotelID, a._hotelName, a._costPerNight 
+            );
+
+            book.startDate = a._startDate;
+            book.endDate = a._endDate;
+            book.numNights = a._numNights;
+            book.stage = a._stage;
+            book.roomTotal = a._roomTotal;
+            book.adjustPriceBy = a._adjustPriceBy;
+
+            return book;
+            });
+            
+            // Booking.toObjInstance( cartArray );
+        } else {
+            try{
+                localStorage.setItem('cart', JSON.stringify( cartArray ));
+            } catch (e) { console.error('Failed to save cart to localStorage'); }
+        }
+        return cartArray;
     } catch (e) { console.error('Failed to load cart from localStorage'); }
-    let cartArray = [];
-
-    if ( savedCart ) {
-        let parsedArray = JSON.parse( savedCart );
-        cartArray = parsedArray.map( a => {
-            let book = new Booking(
-            a._id, a._roomID, a._roomName, a._hotelID, a._hotelName, a._costPerNight 
-        );
-
-        book.startDate = a._startDate;
-        book.endDate = a._endDate;
-        book.numNights = a._numNights;
-        book.stage = a._stage;
-        book.roomTotal = a._roomTotal;
-        book.adjustPriceBy = a._adjustPriceBy;
-
-        return book;
-        });
-        
-        // Booking.toObjInstance( cartArray );
-    } else {
-        try{
-            localStorage.setItem('cart', JSON.stringify( cartArray ));
-        } catch (e) { console.error('Failed to save cart to localStorage'); }
-    }
-    return cartArray;
 }
 
 const setOrderSave = ( order ) => {
@@ -105,20 +106,23 @@ const setOrderSave = ( order ) => {
         localStorage.setItem("order", JSON.stringify( order ));
     } catch (e) { console.error('Failed to save order');}
 }
+
 const getOrderSave = ( ) => {
     try {
         const savedOrder = localStorage.getItem('order');
-    } catch (e) { console.error('Failed to load order from localStorage'); }
-    let order = {};
 
-    //if it exists, but paid is not true (false, unset, etc)
-    if ( savedOrder != undefined && savedOrder.paid !== true ){
-        order = JSON.parse( savedOrder );
-    } else {
-        order = await ;
-        try{
-            localStorage.setItem('order', JSON.stringify( order ));
-        } catch (e) { console.error('Failed to save order to localStorage'); }
-    }
-    return order;
+        let order = {};
+
+        //if it exists, but paid is not true (false, unset, etc)
+        if ( savedOrder != undefined && savedOrder.paid !== true ){
+            order = JSON.parse( savedOrder );
+        } else {
+            order = await ;
+            try{
+                localStorage.setItem('order', JSON.stringify( order ));
+            } catch (e) { console.error('Failed to save order to localStorage'); }
+        }
+        return order;
+    } catch (e) { console.error('Failed to load order from localStorage'); }
+
 }
