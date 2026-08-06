@@ -35,13 +35,14 @@ const makeFormInputObj = ( fieldID ) => {
     input.required = input.field.attr('required');
     return input;
 }
+
 const validateField = (fieldID, fieldRegEx) => {
     let input = makeFormInputObj( fieldID )
 
     //if the input is not required and its value is empty/null/undef/etc then its valid
     if (!input.required && (input.value == "" || !input.value) ) { return true; }
     else { //otherwise check matches string & set classes appropriately
-        validateClassToggle ( fieldRegEx.test( input.value ), input ) 
+        return validateClassToggle ( fieldRegEx.test( input.value ), input ) 
     }
 }
 
@@ -85,12 +86,13 @@ const validateClassToggle = ( isValid, input ) => {
         input.field.removeClass( "error" ); 
         input.label.removeClass("error");
         // fieldTip.removeClass("error");
+        return true;
     } else {         
         input.tip.removeClass( "hidden" );
         input.field.addClass("error");
         input.label.addClass("error");
         // fieldTip.addClass("error");
-        formOK = false; 
+        return false;
     }    
 }
 
@@ -107,23 +109,28 @@ const resetValidationCOut = () => {
 }
 
 const validatePersonalFields = () => {
-    let formOK = true;
-    validateField( 'firstNameTxt', nameRegEx );
-    validateField( 'lastNameTxt', nameRegEx );
-    validateField( 'phoneIn', phoneRegEx );
-    validateField( 'emailIn', emailRegEx );
-    return formOK;
+    //if all validate to true, return true (passed validation) otherwise
+    // fails validation. Short-circuits, so may have incorrect options beyond.
+    //prevents needed to fix many at the same time and potentially overwhealming
+    //customer
+    if ( validateField( 'firstNameTxt', nameRegEx ) &&
+            validateField( 'lastNameTxt', nameRegEx ) &&
+            validateField( 'phoneIn', phoneRegEx ) &&
+            validateField( 'emailIn', emailRegEx ) ) {
+        return true;
+    } else { return false; }
 };
 
 const validateAddressFields = ( addressPrefix ) => {
-    let formOK = true;
-    validateField( `${addressPrefix}stAddressTxt`, addressRegEx );
-    validateField( `${addressPrefix}cityTxt`, addressRegEx );
-    ( validateField( `${addressPrefix}zipTxt`, postCodeRegEx ) || 
-                validateField( `${addressPrefix}zipTxt`, zipCodeRegEx ) );
-    validateField( `${addressPrefix}cityTxt`, addressRegEx );
-    validateField( `${addressPrefix}countryTxt`, addressRegEx );
-    return formOK;
+    //see validatePersonalFields for comments, they're the same.
+    if ( validateField( `${addressPrefix}stAddressTxt`, addressRegEx ) &&
+            validateField( `${addressPrefix}cityTxt`, addressRegEx ) && 
+            ( validateField( `${addressPrefix}zipTxt`, postCodeRegEx ) || 
+                        validateField( `${addressPrefix}zipTxt`, zipCodeRegEx ) ) &&
+            validateField( `${addressPrefix}cityTxt`, addressRegEx ) &&
+            validateField( `${addressPrefix}countryTxt`, addressRegEx ) ){
+        return true;
+    } else { return false; }
 }
 
 const addPmtFields = () => {
@@ -218,13 +225,16 @@ const validatePmtFields = () => {
         case 'Debit':
         case 'PayPal':
             //no additional fields to validate
+            return true;
         case 'Credit':
-            validateField( ccNumber, ccNumRegEx );
-            validateField( ccMonth, validateMonthNum( ccMonth ) );
-            validateField( ccYear, yearRegEx );
-            validateField( ccCVC, cvcRegEx );
+            //see validatePersonalFields for comments, they're the same.
+            if ( validateField( ccNumber, ccNumRegEx ) &&
+                    validateField( ccMonth, validateMonthNum( ccMonth ) ) &&
+                    validateField( ccYear, yearRegEx ) &&
+                    validateField( ccCVC, cvcRegEx ) ) {
+            return true;
+        } else { return false; }
     }
-    
 }
 
 
