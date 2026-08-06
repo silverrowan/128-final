@@ -251,4 +251,72 @@ class Booking {
         }
     }
 }
+
+class Address {
+    _stAddress;
+    _city;
+    _zip;
+    _state;
+    _country;
+
+    constructor(){}
+
+    //setters & getters
+    get stAddress( ) { return this._stAddress; }
+    set stAddress( n ) { this._stAddress = n; }
+
+    get city( ) { return this._city; }
+    set city( n ) { this._city = n; }
+
+    get zip( ) { return this._zip; }
+    set zip( n ) { this._zip = n; }
+
+    get state( ) { return this._state; }
+    set state( n ) { this._state = n; }
+
+    get country( ) { return this._country; }
+    set country( n ) { this._country = n; }
+}
+
+class Order {
+    _bookingArray;
+    _isPaid;
+
+    _customerFName;
+    _customerLName;
+    _customerPhone;
+    _customerEmail;
+    _customerMailingAddress;
+    _customerBillingAddress;
+
+
+    constructor( isPaid ){
+        this._isPaid = false;
+    }
+
+    //setters & getters
+    get bookingArray( ) { return this._bookingArray; }
+    set bookingArray( n ) { this._bookingArray = n; }
+
+    get isPaid( ) { return this._isPaid; }
+    set isPaid( n ) { this._isPaid = n; }
+
+    get customerFName( ) { return this._customerFName; }
+    set customerFName( n ) { this._customerFName = n; }
+
+    get customerLName( ) { return this._customerLName; }
+    set customerLName( n ) { this._customerLName = n; }
+
+    get customerPhone( ) { return this._customerPhone; }
+    set customerPhone( n ) { this._customerPhone = n; }
+
+    get customerEmail( ) { return this._customerEmail; }
+    set customerEmail( n ) { this._customerEmail = n; }
+
+    get customerMailingAddress( ) { return this._customerMailingAddress; }
+    set customerMailingAddress( n ) { this._customerMailingAddress = n; }
+
+    get customerBillingAddress( ) { return this._customerBillingAddress; }
+    set customerBillingAddress( n ) { this._customerBillingAddress = n; }
+}
 // #endregion
