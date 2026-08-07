@@ -11,27 +11,38 @@ const ccNumRegEx = /^\d{4}[\- ]?\d{4}[\- ]?\d{4}[\- ]?\d{4}$/ ;
 const yearRegEx = /^((20)|())\d{2}$/;
 const cvcRegEx = /^\d{3}$/;
 
-const makeFormInputObj = ( fieldID ) => {
+const makeFormInputObj = ( jQElement ) => {
+    if ( typeof( jQElement ) == 'string') {
+        jQElement = $(`#${input}`);
+    }    
     let input = {
+        // relies on order of input field and elements.
+        //below didn't work;
         //Named the Title Label and the tiptext IDs as a modification of the
-        //field ID, so could be selected with just th eone input
-        field: $(`#${fieldID}`),
-        label: fieldLabel = $(`#${fieldID}Lbl`),
-        tip: $(`#${fieldID}Tip`),   
+        //field ID, so could be selected with just the one input
+        field: jQElement,
+        label: jQElement.prev(),
+        tip: jQElement.next(),
+        isRequired: jQElement.prop('required')
+        // isRequired = $(`#${fieldID}`).attr('required');
     }
     //get the value of the input box and trim off any start/end whitespace
     input.value = input.field.val().trim()
-    input.required = input.field.attr('required');
     return input;
 }
 
-const validateField = (fieldID, fieldRegEx) => {
-    let input = makeFormInputObj( fieldID )
+const validateField = (inputObj, fieldRegEx) => {
+    // if ( typeof( jQElement ) == 'string') {
+    //     input = makeFormInputObj( $(`#${jQElement}`) );
+    // }
+    // let input = makeFormInputObj( jQElement )
 
     //if the input is not required and its value is empty/null/undef/etc then its valid
-    if (!input.required && (input.value == "" || !input.value) ) { return true; }
+    if ( (inputObj.value == "" || !inputObj.value) && !inputObj.isRequired ) { 
+        validateClassToggle ( true , inputObj );
+        return true; }
     else { //otherwise check matches string & set classes appropriately
-        return validateClassToggle ( fieldRegEx.test( input.value ), input ) 
+        return validateClassToggle ( fieldRegEx.test( inputObj.value ), inputObj ) 
     }
 }
 
@@ -66,35 +77,35 @@ const validateMonthNum = ( fieldID ) => {
     validateClassToggle ( input.value <= 12 && input.value >= 1, input );
 }
 
-const validateClassToggle = ( isValid, input ) => {
-    if ( typeof( input ) == 'string') {
-        input = makeFormInputObj( input );
-    }
+const validateClassToggle = ( isValid, inputObj ) => {
+    // if ( typeof( input ) == 'string') {
+    //     input = makeFormInputObj( $(`#${input}`) );
+    // }
     if ( isValid ) {
-        input.tip.addClass("hidden") 
-        input.field.removeClass( "error" ); 
-        input.label.removeClass("error");
+        inputObj.tip.addClass("hidden") 
+        inputObj.field.removeClass( "error" ); 
+        inputObj.label.removeClass("error");
         // fieldTip.removeClass("error");
         return true;
     } else {         
-        input.tip.removeClass( "hidden" );
-        input.field.addClass("error");
-        input.label.addClass("error");
+        inputObj.tip.removeClass( "hidden" );
+        inputObj.field.addClass("error");
+        inputObj.label.addClass("error");
         // fieldTip.addClass("error");
         return false;
     }    
 }
 
 const resetValidationCOut = () => {
-    validateClassToggle( true , 'firstNameTxt');
-    validateClassToggle( true , 'lastNameTxt');
-    validateClassToggle( true , 'phoneIn');
-    validateClassToggle( true , 'emailIn');
-    validateClassToggle( true , 'pstAddressTxt');
-    validateClassToggle( true , 'pcityTxt');
-    validateClassToggle( true , 'pzipTxt');
-    validateClassToggle( true , 'pstateTxt');
-    validateClassToggle( true , 'pcountryTxt');
+    validateClassToggle( true , makeFormInputObj( 'firstNameTxt' ) );
+    validateClassToggle( true , makeFormInputObj( 'lastNameTxt') );
+    validateClassToggle( true , makeFormInputObj( 'phoneIn') );
+    validateClassToggle( true , makeFormInputObj( 'emailIn') );
+    validateClassToggle( true , makeFormInputObj( 'pstAddressTxt') );
+    validateClassToggle( true , makeFormInputObj( 'pcityTxt') );
+    validateClassToggle( true , makeFormInputObj( 'pzipTxt') );
+    validateClassToggle( true , makeFormInputObj( 'pstateTxt') );
+    validateClassToggle( true , makeFormInputObj( 'pcountryTxt') );
 }
 
 const validatePersonalFields = () => {
@@ -102,10 +113,10 @@ const validatePersonalFields = () => {
     // fails validation. Short-circuits, so may have incorrect options beyond.
     //prevents needed to fix many at the same time and potentially overwhealming
     //customer
-    if ( validateField( 'firstNameTxt', nameRegEx ) &&
-            validateField( 'lastNameTxt', nameRegEx ) &&
-            validateField( 'phoneIn', phoneRegEx ) &&
-            validateField( 'emailIn', emailRegEx ) ) {
+    if ( validateField( makeFormInputObj( 'firstNameTxt', nameRegEx ) )&&
+            validateField( makeFormInputObj( 'lastNameTxt', nameRegEx ) )&&
+            validateField( makeFormInputObj( 'phoneIn', phoneRegEx ) )&&
+            validateField( makeFormInputObj( 'emailIn', emailRegEx ) ) ) {
         return true;
     } else { return false; }
 };
@@ -273,134 +284,26 @@ const attachAddressListeners = ( addressPrefix, addressOrderName ) => {
         }});
 }
 
-const listenFieldAndUpdate = ( fieldID, fieldRegEx, orderProperty ) => {
+const listenFieldAndUpdate = ( jQString, fieldRegEx, orderProperty ) => {
     //Customer information listeners
     //each triggers on change of related input field, checks if its a valid value 
     // (and when doing that triggers the class toggle or not), then if it is valid, 
     // gets the current state of the order, and updates the field and saves it
-   fieldID.on('change', async () => {
-        if ( validateField( fieldID, fieldRegEx ) ) {
-            updateValidatedOrderField( fieldID, orderProperty )
+    let inputObj = makeFormInputObj ( jQString )
+
+
+    inputObj.on('change', async () => {
+        if ( validateField( inputObj, fieldRegEx ) ) {
+            updateValidatedOrderField( inputObj, orderProperty )
         }});       
 }
 
-const updateValidatedOrderField = async ( fieldID, orderProperty ) => {
+const updateValidatedOrderField = async ( inputObj, orderProperty ) => {
     let order = await getOrderSave();
-    order[orderProperty] = fieldID.val();
+    order[orderProperty] = inputObj.val();
     await setOrderSave( order );
 }
 
 const showConfirmOrder = () => {
     console.log( " show confirmation page ");
 };
-
-// const openBookModal = async ( room, hotel ) => {
-//     let order = await getCartSave();
-//     let bookModelElmt = $( '#bookingModal' )[0]; //get the element from jQuery selector to pass to bootstrap modal instance
-    
-//     //create booking obj and assign variables
-//     let order = new Order(  );
-//     await setRoomAvailabilityAndSave( room.id, false );
-//     await makeRoomCards( hotel ); // rebuild room availability (visible in background)
-
-//     //create the modal HTML; includes attaching it to the modal DOM element 
-//     buildBookingModal( book, cart, hotel );  
-//     // make & show Bootstrap Modal window
-//     const bookingModal = bootstrap.Modal.getOrCreateInstance( bookModelElmt );
-//     bookingModal.show();
-// }
-
-// const checkRoomAvailability = ( roomID ) => {
-//     let roomArray = getRoomsSave();
-
-//     for (let room of roomArray) {
-//         if (room.id === roomID) {
-//             return room.available
-//         } else {
-//             throw new Error( 'cannot find room' )
-//         }
-//     }
-// }
-
-// const setRoomAvailabilityAndSave = async ( roomID, isAvailable ) => {
-//     let roomArray = await getRoomsSave();
-//     console.log( "in set room avail and save: get: ");
-//     console.log( roomArray);
-    
-//     let isFound = false;
-
-//     for (let i = 0; i < roomArray.length; i++) {
-//         if ( roomArray[i].id === roomID ) {
-//             roomArray[i].available = isAvailable;
-//             isFound = true;
-//             break
-//         }
-//     } 
-
-//     if (isFound === true ) {
-//         console.log(  "in set room avail and save: found room: " );
-//         console.log( roomArray );
-//         setRoomsSave( roomArray );
-//     } else {
-//     throw new Error ('cannot find room')
-//     }
-// }
-
-// const buildBookingModal = ( book, cart, hotel ) => {
-//     updateModalTitleHTML( book );
-//     updateModalTotalHTML( book, cart );
-//     updateModalListeners( book, hotel );
-// }
-
-// const updateModalTitleHTML = ( book ) => {
-//     let modalTitleHTML = `
-//                         <h4 class="modal-title">${book.roomName}</h4>
-//                         <h5 class="h6 fst-italic">${book.hotelName}</h5>
-//                         `
-//     $("#BookingModalTitle").html( modalTitleHTML )
-// }
-
-// const updateModalTotalHTML = ( book, cart ) => {  
-//     let bookNum = cart.length;
-//     book.startDate = new Date( $('#checkInDate').val() );
-//     book.endDate = new Date( $('#checkOutDate').val() );
-
-//     book.numNights = book.calcNights();    
-//     if ( book.numNights == null ){ return; }
-
-//     let modalRoomTotalDivHTML = `
-//         <p id="${bookNum}Math" class="">${book.numNights} x $${book.costPerNight}/night</p>
-//         <h5 id="${bookNum}roomTotal" class="h5" >$${book.calcRoomTotal()}</h5>
-//         `;
-//     $("#modalroomTotalDiv").html( modalRoomTotalDivHTML );
-// }
-
-// const updateModalListeners = ( book, hotel ) => {
-//     //attach listener to updates as dates updated
-//     $('#checkInDate').on('change', async () => {
-//         let cart = await getCartSave();
-//         updateModalTotalHTML( book, cart ) 
-//     });
-//     $('#checkOutDate').on('change', async () => {
-//         let cart = await getCartSave();
-//         updateModalTotalHTML( book, cart ) 
-//     });
-    
-//     //listen for modal buttons
-//     $("#closeBtn").click( () => {
-//         setRoomAvailabilityAndSave( book.roomID, true);
-//         makeRoomCards( hotel );
-//         $("#bookingModal").modal('hide');
-//     });
-//     $("#cancelBtn").click( () => {
-//         setRoomAvailabilityAndSave( book.roomID, true);
-//         makeRoomCards( hotel );
-//         $("#bookingModal").modal('hide');
-//     });
-//     $("#bookBtn").click( async () => {
-//         let cart = await getCartSave();
-//         $("#bookingModal").modal('hide')
-//         addCartItem( book, cart ); //
-//         openCart(); //dont use same cart b/c modified it in addCartItem() abv
-//      } );
-// }
