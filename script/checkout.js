@@ -247,7 +247,7 @@ const buildConfirmationWindow = async () => {
         <h4>Purchase Details</h4>
         `
         let subtotal = 0;
-        order.bookingArray = bookings = await getCartSave();
+        bookings = await getCartSave();
         console.log( bookings );
         console.log( order );
         
@@ -257,20 +257,20 @@ const buildConfirmationWindow = async () => {
                     timeAdded, roomTotal, adjustPriceBy } = book;
             subtotal += roomTotal;
             confHTML += `
-                <div class="d-flex justify-space-between mt-3">
+                <div class="d-flex justify-content-between mt-3 w100">
                     <p><b>${hotelName}</b><br>
                     ${roomName}<br>
                     <em>${startDate.toDateString()}–${endDate.toDateString()}<br>
                     ${numNights} nights at $${costPerNight} each</em></p>
-                    <p><b>$${roomTotal}</b></p>
+                    <p><b>$${roomTotal.toFixed(2)}</b></p>
                 </div>
         ` }
         //Checkout Summary
         confHTML += `
-            <div class="d-flex flex-column align-items-end mt-3">
-                <p><b>Subtotal: </b>$${subtotal}</p>
+            <div class="d-flex flex-column align-items-end mt-3 w100">
+                <p><b>Subtotal: </b>$${subtotal.toFixed(2)}</p>
                 <p><b>Tax: </b>$${ (subtotal * 0.13).toFixed(2) }</p>
-                <h5><b>Total: </b>$${ (subtotal * 1.13).toFixed(2) }</h5>
+                <h5><b>Total: $${ (subtotal * 1.13).toFixed(2) }</b></h5>
             </div>
         ` 
     $('#confCheckoutDetailsContent').html( confHTML );
