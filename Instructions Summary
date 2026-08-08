@@ -147,3 +147,5 @@
 - [ ] Create an order summary that shows relevant booking data
 - [ ] Go through your final checks from the requirements in the Description section
 
+NOTE destructuring example is in checkout.js > buildConfirmationWindow() ( ~ line 200)  
+

@@ -196,39 +196,63 @@ const showConfirmOrder = () => {
     confModal.show();
 };
 
+//directly related, but dont want to have to make them back into order objs
+const checkAddressComplete = ( object ) => {
+    let { customerStAddress, customerCity, customerZip,
+        customerState, customerCountry } = object;
+
+    if ( !!customerStAddress && !!customerCity && !!customerZip && 
+        !!customerState && !!customerCountry ) {
+        return true;
+    } else { return false; }
+}
+
 
 const buildConfirmationWindow = async () => {
     let order = await getOrderSave(); //from dataAccess
+
+    let { bookingArray, isPaid, customerFName, customerLName, customerPhone, 
+        customerEmail, customerStAddress, customerCity, customerZip,
+        customerState, customerCountry } = order;
     console.log( order );
-    let { bookings, isPaid, fName, lName, phone, email, mAddress } = order;
-    console.log( bookings + isPaid + fName + lName);
-    console.log( phone + email + mAddress );
+
+    
+// mAddress
 
     let confHTML = `
         <h5>Personal Details</h5>
-        <p>${fName} ${lName}<br>     
+        <p><b>${customerFName} ${customerLName}</b><br>     
         `
-        if ( phone != null ){
-            confHTML += `Phone: ${phone}<br>`
-        }
-        confHTML += `
-            Email: ${email}</p>
-            <hr>
-        `
-        if ( mAddress && checkAddressComplete( mAddress ) ) {
+    let isComplete =  checkAddressComplete( order ) ;
+    console.log( isComplete );
+    
+    if ( isComplete == true ) {
         confHTML += `
             <h5>Mailing address</h5>
-            <p>${mAddress.stAddress}<br>
-            ${mAddress.city}, ${mAddress.state}<br>
-            ${mAddress.zip}<br>
-            ${mAddress.country}<br></p>
+            <p>${customerStAddress}<br>
+            ${customerCity}, ${customerState}<br>
+            ${customerZip}<br>
+            ${customerCountry}<br></p>
             <hr>
-        ` }
+        ` }        
+    if ( customerPhone != null ){
+    // if ( !phone ){
+        confHTML += `Phone: ${customerPhone}<br>`
+    }
+    confHTML += `
+        Email: ${customerEmail}</p>
+        <hr>
+    `
+
 
         confHTML += `
         <h5>Purchase Details</h5>
         `
         let subtotal = 0;
+
+        bookings = await getCartSave();
+        console.log( bookings );
+        console.log( order );
         
         for (book of bookings){
             let { id, roomID, roomName, hotelID, hotelName, customerID, 

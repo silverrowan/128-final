@@ -340,11 +340,23 @@ class Order {
 }
 
 
-//directly related, but dont want to have to make them back into order objs
-const checkAddressComplete = ( addressObj ) => {
-    if ( !addressObj.stAddress || !addressObj.city || !addressObj.zip || 
-            !addressObj.state || !addressObj.country ) {
-        return false;
-    } else { return true; }
-}
+// //directly related, but dont want to have to make them back into order objs
+// const checkAddressComplete = ( addressObjPrefix ) => {
+
+//     eval( 'isStExist=!!' + addressObjPrefix + `StAddress`)
+//     console.log( isStExist );
+    
+//     // let isStExist = `${addressObjPrefix} + StAddress`;
+//     let isCityExist = addressObjPrefix + 'City';
+//     let ZipVal = !!`${addressObjPrefix}Zip`;
+//     let isZipExists = !!ZipVal;
+
+//     let isStateExist = `${addressObjPrefix}State`;
+//     let isCountryExist = `${addressObjPrefix}Country`;
+
+//     if ( !isStExist || !isCityExist || !isZipExist || !isStateExist || 
+//             !isCountryExist ) {
+//         return false;
+//     } else { return true; }
+// }
 // #endregion
