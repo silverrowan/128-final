@@ -242,6 +242,7 @@ const buildConfirmationWindow = async () => {
         <hr>
     `
     //Order Details Section
+    //Checkout Items
         confHTML += `
         <h4>Purchase Details</h4>
         `
@@ -264,16 +265,16 @@ const buildConfirmationWindow = async () => {
                     <p><b>$${roomTotal}</b></p>
                 </div>
         ` }
+        //Checkout Summary
         confHTML += `
-            <div class="d-flex mt-3">
-                <p><b>$${subtotal}</b></p>
-                <p><b>$${ (subtotal * 0.13).toFixed(2) }</b></p>
-                <p><b>$${ (subtotal * 1.13).toFixed(2) }</b></p>
+            <div class="d-flex flex-column align-items-end mt-3">
+                <p><b>Subtotal: </b>$${subtotal}</p>
+                <p><b>Tax: </b>$${ (subtotal * 0.13).toFixed(2) }</p>
+                <h5><b>Total: </b>$${ (subtotal * 1.13).toFixed(2) }</h5>
             </div>
-            <hr>
         ` 
     $('#confCheckoutDetailsContent').html( confHTML );
-    } 
+    }
 
 
 
