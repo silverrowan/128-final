@@ -13,7 +13,7 @@ const cvcRegEx = /^\d{3}$/;
 
 const makeFormInputObj = ( jQElement ) => {
     if ( typeof( jQElement ) == 'string') {
-        jQElement = $(`#${input}`);
+        jQElement = $(`#${jQElement}`);
     }    
     let input = {
         // relies on order of input field and elements.
@@ -113,22 +113,22 @@ const validatePersonalFields = () => {
     // fails validation. Short-circuits, so may have incorrect options beyond.
     //prevents needed to fix many at the same time and potentially overwhealming
     //customer
-    if ( validateField( makeFormInputObj( 'firstNameTxt', nameRegEx ) )&&
-            validateField( makeFormInputObj( 'lastNameTxt', nameRegEx ) )&&
-            validateField( makeFormInputObj( 'phoneIn', phoneRegEx ) )&&
-            validateField( makeFormInputObj( 'emailIn', emailRegEx ) ) ) {
+    if ( validateField( makeFormInputObj( 'firstNameTxt') , nameRegEx )&&
+            validateField( makeFormInputObj( 'lastNameTxt') , nameRegEx )&&
+            validateField( makeFormInputObj( 'phoneIn') , phoneRegEx )&&
+            validateField( makeFormInputObj( 'emailIn') , emailRegEx ) ) {
         return true;
     } else { return false; }
 };
 
 const validateAddressFields = ( addressPrefix ) => {
     //see validatePersonalFields for comments, they're the same.
-    if ( validateField( `${addressPrefix}stAddressTxt`, addressRegEx ) &&
-            validateField( `${addressPrefix}cityTxt`, addressRegEx ) && 
-            ( validateField( `${addressPrefix}zipTxt`, postCodeRegEx ) || 
-                        validateField( `${addressPrefix}zipTxt`, zipCodeRegEx ) ) &&
-            validateField( `${addressPrefix}stateTxt`, addressRegEx ) &&
-            validateField( `${addressPrefix}countryTxt`, addressRegEx ) ){
+    if ( validateField( makeFormInputObj(  `${addressPrefix}stAddressTxt` ), addressRegEx ) &&
+            validateField( makeFormInputObj(  `${addressPrefix}cityTxt` ), addressRegEx ) && 
+            ( validateField( makeFormInputObj(  `${addressPrefix}zipTxt` ), postCodeRegEx ) || 
+                        validateField( makeFormInputObj(  `${addressPrefix}zipTxt` ), zipCodeRegEx ) ) &&
+            validateField( makeFormInputObj(  `${addressPrefix}stateTxt` ), addressRegEx ) &&
+            validateField( makeFormInputObj( `${addressPrefix}countryTxt` ), addressRegEx ) ){
         return true;
     } else { return false; }
 }
@@ -279,8 +279,9 @@ const attachAddressListeners = ( addressPrefix, addressOrderName ) => {
     
     //zip is slightly different, as there are two acceptable patterns
     zip.on('change', async () => {
-        if ( validateField(zip, postCodeRegEx)  ||  validateField(zip, zipCodeRegEx) ) {
-            updateValidatedOrderField( zip, addressOrderName.orderProperty )
+        zipObj = makeFormInputObj( zip );
+        if ( validateField(zipObj, postCodeRegEx)  ||  validateField(zipObj, zipCodeRegEx) ) {
+            updateValidatedOrderField( zipObj, 'addressOrderName.zip' )
         }});
 }
 
@@ -289,10 +290,8 @@ const listenFieldAndUpdate = ( jQString, fieldRegEx, orderProperty ) => {
     //each triggers on change of related input field, checks if its a valid value 
     // (and when doing that triggers the class toggle or not), then if it is valid, 
     // gets the current state of the order, and updates the field and saves it
-    let inputObj = makeFormInputObj ( jQString )
-
-
-    inputObj.on('change', async () => {
+    jQString.on('change', async () => {
+        let inputObj = makeFormInputObj ( jQString )
         if ( validateField( inputObj, fieldRegEx ) ) {
             updateValidatedOrderField( inputObj, orderProperty )
         }});       
@@ -300,7 +299,7 @@ const listenFieldAndUpdate = ( jQString, fieldRegEx, orderProperty ) => {
 
 const updateValidatedOrderField = async ( inputObj, orderProperty ) => {
     let order = await getOrderSave();
-    order[orderProperty] = inputObj.val();
+    order[orderProperty] = inputObj.value;
     await setOrderSave( order );
 }
 
