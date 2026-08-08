@@ -197,7 +197,7 @@ const showConfirmOrder = () => {
 };
 
 //directly related, but dont want to have to make them back into order objs
-const checkAddressComplete = ( object ) => {
+const checkCustomerAddressComplete = ( object ) => {
     let { customerStAddress, customerCity, customerZip,
         customerState, customerCountry } = object;
 
@@ -216,24 +216,22 @@ const buildConfirmationWindow = async () => {
         customerState, customerCountry } = order;
     console.log( order );
 
-    
-// mAddress
-
+    //Personal Details section, including mailing address only if entered
+    // a *complete* mailing address, otherwise treats entire address as empty
     let confHTML = `
-        <h5>Personal Details</h5>
-        <p><b>${customerFName} ${customerLName}</b><br>     
+        <h4>Personal Details</h4>
+        <h5 class="mb-0 mt-3">${customerFName} ${customerLName}</h5>     
         `
-    let isComplete =  checkAddressComplete( order ) ;
+    let isComplete =  checkCustomerAddressComplete( order ) ;
     console.log( isComplete );
     
     if ( isComplete == true ) {
         confHTML += `
-            <h5>Mailing address</h5>
             <p>${customerStAddress}<br>
             ${customerCity}, ${customerState}<br>
             ${customerZip}<br>
             ${customerCountry}<br></p>
-            <hr>
+            <p class="mt-2">
         ` }        
     if ( customerPhone != null ){
     // if ( !phone ){
@@ -243,10 +241,10 @@ const buildConfirmationWindow = async () => {
         Email: ${customerEmail}</p>
         <hr>
     `
-
+    //Order Details Section
 
         confHTML += `
-        <h5>Purchase Details</h5>
+        <h4>Purchase Details</h4>
         `
         let subtotal = 0;
 
