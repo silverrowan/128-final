@@ -242,32 +242,26 @@ const buildConfirmationWindow = async () => {
         <hr>
     `
     //Order Details Section
-
         confHTML += `
         <h4>Purchase Details</h4>
         `
         let subtotal = 0;
-
-        bookings = await getCartSave();
+        order.bookingArray = bookings = await getCartSave();
         console.log( bookings );
         console.log( order );
         
         for (book of bookings){
             let { id, roomID, roomName, hotelID, hotelName, customerID, 
-                    cost, start, end, nights, stage, timeBooked, 
-                    roomTotal, adjust } = book;
+                    costPerNight, startDate, endDate, numNights, stage, 
+                    timeAdded, roomTotal, adjustPriceBy } = book;
             subtotal += roomTotal;
             confHTML += `
                 <div class="d-flex justify-space-between mt-3">
-                    <p>${hotelName} | ${roomName} | ${start} to ${end}</p>
-                    <p>$${roomTotal}</p>
-                </div>
-                <div class="aside justify-space-evenly">
-                    <p>${start} to ${end}</p>
-                    <p>|</p>
-                    <p>${nights} nights</p>
-                    <p>|</p>
-                    <p>$${cost} per night</p>
+                    <p><b>${hotelName}</b><br>
+                    ${roomName}<br>
+                    <em>${startDate.toDateString()}–${endDate.toDateString()}<br>
+                    ${numNights} nights at $${costPerNight} each</em></p>
+                    <p><b>$${roomTotal}</b></p>
                 </div>
         ` }
         confHTML += `
