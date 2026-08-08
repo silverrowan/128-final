@@ -140,7 +140,6 @@ class Booking {
     _numNights;
     _stage;
     _timeAdded;
-    _timePaid;
     _roomTotal;
     _adjustPriceBy;
 
@@ -252,32 +251,6 @@ class Booking {
     }
 }
 
-class Address {
-    _stAddress;
-    _city;
-    _zip;
-    _state;
-    _country;
-
-    constructor(){}
-
-    //setters & getters
-    get stAddress( ) { return this._stAddress; }
-    set stAddress( n ) { this._stAddress = n; }
-
-    get city( ) { return this._city; }
-    set city( n ) { this._city = n; }
-
-    get zip( ) { return this._zip; }
-    set zip( n ) { this._zip = n; }
-
-    get state( ) { return this._state; }
-    set state( n ) { this._state = n; }
-
-    get country( ) { return this._country; }
-    set country( n ) { this._country = n; }
-}
-
 class Order {
     _bookingArray;
     _isPaid;
@@ -286,11 +259,21 @@ class Order {
     _customerLName;
     _customerPhone;
     _customerEmail;
-    _customerMailingAddress;
-    _customerBillingAddress;
 
+    _customerStAddress;
+    _customerCity;
+    _customerZip;
+    _customerState;
+    _customerCountry;
 
-    constructor( isPaid ){
+    _billStAddress;
+    _billCity;
+    _billZip;
+    _billState;
+    _billCountry;
+
+    constructor( cart ){
+        this._bookingArray = cart;
         this._isPaid = false;
     }
 
@@ -313,10 +296,55 @@ class Order {
     get customerEmail( ) { return this._customerEmail; }
     set customerEmail( n ) { this._customerEmail = n; }
 
+    
+    
+    get customerStAddress( ) { return this._customerStAddress; }
+    set customerStAddress( n ) { this._customerStAddress = n; }
+
+    get customerCity( ) { return this._customerCity; }
+    set customerCity( n ) { this._customerCity = n; }
+
+    get customerZip( ) { return this._customerZip; }
+    set customerZip( n ) { this._customerZip = n; }
+
+    get customerState( ) { return this._customerState; }
+    set customerState( n ) { this._customerState = n; }
+
+    get customerCountry( ) { return this._customerCountry; }
+    set customerCountry( n ) { this._customerCountry = n; }
+
+
+
+    get billStAddress( ) { return this._billStAddress; }
+    set billStAddress( n ) { this._billStAddress = n; }
+
+    get billCity( ) { return this._billCity; }
+    set billCity( n ) { this._billCity = n; }
+
+    get billZip( ) { return this._billZip; }
+    set billZip( n ) { this._billZip = n; }
+ 
+    get billState( ) { return this._billState; }
+    set billState( n ) { this._billState = n; }
+
+    get billCountry( ) { return this._billCountry; }
+    set billCountry( n ) { this._billCountry = n; }
+
+
+
     get customerMailingAddress( ) { return this._customerMailingAddress; }
     set customerMailingAddress( n ) { this._customerMailingAddress = n; }
 
     get customerBillingAddress( ) { return this._customerBillingAddress; }
     set customerBillingAddress( n ) { this._customerBillingAddress = n; }
+}
+
+
+//directly related, but dont want to have to make them back into order objs
+const checkAddressComplete = ( addressObj ) => {
+    if ( !addressObj.stAddress || !addressObj.city || !addressObj.zip || 
+            !addressObj.state || !addressObj.country ) {
+        return false;
+    } else { return true; }
 }
 // #endregion

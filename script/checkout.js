@@ -1,3 +1,8 @@
+//--------------------------------------------------------------------------------------
+//-----------------------------CHECKOUT MULTIPLE WINDOWS--------------------------------
+//--------------------------------------------------------------------------------------
+//these functions are not specific to any one checkout window, but used across multiple
+
 //regex strings for confirming input text meets requirements
 const nameRegEx = /^[a-zA-Z\s\.\-'\(\)]+$/;
 const emailRegEx = /^[\w\.\-]+@[\w\.\-]+\.[\w\.\-]+$/;
@@ -11,6 +16,10 @@ const ccNumRegEx = /^\d{4}[\- ]?\d{4}[\- ]?\d{4}[\- ]?\d{4}$/ ;
 const yearRegEx = /^((20)|())\d{2}$/;
 const cvcRegEx = /^\d{3}$/;
 
+// Convert **input field** JQuery element or id-String into Object, 
+// returns the object
+// references input, main label, and tip or comment label as jQuery 
+// elements, and if the field is required, and its current value
 const makeFormInputObj = ( jQElement ) => {
     if ( typeof( jQElement ) == 'string') {
         jQElement = $(`#${jQElement}`);
@@ -31,56 +40,33 @@ const makeFormInputObj = ( jQElement ) => {
     return input;
 }
 
-const validateField = (inputObj, fieldRegEx) => {
-    // if ( typeof( jQElement ) == 'string') {
-    //     input = makeFormInputObj( $(`#${jQElement}`) );
-    // }
-    // let input = makeFormInputObj( jQElement )
+//attach a listener to the field that:
+    // triggers on change of input field
+    // checks if its a valid value ( and triggers validateClassToggle() as appropriate)
+    // then if it is valid
+    // updates the order field and saves it
+const listenFieldAndUpdate = ( jQString, fieldRegEx, orderProperty ) => {
+    jQString.on('change', async () => {
+        let inputObj = makeFormInputObj ( jQString )
+        if ( validateField( inputObj, fieldRegEx ) ) {
+            updateValidatedOrderField( inputObj, orderProperty )
+        }});       
+}
 
+const validateField = (inputObj, fieldRegEx) => {
     //if the input is not required and its value is empty/null/undef/etc then its valid
     if ( (inputObj.value == "" || !inputObj.value) && !inputObj.isRequired ) { 
         validateClassToggle ( true , inputObj );
         return true; }
     else { //otherwise check matches string & set classes appropriately
-        return validateClassToggle ( fieldRegEx.test( inputObj.value ), inputObj ) 
+        let isValid = fieldRegEx.test( inputObj.value );
+        return validateClassToggle ( isValid, inputObj ) 
     }
 }
 
-const validateSelect = ( selectID ) => { 
-    //only checking that it has been selected as
-    // the values are pre-set
-    //See validateField for comments if needed
-    let input = {
-        field: $(`#${fieldID}`),
-        label: fieldLabel = $(`#${fieldID}Lbl`),
-        tip: $(`#${fieldID}Tip`),   
-    }
-    input.value = input.field.val().trim()
-    
-    if ( input.value != null && input.value != undefinedd && 
-            !input.value.equals('') ) {
-        validateClassToggle( true, input )
-    } else {         
-        validateClassToggle( false, input )
-    }
-    return input.value;
-}
-
-const validateMonthNum = ( fieldID ) => {
-    let input = {
-        field: $(`#${fieldID}`),
-        label: fieldLabel = $(`#${fieldID}Lbl`),
-        tip: $(`#${fieldID}Tip`),   
-    }
-    input.value = input.field.val().trim().parseInt()
-
-    validateClassToggle ( input.value <= 12 && input.value >= 1, input );
-}
-
+//turn hidden and error classes of input element and related 
+// labels on and off by validity state
 const validateClassToggle = ( isValid, inputObj ) => {
-    // if ( typeof( input ) == 'string') {
-    //     input = makeFormInputObj( $(`#${input}`) );
-    // }
     if ( isValid ) {
         inputObj.tip.addClass("hidden") 
         inputObj.field.removeClass( "error" ); 
@@ -96,6 +82,32 @@ const validateClassToggle = ( isValid, inputObj ) => {
     }    
 }
 
+const updateValidatedOrderField = async ( inputObj, orderProperty ) => {
+    let order = await getOrderSave();
+    order[orderProperty] = inputObj.value;
+    await setOrderSave( order );
+}
+
+//--------------------------------------------------------------------------------------
+//-----------------------------CHECKOUT CUSTOMER DETAILS--------------------------------
+//--------------------------------------------------------------------------------------
+const openCheckout = async ( cart ) => {
+    cartBS.hide();
+    let order = await getOrderSave(); //from dataAccess
+    let coutModalDiv = $("#coutModal")[0];
+
+    resetValidationCOut(); //clear previous validation errors
+
+    attachCustomerListeners();
+
+    // find in 'multiple windows' section
+
+    //make & show bootstrap Modal window
+    coutModal = bootstrap.Modal.getOrCreateInstance( coutModalDiv );
+    coutModal.show();
+}
+
+//sepecific to page 1 of checkout
 const resetValidationCOut = () => {
     validateClassToggle( true , makeFormInputObj( 'firstNameTxt' ) );
     validateClassToggle( true , makeFormInputObj( 'lastNameTxt') );
@@ -106,6 +118,16 @@ const resetValidationCOut = () => {
     validateClassToggle( true , makeFormInputObj( 'pzipTxt') );
     validateClassToggle( true , makeFormInputObj( 'pstateTxt') );
     validateClassToggle( true , makeFormInputObj( 'pcountryTxt') );
+}
+
+const attachCustomerListeners = () => {
+    //Customer information listeners
+    listenFieldAndUpdate( $('#firstNameTxt'), nameRegEx, 'customerFName' );
+    listenFieldAndUpdate( $('#lastNameTxt'), nameRegEx, 'customerLName' );
+    listenFieldAndUpdate( $('#phoneIn'), phoneRegEx, 'customerPhone' );
+    listenFieldAndUpdate( $('#emailIn'), emailRegEx, 'customerEmail' );
+
+    attachAddressListeners( 'p', 'customer' );
 }
 
 const validatePersonalFields = () => {
@@ -121,17 +143,123 @@ const validatePersonalFields = () => {
     } else { return false; }
 };
 
-const validateAddressFields = ( addressPrefix ) => {
+
+
+
+const attachAddressListeners = ( addressIDPrefix, addressObjPrefix ) => {
+    let stAddress = $(`#${addressIDPrefix}stAddressTxt`);
+    let city = $(`#${addressIDPrefix}cityTxt`);
+    let zip = $(`#${addressIDPrefix}zipTxt`);
+    let state = $(`#${addressIDPrefix}stateTxt`);
+    let country = $(`#${addressIDPrefix}countryTxt`);
+    
+    listenFieldAndUpdate( stAddress, addressRegEx, `${addressObjPrefix}StAddress` );
+    listenFieldAndUpdate( city, addressRegEx, `${addressObjPrefix}City` );
+    listenFieldAndUpdate( state, addressRegEx, `${addressObjPrefix}State` );
+    listenFieldAndUpdate( country, addressRegEx, `${addressObjPrefix}Country` );
+    
+    //zip is slightly different, as there are two acceptable patterns
+    zip.on('change', async () => {
+        zipObj = makeFormInputObj( zip );
+        if ( validateField(zipObj, postCodeRegEx)  ||  validateField(zipObj, zipCodeRegEx) ) {
+            updateValidatedOrderField( zipObj, `${addressObjPrefix}Zip` )
+        }});
+}
+
+const validateAddressFields = ( addressIDPrefix ) => {
     //see validatePersonalFields for comments, they're the same.
-    if ( validateField( makeFormInputObj(  `${addressPrefix}stAddressTxt` ), addressRegEx ) &&
-            validateField( makeFormInputObj(  `${addressPrefix}cityTxt` ), addressRegEx ) && 
-            ( validateField( makeFormInputObj(  `${addressPrefix}zipTxt` ), postCodeRegEx ) || 
-                        validateField( makeFormInputObj(  `${addressPrefix}zipTxt` ), zipCodeRegEx ) ) &&
-            validateField( makeFormInputObj(  `${addressPrefix}stateTxt` ), addressRegEx ) &&
-            validateField( makeFormInputObj( `${addressPrefix}countryTxt` ), addressRegEx ) ){
+    if ( validateField( makeFormInputObj(  `${addressIDPrefix}stAddressTxt` ), addressRegEx ) &&
+            validateField( makeFormInputObj(  `${addressIDPrefix}cityTxt` ), addressRegEx ) && 
+            ( validateField( makeFormInputObj(  `${addressIDPrefix}zipTxt` ), postCodeRegEx ) || 
+                        validateField( makeFormInputObj(  `${addressIDPrefix}zipTxt` ), zipCodeRegEx ) ) &&
+            validateField( makeFormInputObj(  `${addressIDPrefix}stateTxt` ), addressRegEx ) &&
+            validateField( makeFormInputObj( `${addressIDPrefix}countryTxt` ), addressRegEx ) ){
         return true;
     } else { return false; }
 }
+
+
+
+
+
+
+
+
+const showConfirmOrder = () => {
+    console.log( " show confirmation page ");
+    coutModal.hide();
+    
+    buildConfirmationWindow();
+    let confModalDiv = $("#coutConfModal")[0];
+    //make & show bootstrap Modal window
+    confModal = bootstrap.Modal.getOrCreateInstance( confModalDiv );
+    confModal.show();
+};
+
+
+const buildConfirmationWindow = async () => {
+    let order = await getOrderSave(); //from dataAccess
+    console.log( order );
+    let { bookings, isPaid, fName, lName, phone, email, mAddress } = order;
+    console.log( bookings + isPaid + fName + lName);
+    console.log( phone + email + mAddress );
+
+    let confHTML = `
+        <h5>Personal Details</h5>
+        <p>${fName} ${lName}<br>     
+        `
+        if ( phone != null ){
+            confHTML += `Phone: ${phone}<br>`
+        }
+        confHTML += `
+            Email: ${email}</p>
+            <hr>
+        `
+        if ( mAddress && checkAddressComplete( mAddress ) ) {
+        confHTML += `
+            <h5>Mailing address</h5>
+            <p>${mAddress.stAddress}<br>
+            ${mAddress.city}, ${mAddress.state}<br>
+            ${mAddress.zip}<br>
+            ${mAddress.country}<br></p>
+            <hr>
+        ` }
+
+        confHTML += `
+        <h5>Purchase Details</h5>
+        `
+        let subtotal = 0;
+        
+        for (book of bookings){
+            let { id, roomID, roomName, hotelID, hotelName, customerID, 
+                    cost, start, end, nights, stage, timeBooked, 
+                    roomTotal, adjust } = book;
+            subtotal += roomTotal;
+            confHTML += `
+                <div class="d-flex justify-space-between mt-3">
+                    <p>${hotelName} | ${roomName} | ${start} to ${end}</p>
+                    <p>$${roomTotal}</p>
+                </div>
+                <div class="aside justify-space-evenly">
+                    <p>${start} to ${end}</p>
+                    <p>|</p>
+                    <p>${nights} nights</p>
+                    <p>|</p>
+                    <p>$${cost} per night</p>
+                </div>
+        ` }
+        confHTML += `
+            <div class="d-flex mt-3">
+                <p><b>$${subtotal}</b></p>
+                <p><b>$${ (subtotal * 0.13).toFixed(2) }</b></p>
+                <p><b>$${ (subtotal * 1.13).toFixed(2) }</b></p>
+            </div>
+            <hr>
+        ` 
+    $('#confCheckoutDetailsContent').html( confHTML );
+    } 
+
+
 
 const addPmtFields = () => {
     pmtHTML = `
@@ -238,71 +366,33 @@ const validatePmtFields = () => {
     }
 }
 
-const openCheckout = async ( cart ) => {
-    cartBS.hide();
-    let order = await getOrderSave();
-    let coutModalDiv = $("#coutModal")[0];
-
-    resetValidationCOut(); //clear previous validation errors
-
-    //create order obj & address obj and assign variables
-    // let mailingAddress = new Address();
-    // let order = new Order( cart );
-
-    attachCustomerListeners();
-    attachAddressListeners( 'p' );
-
-    //make & show bootstrap Modal window
-    const coutModal = bootstrap.Modal.getOrCreateInstance( coutModalDiv );
-    coutModal.show();
-}
-
-const attachCustomerListeners = () => {
-    //Customer information listeners
-    listenFieldAndUpdate( $('#firstNameTxt'), nameRegEx, 'customerFName' );
-    listenFieldAndUpdate( $('#lastNameTxt'), nameRegEx, 'customerLName' );
-    listenFieldAndUpdate( $('#phoneIn'), phoneRegEx, 'customerPhone' );
-    listenFieldAndUpdate( $('#emailIn'), emailRegEx, 'customerEmail' );
-}
-
-const attachAddressListeners = ( addressPrefix, addressOrderName ) => {
-    let stAddress = $(`#${addressPrefix}stAddressTxt`);
-    let city = $(`#${addressPrefix}cityTxt`);
-    let zip = $(`#${addressPrefix}zipTxt`);
-    let state = $(`#${addressPrefix}stateTxt`);
-    let country = $(`#${addressPrefix}countryTxt`);
+const validateSelect = ( selectID ) => { 
+    //only checking that it has been selected as
+    // the values are pre-set
+    //See validateField for comments if needed
+    let input = {
+        field: $(`#${fieldID}`),
+        label: fieldLabel = $(`#${fieldID}Lbl`),
+        tip: $(`#${fieldID}Tip`),   
+    }
+    input.value = input.field.val().trim()
     
-    listenFieldAndUpdate( stAddress, addressRegEx, `${addressOrderName}.stAddress` );
-    listenFieldAndUpdate( city, addressRegEx, `${addressOrderName}.city` );
-    listenFieldAndUpdate( state, addressRegEx, `${addressOrderName}.state` );
-    listenFieldAndUpdate( country, addressRegEx, `${addressOrderName}.country` );
-    
-    //zip is slightly different, as there are two acceptable patterns
-    zip.on('change', async () => {
-        zipObj = makeFormInputObj( zip );
-        if ( validateField(zipObj, postCodeRegEx)  ||  validateField(zipObj, zipCodeRegEx) ) {
-            updateValidatedOrderField( zipObj, 'addressOrderName.zip' )
-        }});
+    if ( input.value != null && input.value != undefinedd && 
+            !input.value.equals('') ) {
+        validateClassToggle( true, input )
+    } else {         
+        validateClassToggle( false, input )
+    }
+    return input.value;
 }
 
-const listenFieldAndUpdate = ( jQString, fieldRegEx, orderProperty ) => {
-    //Customer information listeners
-    //each triggers on change of related input field, checks if its a valid value 
-    // (and when doing that triggers the class toggle or not), then if it is valid, 
-    // gets the current state of the order, and updates the field and saves it
-    jQString.on('change', async () => {
-        let inputObj = makeFormInputObj ( jQString )
-        if ( validateField( inputObj, fieldRegEx ) ) {
-            updateValidatedOrderField( inputObj, orderProperty )
-        }});       
-}
+const validateMonthNum = ( fieldID ) => {
+    let input = {
+        field: $(`#${fieldID}`),
+        label: fieldLabel = $(`#${fieldID}Lbl`),
+        tip: $(`#${fieldID}Tip`),   
+    }
+    input.value = input.field.val().trim().parseInt()
 
-const updateValidatedOrderField = async ( inputObj, orderProperty ) => {
-    let order = await getOrderSave();
-    order[orderProperty] = inputObj.value;
-    await setOrderSave( order );
+    validateClassToggle ( input.value <= 12 && input.value >= 1, input );
 }
-
-const showConfirmOrder = () => {
-    console.log( " show confirmation page ");
-};

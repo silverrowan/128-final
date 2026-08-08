@@ -12,6 +12,12 @@ $( async function() {
     addHotelsToMap( hotelArray );
     reBuildCart( initialCartArray )
 
+
+    //initial modals and offcanvases
+    let coutModal = bootstrap.Modal.getOrCreateInstance( $("#coutModal")[0] );
+    let confModal = bootstrap.Modal.getOrCreateInstance( $("#confCheckoutDetailsContent")[0] );
+
+
     // the initial booking modal listeners need information on current state, so are attached 
     // later with that information, tried using using .off(...).on(...) to avoid
     // build-up of multiple listeners, but didn't seem to work right, leaving as
