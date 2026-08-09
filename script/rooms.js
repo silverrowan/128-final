@@ -28,25 +28,158 @@ const makeHotelCard = ( hotel ) => {
 }
 
 const makeRoomCards = async ( hotel ) => {
-    $("#roomCards").html( '' );
-    
+    let roomCardsDiv = $("#roomCards");
+    roomCardsDiv.html( '' );
+
     let roomArray = await getRoomsSave();
     
+    makeRoomFilterSortHeader( roomCardsDiv, hotel, roomArray );
+    
+    makeFilteredRooms( hotel, roomArray)
+};
+
+const makeRoomFilterSortHeader = ( jQDiv, hotel, roomArray ) => {
+    let filterHTML = `
+        <div class="col w100">            
+            <div class="card m-3 d-flex">
+                <div class="card-body">
+                    <div class="row g-3 justify-content-around align-items-stretch">
+                        ${makeFilterByMaxGuests()}
+                        ${makeSortBy()}
+                    </div>
+                </div>
+            </div>
+        </div>                
+    `
+    //attach html to page before jq element
+    jQDiv.before(  filterHTML );
+
+    //attach listeners to filter options
+    $('#guestFilter').on('change', () => {
+        makeFilteredRooms(hotel, roomArray)
+    });
+    $('#roomSort').on('change', () => {
+        makeFilteredRooms(hotel, roomArray) 
+    });
+}
+
+const makeFilterByMaxGuests = () => {
+    let filterHTML = `
+        <div class="d-flex flex-column justify-content-end col">
+            <h6>Filter by number of guests staying</h6>
+            <select id="guestFilter" class="form-select">
+                <option value="all">Any Number of Guests</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests<option>
+                <option value="4">4 Guests</option>
+            </select>    
+        </div>
+    `
+    return filterHTML;
+}
+
+const makeSortBy = () => {
+    let sortHTML = `
+        <div class="d-flex flex-column justify-content-end col">
+            <h6>Sort by: </h6>
+            <select id="roomSort" class="form-select">
+                <option value="default">Sort By</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="guests">Max Guests</option>
+                <option value="rating">Rating</option>
+            </select>
+        </div>   
+    `
+    return sortHTML;
+}
+
+const filterRooms = ( rooms ) => {
+    const maxGuests = $('#guestFilter').val();
+    if ( maxGuests == 'all' ) {
+        return rooms;
+    } else {
+        let filteredRooms = rooms.filter( rooms => rooms.maxGuests >= Number(maxGuests) )
+        return filteredRooms;
+    }
+}
+
+const sortRooms = ( rooms ) => {
+    const sort = $('#roomSort').val();
+
+    rooms.sort((a, b) => {
+        switch (sort) {
+            case 'price-low':
+                return a.pricePerNight - b.pricePerNight;
+
+            case 'price-high':
+                return b.pricePerNight - a.pricePerNight;
+
+            case 'guests':
+                return b.maxGuests - a.maxGuests;
+
+            default:
+                return 0;
+        }
+    });
+
+    return rooms;
+};
+
+const updateRooms = async () => {
+    let roomArray = await getRoomsSave();
+    let rooms = filterRooms(roomArray);
+    rooms = sortRooms(rooms);
+
+    return rooms;
+};
+
+const makeFilteredRooms = ( hotel, allRooms ) => {
+    let roomCardsDiv = $("#roomCards");
+    roomCardsDiv.html( '' );
+
+    let roomArray = allRooms.filter( room => room.hotelId == hotel.id );
+    
+    roomArray = filterRooms(roomArray);
+    roomArray = sortRooms(roomArray);
+
     for ( let i = 0 ; i < roomArray.length ; i++ ){
         let room = roomArray[i];
         if ( hotel.id == room.hotelId ) {
             if ( room.available ){
-                $("#roomCards").append( makeRoomCard( room, true ) );
+                roomCardsDiv.append( makeRoomCard( room, true ) );
                 $(`#bookRoom${room.id}`).click( () => {
                     openBookModal( room, hotel );
                 });
             } else {
-                $("#roomCards").append( makeRoomCard( room, false ) );
+                roomCardsDiv.append( makeRoomCard( room, false ) );
             }
                 
         }
     }
-};
+}   
+
+
+
+
+    // for ( let i = 0 ; i < roomArray.length ; i++ ){
+    //     let room = roomArray[i];
+    //     if ( hotel.id == room.hotelId ) {
+    //         if ( room.available ){
+    //             roomCardsDiv.append( makeRoomCard( room, true ) );
+    //             $(`#bookRoom${room.id}`).click( () => {
+    //                 openBookModal( room, hotel );
+    //             });
+    //         } else {
+    //             roomCardsDiv.append( makeRoomCard( room, false ) );
+    //         }
+                
+    //     }
+    // }
+
+
+
 
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
