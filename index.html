@@ -260,7 +260,7 @@
             <div class="modal-body" id="pmtContent">
                 <div class="container flex-column">
                     <h4>Quick checkout with PayPal</h4>
-                    <button id="pmtByPaypal" class="btn btn-success align-self-center w100">PayPal</button>
+                    <button id="pmtPPPayBtn" class="btn btn-success align-self-center w100">PayPal</button>
                 </div>
                 <hr>
                 <div>
@@ -290,7 +290,9 @@
                                         </div>
                                     </div>
                                     <label class="form-label hidden formTip" for="ccExpMo" id="ccExpMoTip">
-                                            An expirey date is required, please enter a valid 2 digit month, and 2 digit year</label>
+                                            Please enter a valid 2 digit month (01-12)</label>
+                                    <label class="form-label hidden formTip" for="ccExpYr" id="ccExpYrTip">
+                                            Please enter a valid 2 digit year</label>
                                 </div>
                                 <div class="form col-4 g-3" >
                                     <label class="form-label" for="ccCVC" id="ccCVCLbl">CVC*</label>
@@ -325,37 +327,37 @@
                             <div class="row g-3 my-3"><h5>Billing Address</h5></div>
                             <div class="row g-3 mb-3">
                                 <div class="form col g-3" >
-                                    <label class="form-label" for="pstAddressTxt" id="pstAddressTxtLbl">Address*</label>
-                                    <input type="text" class="form-control" id="pstAddressTxt" name="stAddress" placeholder=" " required/>
-                                    <label class="form-label hidden formTip" for="pstAddressTxt" id="pstAddressTxtTip">Please enter a valid address.</label>
+                                    <label class="form-label" for="billstAddressTxt" id="billstAddressTxtLbl">Address*</label>
+                                    <input type="text" class="form-control" id="billstAddressTxt" name="stAddress" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="billstAddressTxt" id="billstAddressTxtTip">Please enter a valid address.</label>
                                 </div>
                             </div>
                             <div class="row g-3 mb-3">
                                 <div class="form col-7 g-3" >
-                                    <label class="form-label" for="pcityTxt" id="pcityTxtLbl">City*</label>
-                                    <input type="text" class="form-control" id="pcityTxt" name="city" placeholder=" " required/>
-                                    <label class="form-label hidden formTip" for="pcityTxt" id="pcityTxtTip">Please enter a valid city name.</label>
+                                    <label class="form-label" for="billcityTxt" id="billcityTxtLbl">City*</label>
+                                    <input type="text" class="form-control" id="billcityTxt" name="city" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="billcityTxt" id="billcityTxtTip">Please enter a valid city name.</label>
                                 </div>
                                 <div class="form  col-5 g-3" >                                
-                                    <label class="form-label" for="pzipTxt" id="pzipTxtLbl">Postal Code / ZIP*</label>
-                                    <input type="text" class="form-control" id="pzipTxt" name="zip" placeholder=" " required/>
-                                    <label class="form-label hidden formTip" for="pzipTxt" id="pzipTxtTip">Please enter a valid postal or zip code.</label>
+                                    <label class="form-label" for="billzipTxt" id="billzipTxtLbl">Postal Code / ZIP*</label>
+                                    <input type="text" class="form-control" id="billzipTxt" name="zip" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="billzipTxt" id="billzipTxtTip">Please enter a valid postal or zip code.</label>
                                 </div>
                             </div>
                             <div class="row g-3 mb-3">                                
                                 <div class="form  col-5 g-3" >
-                                    <label class="form-label" for="pstateTxt" id="pstateTxtLbl">Provence / State* </label>
-                                    <input type="text" class="form-control" id="pstateTxt" name="state" placeholder=" " required/>
-                                    <label class="form-label hidden formTip" for="pstateTxt" id="pstateTxtTip">Please enter a valid region name.</label>
+                                    <label class="form-label" for="billstateTxt" id="billstateTxtLbl">Provence / State* </label>
+                                    <input type="text" class="form-control" id="billstateTxt" name="state" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="billstateTxt" id="billstateTxtTip">Please enter a valid region name.</label>
                                 </div>
                                 <div class="form  col-7 g-3" >
-                                    <label class="form-label" for="pcountryTxt" id="pcountryTxtLbl">Country*</label>
-                                    <input type="text" class="form-control" id="pcountryTxt" name="country" placeholder=" " autocomplete="on" required/>
-                                    <label class="form-label hidden formTip" for="pcountryTxt" id="pcountryTxtTip">Please enter a valid country name.</label>
+                                    <label class="form-label" for="billcountryTxt" id="billcountryTxtLbl">Country*</label>
+                                    <input type="text" class="form-control" id="billcountryTxt" name="country" placeholder=" " autocomplete="on" required/>
+                                    <label class="form-label hidden formTip" for="billcountryTxt" id="billcountryTxtTip">Please enter a valid country name.</label>
                                 </div>
                             </div>
                             <div class="row g-3 mb-3">
-                                <button type="button" id="pmtByCCBtn" class="btn btn-success align-self-end">Pay</button>
+                                <button type="button" id="pmtCCPayBtn" class="btn btn-success align-self-end">Pay</button>
                             </div>
                         </div>
                     </form>
@@ -396,7 +398,7 @@
                 </div>
             </div>  
             <div class="modal-body">    
-                <p>There was a problem proccessing your payment<br>Please try again, or contact us at fakePhoneNumber</p>
+                <p id="pmtProbDesc">There was a problem proccessing your payment<br>Please try again, or contact us at fakePhoneNumber</p>
             </div>
             <div class="modal-footer">
                 <button type="button" id="pmtProbModalCancelBtn" class="btn btn-outline-danger">Cancel</button>

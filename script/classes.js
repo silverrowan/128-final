@@ -256,7 +256,7 @@ class Order {
     _isPaid;
 
     _customerFName;
-    _customerLName;
+    _ccCVC_customerLName;
     _customerPhone;
     _customerEmail;
 
@@ -265,6 +265,14 @@ class Order {
     _customerZip;
     _customerState;
     _customerCountry;
+
+    _ccNum; //prob a security issue to do this way.... no time to look into it
+    _ccExpMo; //"
+    _ccExpYr; //"
+    _ccCVC; //"
+
+    _billFName;
+    _billLName;
 
     _billStAddress;
     _billCity;
@@ -312,6 +320,26 @@ class Order {
 
     get customerCountry( ) { return this._customerCountry; }
     set customerCountry( n ) { this._customerCountry = n; }
+
+
+
+    get ccNum( ) { return this._ccNum; }
+    set ccNum( n ) { this._ccNum = n; }
+
+    get ccExpMo( ) { return this._ccExpMo; }
+    set ccExpMo( n ) { this._ccExpMo = n; }
+
+    get ccExpYr( ) { return this._ccExpYr; }
+    set ccExpYr( n ) { this._ccExpYr = n; }
+
+    get ccCVC( ) { return this._ccCVC; }
+    set ccCVC( n ) { this._ccCVC = n; }
+
+    get billFName( ) { return this._billFName; }
+    set billFName( n ) { this._billFName = n; }
+
+    get billLName( ) { return this._billLName; }
+    set billLName( n ) { this._billLName = n; }
 
 
 

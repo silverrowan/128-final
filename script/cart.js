@@ -62,7 +62,12 @@ const removeCartItem = async ( itemID ) => {
 const clearCart = async () => {
     let isConfirmed = confirm("Are you sure you want to remove everything? You will lose your holds on all rooms in the cart.");
     if ( !isConfirmed ) { return; }
+    clearCartYes();
+    cartBS.hide();
+    openCart();    
+}
 
+const clearCartYes = async () => {
     let cart = await getCartSave();
     for ( let i = 0; i < cart.length ; i++ ){
         await setRoomAvailabilityAndSave( cart[i].roomID, true);
@@ -71,8 +76,6 @@ const clearCart = async () => {
 
     cart = [];
     await setCartSave( cart );
-    cartBS.hide();
-    openCart();
 }
 
 const makeCartItemHTML = async ( book ) => { //booking already exists

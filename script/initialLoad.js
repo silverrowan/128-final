@@ -46,8 +46,12 @@ $( async function() {
         $("#coutConfModal").modal('hide');
     });
     $("#coutConfContinueBtn").click( () => {
-        $("#coutConfModal").modal('hide')
+        $("#coutConfModal").modal('hide');
         $("#pmtModal").modal('show');
+    });
+
+    //Payment (Checkout p3) Field Listeners
+    attachCCListeners();
 
     //Payment (Checkout p3) Btn Listeners
     $("#pmtCloseBtn").click( () => $("#pmtModal").modal('hide') );
@@ -55,20 +59,8 @@ $( async function() {
         $("#coutConfModal").modal('show')
         $("#pmtModal").modal('hide');
     });
-    $("#pmtPayBtn").click( () => {
-        let isValid = validatePaymentInfo();
-        if ( isValid ) {
-            let isPmtSuccess = submitInfoToPmtProcessor();
-            if ( isPmtSuccess ){
-                updateOrderInfo();
-                $("#pmtModal").modal('hide')
-                $("#pmtSuccessModal").modal('show');
-            } else {
-                $("#pmtModal").modal('hide')
-                $("#pmtProbModal").modal('show');            
-            }
-        }
-    });
+    $("#pmtCCPayBtn").click( () => tryCCPayment( 'credit' ) );
+    $("#pmtPPPayBtn").click( () => tryPPPayment( 'paypal') );
 
     //Order Success Btn Listeners
     $("#pmtSuccessConfBtn").click( () => $("#pmtSuccessModal").modal('hide') );
@@ -82,11 +74,8 @@ $( async function() {
 
     } );
 
-
-    $('#pmtMethods').on('change', () => { 
-        validatePersonalFields();
-        updatePmtFields( );
-    });
-   
-
-});
+//drop down swapped for "or" option
+    // $('#pmtMethods').on('change', () => { 
+    //     validatePersonalFields();
+    //     updatePmtFields( );
+    // });

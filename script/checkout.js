@@ -13,7 +13,7 @@ const postCodeRegEx = /^[a-zA-Z]\d[a-zA-Z] ?\d[a-zA-Z]\d$/;
 const zipCodeRegEx = /^\d{5}$/;
 
 const ccNumRegEx = /^\d{4}[\- ]?\d{4}[\- ]?\d{4}[\- ]?\d{4}$/ ;
-const yearRegEx = /^((20)|())\d{2}$/;
+const yearRegEx = /^\d{2}$/;
 const cvcRegEx = /^\d{3}$/;
 
 // Convert **input field** JQuery element or id-String into Object, 
@@ -37,6 +37,11 @@ const makeFormInputObj = ( jQElement ) => {
     }
     //get the value of the input box and trim off any start/end whitespace
     input.value = input.field.val().trim()
+    if ( input.field[0].id=="ccExpMo" ) {
+        input.tip = $("#ccExpMoTip");
+    } else if ( input.field[0].id=="ccExpYr" ) {
+        input.tip = $("#ccExpYrTip");
+    }
     return input;
 }
 
@@ -128,6 +133,20 @@ const attachCustomerListeners = () => {
     listenFieldAndUpdate( $('#emailIn'), emailRegEx, 'customerEmail' );
 
     attachAddressListeners( 'p', 'customer' );
+}
+
+const attachCCListeners = () => {
+    //CC Number listeners
+    listenFieldAndUpdate( $('#ccNum'), nameRegEx, 'ccNum' );
+    listenFieldAndUpdate( $('#ccExpMo'), nameRegEx, 'ccExpMo' );
+    listenFieldAndUpdate( $('#ccExpYr'), phoneRegEx, 'ccExpYr' );
+    listenFieldAndUpdate( $('#ccCVC'), emailRegEx, 'ccCVC' );
+
+    //Customer information listeners
+    listenFieldAndUpdate( $('#ccFName'), nameRegEx, 'billFName' );
+    listenFieldAndUpdate( $('#ccLName'), nameRegEx, 'billLName' );
+
+    attachAddressListeners( 'bill', 'bill' );
 }
 
 const validatePersonalFields = () => {
@@ -273,13 +292,65 @@ const buildConfirmationWindow = async () => {
 //--------------------------------------------------------------------------------------
 //---------------------------------------PAYMENT----------------------------------------
 //--------------------------------------------------------------------------------------
-const updateOrderInfo = () => {
 
-};
         
+const tryPPPayment = ( method ) => {
+        let isPmtSuccess = submitInfoToPmtProcessor( 'paypal' );
+        if ( isPmtSuccess ){
+            updateOrderAndPurchase();
+            $("#pmtModal").modal('hide')
+            $("#pmtSuccessModal").modal('show');
+        } else {
+            let probDesc = `There was a problem proccessing your payment<br>Please try again, or contact us at fakePhoneNumber`
+            $('#pmtProbDesc').html( probDesc );
+            $("#pmtModal").modal('hide')
+            $("#pmtProbModal").modal('show');            
+    }
+}
+
+const tryCCPayment = ( method ) => {
+    let isValid = ( validateCC() && validateName() );
+    if ( isValid ) {
+        let isPmtSuccess = submitInfoToPmtProcessor( 'credit' );
+        if ( isPmtSuccess ){
+            updateOrderAndPurchase();
+            $("#pmtModal").modal('hide')
+            $("#pmtSuccessModal").modal('show');
+        } else {
+            let probDesc = `There was a problem proccessing your payment<br>Please try again, or contact us at fakePhoneNumber`
+            $('#pmtProbDesc').html( probDesc );
+            $("#pmtModal").modal('hide')
+            $("#pmtProbModal").modal('show');            
+        }
+    } else {
+        let probDesc = `One or more of the data fields has an invalid entry.<br>Problem fields will be highlighted.`
+        $('#pmtProbDesc').html( probDesc );
+    }
+}
+
+//For now hardcoded by processor
+const submitInfoToPmtProcessor = ( method ) => {
+    if ( method == 'credit' ) {
+        //treat as successfull
+        return true;      
+    } else if ( method == 'paypal') {
+        //treat as unsuccessfull
+        return false
+    } else { //other methods in reality 
+        }
+}
+
+const updateOrderAndPurchase = async () => {
+    let order = await getOrderSave();
+    order.bookingArray = await getCartSave();
+    order.isPaid = true;
+    setOrderSave( order )
+    clearCartYes();
+    //assign cart to order, mark order as paid
+    //clear cart (skip confirm)
+};
 
 // order.bookingArray = 
-
 const addPmtFields = () => {
     pmtHTML = `
                         <div class="row g-3 my-3"><h5>Payment</h5></div>
@@ -366,24 +437,29 @@ const addPmtFields = () => {
     `
 }
 
-const validatePmtFields = () => {
-    let pmtChoice = validateSelect( pmtMethods );
-    switch ( pmtChoice ) {
-        case 'Cash':
-        case 'Debit':
-        case 'PayPal':
-            //no additional fields to validate
-            return true;
-        case 'Credit':
-            //see validatePersonalFields for comments, they're the same.
-            if ( validateField( ccNumber, ccNumRegEx ) &&
-                    validateField( ccMonth, validateMonthNum( ccMonth ) ) &&
-                    validateField( ccYear, yearRegEx ) &&
-                    validateField( ccCVC, cvcRegEx ) ) {
-            return true;
-        } else { return false; }
-    }
+const validateCC = () => {
+    // let pmtChoice = validateSelect( pmtMethods );//no selection dropwdown
+    //see validatePersonalFields for comments, they're the same.
+    if ( validateField( makeFormInputObj( 'ccNum' ), ccNumRegEx ) &&
+            //only validates that it is 2 digit number, not that the number is possible 
+            validateField( makeFormInputObj( 'ccExpMo' ), yearRegEx ) &&
+            validateField( makeFormInputObj( 'ccExpYr' ), yearRegEx ) &&
+            validateField( makeFormInputObj( 'ccCVC' ), cvcRegEx ) ) {
+        return true;
+    } else { return false; }
 }
+
+const validateName = () => {
+    //if all validate to true, return true (passed validation) otherwise
+    // fails validation. Short-circuits, so may have incorrect options beyond.
+    //prevents needed to fix many at the same time and potentially overwhealming
+    //customer
+    if ( validateField( makeFormInputObj( 'firstNameTxt') , nameRegEx )&&
+            validateField( makeFormInputObj( 'lastNameTxt') , nameRegEx ) ) {
+        return true;
+    } else { return false; }
+};
+
 
 const validateSelect = ( selectID ) => { 
     //only checking that it has been selected as
@@ -405,12 +481,9 @@ const validateSelect = ( selectID ) => {
     return input.value;
 }
 
-const validateMonthNum = ( fieldID ) => {
-    let input = {
-        field: $(`#${fieldID}`),
-        label: fieldLabel = $(`#${fieldID}Lbl`),
-        tip: $(`#${fieldID}Tip`),   
-    }
+const validateMonthNum = ( fieldID ) => { //not used, bug needs to be fixed
+    let input = makeFormInputObj( fieldID );
+
     input.value = input.field.val().trim().parseInt()
 
     validateClassToggle ( input.value <= 12 && input.value >= 1, input );

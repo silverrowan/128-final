@@ -102,18 +102,18 @@
 - [x] objects
 - [x] conditionals
 - [x] loops
-- [ ] proper use of variable assignment, let versus const
-- [ ] code commented clearly with a good explanation
+- [x] proper use of variable assignment, let versus const
+- [x] code commented clearly with a good explanation
 
 - [x] try, catch, and finally
-- [ ] throwing errors where appropriate
-- [ ] meaningful feedback in the interface for errors or valid data
+- [x] throwing errors where appropriate
+- [x] meaningful feedback in the interface for errors or valid data
 
 - [x] form validation using regex
 
 - [x] use of jQuery DOM manipulation techniques
 - [x] fetch, or jQuery ajax calls
-- [ ] deconstruction of JSON data
+- [x] deconstruction of JSON data: destructuring example is in checkout.js > buildConfirmationWindow()
 
 - [x] Leaflet use
 - [ ] Animation - via Javascript or jQuery
@@ -142,10 +142,16 @@
 - [x] Create Book Room functionality
 - [x] Add the ability to view your items in your booking cart
 - [x] Add the ability to remove items, empty the cart, and keep the cart in localStorage, so if i refresh the page, items are still active in the cart.
-- [ ] Add the ability to checkout
-- [ ] Create the checkout steps and be sure to validate all form fields, provide meaningful feedback if the user enters incorrect or invalid data
-- [ ] Create an order summary that shows relevant booking data
+- [x] Add the ability to checkout
+- [!] Create the checkout steps and be sure to validate all form fields, provide meaningful feedback if the user enters incorrect or invalid data
+- [x] Create an order summary that shows relevant booking data
 - [ ] Go through your final checks from the requirements in the Description section
 
-NOTE destructuring example is in checkout.js > buildConfirmationWindow() ( ~ line 200)  
 
+
+NOTE: destructuring example is in checkout.js > buildConfirmationWindow()
+
+- while checkout CC number fields do not switch off when corrected, invalid options do not
+pass through, while valid ones do.
+- cc Year note doesn't trigger
+-- cc info not saved in order (whatevs)
