@@ -2,7 +2,7 @@
 
 const victoriaCoordinates = [48.428813, -123.363040];
 
-let map = L.map('map').setView(victoriaCoordinates, 8); // or var to consistant w leaflet instructions
+let map = L.map('map').setView(victoriaCoordinates, 5); // or var to consistant w leaflet instructions
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -59,4 +59,56 @@ const addHotelIcon = ( hotelObj, roomArray ) => {
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
     marker.addEventListener("click", () => makeHotelCard( hotelObj, roomArray ));
     return marker;
+}
+
+//find and place user
+const placeUserMarker = () => {
+
+    let userLocationMarker = null;
+    let clickMarker = null;
+    let accuracyMarker = null;
+
+    const locationSuccess = (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        if (userLocationMarker !== null) {
+            map.removeLayer(userLocationMarker);
+        }
+
+        if (accuracyMarker !== null) {
+            map.removeLayer(accuracyMarker);
+        }
+
+        userLocationMarker = L.marker([latitude, longitude]).addTo(map);
+        userLocationMarker.bindPopup("Your current location!");
+
+        accuracyMarker = L.circle([latitude, longitude], {
+            radius: accuracy
+        }).addTo(map);
+
+    map.setView([latitude, longitude], 5);
+    };
+
+    const locationFailure = (error) => {
+        console.log(error);
+
+        if(error.code === error.PERMISSION_DENIED){
+            console.log( "Permission denied" );
+        } else if(error.code === error.POSITION_UNAVAILABLE){
+            console.log( "Position not available" );
+        } else if(error.code === error.TIMEOUT){
+            console.log( "Time out error" );
+        } else {
+            console.log( "Unknown reason, couldn't get user location." );
+        }
+    };
+
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 10000
+    };
+
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure, options);
 }

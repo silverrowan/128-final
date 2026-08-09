@@ -12,6 +12,8 @@ $( async function() {
     addHotelsToMap( hotelArray );
     reBuildCart( initialCartArray )
 
+    //Add user location to map
+    placeUserMarker();
 
     //initial modals and offcanvases
     let coutModal = bootstrap.Modal.getOrCreateInstance( $("#coutModal")[0] );
