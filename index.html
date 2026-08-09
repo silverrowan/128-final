@@ -76,7 +76,6 @@
                 <div id="BookingModalTitle" class="flex-column align-start">
                     <h4 class="modal-title"></h4>
                 </div>
-                <button type="button" id="clearCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
             </div>  
             <div class="modal-body">    
                 <p>Are you sure you want to remove everything?</p>
@@ -229,10 +228,9 @@
     </div>
 </div>
 <!-- CONFIRM PURCHASE Modal -->
- <div class="modal" id="coutConfModal" tabindex="-1">
+<div class="modal" id="coutConfModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-
             <div class="modal-header flex-row justify-space-between">
                 <div id="coutModalTitle" class="flex-column align-start">
                     <h4 class="modal-title">Confirm Purchase Details</h4>
@@ -240,36 +238,170 @@
                 <button type="button" id="coutConfCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
             </div>   
 
-            <div class="modal-body" id="confCheckoutDetailsContent">
-                <!-- 
-                ...customer name
-                ...sustomer contact info (email, phone)
-                ...customer address
-                <hr>
-                booking:
-                for each cart item:
-                    hotel - room 
-                    maximum guests: #    
-                    dates (num days)
-                    per day / subtotal
-                for summary
-                    subtotal
-                    fees/discounts
-                    taxes
-                    total
-                Buttons -> on yes, pop up 'please contact xyz to pay within 24 hrs' 
-                advance all cart bookings to paid
-                make purchase object with the customer and booking and totals info.
-                clear cart
-                save cleared cart to local
-                -->
-            </div>
-
+            <div class="modal-body" id="confCheckoutDetailsContent"></div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" id="coutConfPrevBtn" class="btn btn-secondary">Previous</button>
-                <button type="button" id="coutConfContinueBtn" class="btn btn-success">Continue</button>
+                <button type="button" id="coutConfContinueBtn" class="btn btn-success">Confirm</button>
             </div>
+        </div>
+    </div>
+</div>
+<!--PAY FOR PURCHASE MODAL-->
+<div class="modal" id="pmtModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="pmtTitle" class="flex-column align-start">
+                    <h4 class="modal-title">Payment Details</h4>
+                </div>
+                <button type="button" id="pmtCloseBtn" class="btn-close align-self-start" aria-label="Close"></button>
+            </div>   
 
+            <div class="modal-body" id="pmtContent">
+                <div class="container flex-column">
+                    <h4>Quick checkout with PayPal</h4>
+                    <button id="pmtByPaypal" class="btn btn-success align-self-center w100">PayPal</button>
+                </div>
+                <hr>
+                <div>
+                    <h4>Pay by Credit Card</h4>
+                    <form id="ccForm" action="" method="POST">
+                        <div class="container flex-column">
+                            <div class="row g-3 mb-3"><h5>Credit Card Information</h5></div>
+                            <div class="row g-3 mb-3">
+                                <div class="form col-12 g-3" >
+                                    <label class="form-label" for="ccNum" id="ccNumLbl">Credit Card Number*</label>
+                                    <input type="text" class="form-control" id="ccNum" name="ccNum" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="ccNum" id="ccNumTip">
+                                        A card number is required. Please enter a valid credit card.</label>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-0"><label class="form-label">Expirey</label></div>                         
+                            <div class="row g-3 mb-3">
+                                <div class="col-8 g-3" >
+                                    <div class="d-flex col-12 flex-row g-3 align-items-stretch" >
+                                        <div class="col-4 g-3 me-3" >
+                                            <label class="form-label" for="ccExpMo" id="ccExpMoLbl">Month*</label>
+                                            <input type="text" class="form-control" id="ccExpMo" name="ccNum" placeholder=" " required/>
+                                        </div>
+                                        <div class="col-4 g-3 me-3" >
+                                            <label class="form-label" for="ccExpYr" id="ccExpYrLbl">Year*</label>
+                                            <input type="text" class="form-control" id="ccExpYr" name="ccNum" placeholder=" " required/>
+                                        </div>
+                                    </div>
+                                    <label class="form-label hidden formTip" for="ccExpMo" id="ccExpMoTip">
+                                            An expirey date is required, please enter a valid 2 digit month, and 2 digit year</label>
+                                </div>
+                                <div class="form col-4 g-3" >
+                                    <label class="form-label" for="ccCVC" id="ccCVCLbl">CVC*</label>
+                                    <input type="text" class="form-control" id="ccCVC" name="ccNum" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="ccCVC" id="ccCVCTip">
+                                        A CVC is required. (3 digit number)</label>
+                                </div>
+                                <!-- Need to write function to make this work still -->
+                                <!-- <div class="form col-12 g-3" >
+                                    <label class="form-label" for="ccAddyMatch" id="ccAddyMatchlbl">
+                                        My personal and billing address (and name) are the same.</label>
+                                        <input type="text" class="form-control" id="ccAddyMatch" name="ccNum" placeholder=" " required/>
+                                    </div> -->
+                            </div>
+                            <hr>
+                            <div class="row g-3 mb-3"><h5>Cardholder</h5></div>
+                            <div class="row g-3 mb-3">
+                                <div class="form col-6 g-3" >
+                                    <label class="form-label" for="ccFName" id="ccFNameLbl">Given Name*</label>
+                                    <input type="text" class="form-control" id="ccFName" name="firstName" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="ccFName" id="ccFNameTip">
+                                        A given name is required. Please enter a valid name. (Letters and spaces are accepted)</label>
+                                </div>
+                                <div class="form col-6 g-3" >
+                                    <label class="form-label" for="ccLName" id="ccLNameLbl">Family Name*</label>
+                                    <input type="text" class="form-control" id="ccLName" name="lastName" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="ccLName" id="ccLNameTip">
+                                        A family name is required. Please enter a valid name. (Letters and spaces are accepted)</label>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row g-3 my-3"><h5>Billing Address</h5></div>
+                            <div class="row g-3 mb-3">
+                                <div class="form col g-3" >
+                                    <label class="form-label" for="pstAddressTxt" id="pstAddressTxtLbl">Address*</label>
+                                    <input type="text" class="form-control" id="pstAddressTxt" name="stAddress" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="pstAddressTxt" id="pstAddressTxtTip">Please enter a valid address.</label>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="form col-7 g-3" >
+                                    <label class="form-label" for="pcityTxt" id="pcityTxtLbl">City*</label>
+                                    <input type="text" class="form-control" id="pcityTxt" name="city" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="pcityTxt" id="pcityTxtTip">Please enter a valid city name.</label>
+                                </div>
+                                <div class="form  col-5 g-3" >                                
+                                    <label class="form-label" for="pzipTxt" id="pzipTxtLbl">Postal Code / ZIP*</label>
+                                    <input type="text" class="form-control" id="pzipTxt" name="zip" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="pzipTxt" id="pzipTxtTip">Please enter a valid postal or zip code.</label>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">                                
+                                <div class="form  col-5 g-3" >
+                                    <label class="form-label" for="pstateTxt" id="pstateTxtLbl">Provence / State* </label>
+                                    <input type="text" class="form-control" id="pstateTxt" name="state" placeholder=" " required/>
+                                    <label class="form-label hidden formTip" for="pstateTxt" id="pstateTxtTip">Please enter a valid region name.</label>
+                                </div>
+                                <div class="form  col-7 g-3" >
+                                    <label class="form-label" for="pcountryTxt" id="pcountryTxtLbl">Country*</label>
+                                    <input type="text" class="form-control" id="pcountryTxt" name="country" placeholder=" " autocomplete="on" required/>
+                                    <label class="form-label hidden formTip" for="pcountryTxt" id="pcountryTxtTip">Please enter a valid country name.</label>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <button type="button" id="pmtByCCBtn" class="btn btn-success align-self-end">Pay</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-start">
+                <button type="button" id="pmtPrevBtn" class="btn btn-secondary">Previous</button>
+                <!-- <button type="button" id="pmtPayBtn" class="btn btn-success">Confirm</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PMT SUCCESS Message Dialog -->
+ <div class="modal" id="pmtSuccessModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="messageModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title">Payment Successful!</h4>
+                </div>
+            </div>  
+            <div class="modal-body">    
+                <p>Your payment was successful!<br>Please check your email for stay details.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="pmtSuccessConfBtn" class="btn btn-success">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PMT PROBLEM Dialog -->
+ <div class="modal" id="pmtProbModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header flex-row justify-space-between">
+                <div id="pmtProbModalTitle" class="flex-column align-start">
+                    <h4 class="modal-title">Payment Was Not Successful.</h4>
+                </div>
+            </div>  
+            <div class="modal-body">    
+                <p>There was a problem proccessing your payment<br>Please try again, or contact us at fakePhoneNumber</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="pmtProbModalCancelBtn" class="btn btn-outline-danger">Cancel</button>
+                <button type="button" id="pmtProbModalAgainBtn" class="btn btn-warning">Try Again</button>
+            </div>
         </div>
     </div>
 </div>

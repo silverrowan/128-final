@@ -143,8 +143,16 @@ const validatePersonalFields = () => {
     } else { return false; }
 };
 
+//directly related to object, but dont want to have to make them back into order objs
+const checkCustomerAddressComplete = ( object ) => {
+    let { customerStAddress, customerCity, customerZip,
+        customerState, customerCountry } = object;
 
-
+    if ( !!customerStAddress && !!customerCity && !!customerZip && 
+        !!customerState && !!customerCountry ) {
+        return true;
+    } else { return false; }
+}
 
 const attachAddressListeners = ( addressIDPrefix, addressObjPrefix ) => {
     let stAddress = $(`#${addressIDPrefix}stAddressTxt`);
@@ -179,11 +187,9 @@ const validateAddressFields = ( addressIDPrefix ) => {
 }
 
 
-
-
-
-
-
+//--------------------------------------------------------------------------------------
+//---------------------------------------CONFIRM----------------------------------------
+//--------------------------------------------------------------------------------------
 
 const showConfirmOrder = () => {
     console.log( " show confirmation page ");
@@ -195,18 +201,6 @@ const showConfirmOrder = () => {
     confModal = bootstrap.Modal.getOrCreateInstance( confModalDiv );
     confModal.show();
 };
-
-//directly related, but dont want to have to make them back into order objs
-const checkCustomerAddressComplete = ( object ) => {
-    let { customerStAddress, customerCity, customerZip,
-        customerState, customerCountry } = object;
-
-    if ( !!customerStAddress && !!customerCity && !!customerZip && 
-        !!customerState && !!customerCountry ) {
-        return true;
-    } else { return false; }
-}
-
 
 const buildConfirmationWindow = async () => {
     let order = await getOrderSave(); //from dataAccess
@@ -274,9 +268,17 @@ const buildConfirmationWindow = async () => {
             </div>
         ` 
     $('#confCheckoutDetailsContent').html( confHTML );
-    }
+}
 
+//--------------------------------------------------------------------------------------
+//---------------------------------------PAYMENT----------------------------------------
+//--------------------------------------------------------------------------------------
+const updateOrderInfo = () => {
 
+};
+        
+
+// order.bookingArray = 
 
 const addPmtFields = () => {
     pmtHTML = `

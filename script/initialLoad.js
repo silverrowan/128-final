@@ -15,7 +15,10 @@ $( async function() {
 
     //initial modals and offcanvases
     let coutModal = bootstrap.Modal.getOrCreateInstance( $("#coutModal")[0] );
-    let confModal = bootstrap.Modal.getOrCreateInstance( $("#confCheckoutDetailsContent")[0] );
+    let confModal = bootstrap.Modal.getOrCreateInstance( $("#coutConfModal")[0] );
+    let pmtModal = bootstrap.Modal.getOrCreateInstance( $("#pmtModal")[0] );
+    let pmtSuccessModal = bootstrap.Modal.getOrCreateInstance( $("#pmtSuccessModal")[0] );
+    let pmtProbModal = bootstrap.Modal.getOrCreateInstance( $("#pmtProbModal")[0] );
 
 
     // the initial booking modal listeners need information on current state, so are attached 
@@ -38,18 +41,45 @@ $( async function() {
     });
     //Confirmation (Checkout p2) Btn Listeners
     $("#coutConfCloseBtn").click( () => $("#coutConfModal").modal('hide') );
-    $("#coutConfPrevBtn").click( () => $("#coutConfModal").modal('hide') );
+    $("#coutConfPrevBtn").click( () => {
+        $("#coutModal").modal('show')
+        $("#coutConfModal").modal('hide');
+    });
     $("#coutConfContinueBtn").click( () => {
-        updateOrderInfo();
-        showPayModal();
         $("#coutConfModal").modal('hide')
         $("#pmtModal").modal('show');
 
-
     //Payment (Checkout p3) Btn Listeners
+    $("#pmtCloseBtn").click( () => $("#pmtModal").modal('hide') );
+    $("#pmtPrevBtn").click( () => {
+        $("#coutConfModal").modal('show')
+        $("#pmtModal").modal('hide');
+    });
+    $("#pmtPayBtn").click( () => {
+        let isValid = validatePaymentInfo();
+        if ( isValid ) {
+            let isPmtSuccess = submitInfoToPmtProcessor();
+            if ( isPmtSuccess ){
+                updateOrderInfo();
+                $("#pmtModal").modal('hide')
+                $("#pmtSuccessModal").modal('show');
+            } else {
+                $("#pmtModal").modal('hide')
+                $("#pmtProbModal").modal('show');            
+            }
+        }
+    });
 
+    //Order Success Btn Listeners
+    $("#pmtSuccessConfBtn").click( () => $("#pmtSuccessModal").modal('hide') );
 
-    //Order Success/Problem Btn Listeners
+    //Order Problem Btn Listners
+    $("#pmtProbModalCancelBtn").click( () => $("#pmtProbModal").modal('hide') );
+    $("#pmtProbModalAgainBtn").click( () => {
+        $("#pmtModal").modal('show')
+        $("#pmtProbModal").modal('hide');
+    });
+
     } );
 
 
