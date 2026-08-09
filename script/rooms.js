@@ -161,26 +161,6 @@ const makeFilteredRooms = ( hotel, allRooms ) => {
 }   
 
 
-
-
-    // for ( let i = 0 ; i < roomArray.length ; i++ ){
-    //     let room = roomArray[i];
-    //     if ( hotel.id == room.hotelId ) {
-    //         if ( room.available ){
-    //             roomCardsDiv.append( makeRoomCard( room, true ) );
-    //             $(`#bookRoom${room.id}`).click( () => {
-    //                 openBookModal( room, hotel );
-    //             });
-    //         } else {
-    //             roomCardsDiv.append( makeRoomCard( room, false ) );
-    //         }
-                
-    //     }
-    // }
-
-
-
-
 const makeRoomCard = ( room ) => {
     let cardHTML = `       
         <div class="col col-sm-6 col-lg-4">            
