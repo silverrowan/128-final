@@ -55,9 +55,29 @@ const addHotelsToMap = ( hotelArray, roomArray ) => {
     return markerArray;
 }
 
-const addHotelIcon = ( hotelObj, roomArray ) => {  
+const addHotelIcon = async ( hotelObj, roomArray ) => {
     let marker = L.marker([hotelObj.lat, hotelObj.lng], {icon: hotelIcon}).addTo(map);
     marker.addEventListener("click", () => makeHotelCard( hotelObj, roomArray ));
+    
+    let weather = await getWeather(48.4284, -123.3656);
+    console.log(weather);
+    
+    marker.bindPopup(`
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <img src='${weather.current.condition.icon}' class='weatherIcon icon popup' />
+            <p class="popup my-0">The current weather here is ${weather.current.condition.text}.</p>
+        </div>
+        `);
+
+    marker.on('popupopen', () => {
+        $('.weatherIcon.popup')
+            .animate({ top: '-5px' }, 500)
+            .animate({ top: '0px' }, 500)
+            .delay(300)
+            .animate({ top: '-5px' }, 500)
+            .animate({ top: '0px' }, 500)
+        });
+
     return marker;
 }
 
@@ -111,4 +131,37 @@ const placeUserMarker = () => {
     };
 
     navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure, options);
+}
+
+
+//weather
+
+
+const getWeather = async (lat, lng) => {
+    const apiKey = "e45f31ad3c17405e9ea44045260908";
+    
+    try{
+        const url =
+            `https://api.weatherapi.com/v1/current.json` +
+            `?key=${apiKey}&q=${lat},${lng}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!response.ok){
+                throw new Error("Unable to retrieve weather")
+            }
+
+        return data;
+
+    } catch (error) { 
+        if(error.code === error.PERMISSION_DENIED){
+            console.log( "(weather) Permission denied" );
+        } else if(error.code === error.POSITION_UNAVAILABLE){
+            console.log( "(weather) Position not available" );
+        } else if(error.code === error.TIMEOUT) {
+            console.log( "(weather) Time out error" );
+        } else {
+            console.log( "Unknown reason, couldn't get location weather." );
+        }
+    }
 }

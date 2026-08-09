@@ -116,7 +116,7 @@
 - [x] deconstruction of JSON data: destructuring example is in checkout.js > buildConfirmationWindow()
 
 - [x] Leaflet use
-- [ ] Animation - via Javascript or jQuery
+- [x] Animation - via Javascript or jQuery : of the weather icon in the popup
 
 # --------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------
@@ -133,10 +133,10 @@
 - [x] Determine how you want your layout to look, grid, row, or masonry, and build a dummy layout with a few example room cards
 - [x] Add your hotel locations to the map with the JSON data from hotels.json
 - [x] Add a custom icon for each hotel marker
-- [ ] Use geolocation to place the user's current location on the map
+- [x] Use geolocation to place the user's current location on the map
 - [x] When a hotel is clicked, update the active hotel details section
 - [x] Store the selected hotel id in a variable so you know which hotel is active
-- [ ] Get and display weather data for the selected hotel
+- [x] Get and display weather data for the selected hotel
 - [x] Filter the rooms from rooms.json so only rooms whose hotelId matches the selected hotel id are shown
 - [ ] Add filtering and sorting to the room catalog
 - [x] Create Book Room functionality

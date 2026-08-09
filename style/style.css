@@ -69,3 +69,15 @@ label.error {
     font-style: 800;
     color: #6d0909;    
 }
+
+p.popup {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+img.popup {
+    height: 5rem;
+    margin-top: -1rem;
+    margin-bottom: -1rem;
+    position: relative;
+}
